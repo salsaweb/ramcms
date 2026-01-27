@@ -76,7 +76,7 @@ PostgreSQL database (Supabase recommended)
 ```bash
 # Clone repository
 git clone <repository-url>
-cd cms-enterprise
+cd ramcms
 
 # Install dependencies
 npm install
@@ -129,7 +129,7 @@ Visit `http://localhost:3000`
 ## 📁 Project Structure
 
 ```
-cms-enterprise/
+ramcms/
 ├── app/
 │   ├── api/auth/[...nextauth]/   # Auth.js handler
 │   ├── actions/                  # Server Actions

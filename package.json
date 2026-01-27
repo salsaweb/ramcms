@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:migrate": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/001_initial_schema.sql'",
-    "db:seed": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/001_initial_data.sql'",
+    "db:migrate": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/002_crm_schema.sql'",
+    "db:seed": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/002_crm_data.sql'",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
