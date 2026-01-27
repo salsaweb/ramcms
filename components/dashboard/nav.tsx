@@ -9,6 +9,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', permission: 'dashboard.access' },
   { name: 'Posts', href: '/dashboard/posts', permission: 'posts.read' },
   { name: 'Users', href: '/dashboard/users', permission: 'users.read' },
+  { name: 'CRM', href: '/dashboard/crm', permission: 'crm.access' },
   { name: 'Settings', href: '/dashboard/settings', permission: 'settings.view' },
 ];
 
