@@ -2,6 +2,7 @@ import { requirePermissionPage } from '@/lib/auth/session';
 import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { getUsers } from '@/app/actions/users';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import Link from 'next/link';
 
 export default async function UsersPage() {
   await requirePermissionPage(PERMISSIONS.USERS_READ);
@@ -60,9 +61,12 @@ export default async function UsersPage() {
                   {users.map((user: any) => (
                     <tr key={user.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
+                        <Link
+                          href={`/dashboard/users/${user.id}`}
+                          className="text-sm font-medium text-primary hover:underline"
+                        >
                           {user.name}
-                        </div>
+                        </Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500">{user.email}</div>
