@@ -314,3 +314,79 @@ export async function getPipelineStats() {
     };
   }
 }
+
+/**
+ * Get deal by ID with related activities and tasks
+ */
+export async function getDeal(dealId: string) {
+  const { data: deal, error } = await supabaseAdmin
+    .from('deals')
+    .select(`
+      *,
+      contacts(id, first_name, last_name, email, phone),
+      companies(id, name, industry),
+      owner:users!deals_owner_id_fkey(name, email)
+    `)
+    .eq('id', dealId)
+    .single();
+
+  if (error || !deal) {
+    return null;
+  }
+
+  // Get activities
+  const { data: activities } = await supabaseAdmin
+    .from('activities')
+    .select(`
+      *,
+      creator:users!activities_created_by_fkey(name)
+    `)
+    .eq('deal_id', dealId)
+    .order('created_at', { ascending: false });
+
+  // Get tasks
+  const { data: tasks } = await supabaseAdmin
+    .from('tasks')
+    .select('*')
+    .eq('deal_id', dealId)
+    .order('due_date', { ascending: true });
+
+  return {
+    ...deal,
+    activities: activities || [],
+    tasks: tasks || [],
+  };
+}
+
+/**
+ * Delete deal
+ */
+export async function deleteDeal(dealId: string) {
+  try {
+    const session = await requirePermission('deals.delete');
+    const userId = session.user.id;
+
+    const { error } = await supabaseAdmin
+      .from('deals')
+      .delete()
+      .eq('id', dealId);
+
+    if (error) {
+      return { success: false, error: 'Failed to delete deal' };
+    }
+
+    await supabaseAdmin.from('audit_logs').insert({
+      user_id: userId,
+      action: 'deal.delete',
+      resource_type: 'deals',
+      resource_id: dealId,
+    });
+
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to delete deal',
+    };
+  }
+}
