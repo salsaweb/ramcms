@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:migrate": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/002_crm_schema.sql'",
+    "db:migrate:contact-enhancements": "dotenv -e .env -- sh -c  'psql \"$DATABASE_URL\" -f database/migrations/003_contact_enhancements.sql'",
     "db:seed": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/003_add_manage_roles_permission.sql'",
     "type-check": "tsc --noEmit"
   },

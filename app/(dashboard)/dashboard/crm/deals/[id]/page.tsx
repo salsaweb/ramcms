@@ -179,7 +179,9 @@ export default async function DealDetailPage({
               {deal.tasks.map((task: any) => (
                 <div key={task.id} className="p-3 border rounded-lg flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm">{task.title}</div>
+                    <div className="font-medium text-sm">
+                      <Link href={`/dashboard/crm/tasks/${task.id}`}>{task.title}</Link>
+                    </div>
                     {task.description && (
                       <div className="text-xs text-gray-500 mt-1">{task.description}</div>
                     )}
