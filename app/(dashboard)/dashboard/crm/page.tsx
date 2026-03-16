@@ -182,7 +182,7 @@ export default async function CRMDashboardPage() {
           <CardDescription>Common CRM tasks</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <Link
               href="/dashboard/crm/contacts/new"
               className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
@@ -210,6 +210,20 @@ export default async function CRMDashboardPage() {
             >
               <div className="text-sm font-medium">My Tasks</div>
               <div className="text-xs text-gray-500 mt-1">{stats.pendingTasks} pending</div>
+            </Link>
+            <Link
+              href="/dashboard/crm/analytics"
+              className="p-4 border rounded-lg hover:bg-blue-50 transition-colors"
+            >
+              <div className="text-sm font-medium">📊 Analytics</div>
+              <div className="text-xs text-gray-500 mt-1">Call reports</div>
+            </Link>
+            <Link
+              href="/dashboard/crm/settings"
+              className="p-4 border rounded-lg hover:bg-purple-50 transition-colors"
+            >
+              <div className="text-sm font-medium">⚙️ Settings</div>
+              <div className="text-xs text-gray-500 mt-1">Configure CRM</div>
             </Link>
           </div>
         </CardContent>

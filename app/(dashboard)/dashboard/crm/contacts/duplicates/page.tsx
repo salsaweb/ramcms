@@ -24,9 +24,14 @@ export default async function DuplicatesPage() {
             Review and merge potential duplicate contacts
           </p>
         </div>
-        <Link href="/dashboard/crm/contacts">
-          <Button variant="outline">← Back to Contacts</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/dashboard/crm/settings/merge-rules">
+            <Button variant="outline">⚙️ Merge Rules</Button>
+          </Link>
+          <Link href="/dashboard/crm/contacts">
+            <Button variant="outline">← Back to Contacts</Button>
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}
