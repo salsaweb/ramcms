@@ -14,9 +14,22 @@ async function getCompanies() {
   return data || [];
 }
 
+async function getCustomFields() {
+  const { data } = await supabaseAdmin
+    .from('contact_custom_fields')
+    .select('*')
+    .eq('is_active', true)
+    .order('display_order', { ascending: true });
+  
+  return data || [];
+}
+
 export default async function NewContactPage() {
   await requirePermissionPage('contacts.create');
-  const companies = await getCompanies();
+  const [companies, customFields] = await Promise.all([
+    getCompanies(),
+    getCustomFields(),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -38,7 +51,7 @@ export default async function NewContactPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ContactForm companies={companies} />
+          <ContactForm companies={companies} customFields={customFields} />
         </CardContent>
       </Card>
     </div>

@@ -15,6 +15,16 @@ async function getCompanies() {
   return data || [];
 }
 
+async function getCustomFields() {
+  const { data } = await supabaseAdmin
+    .from('contact_custom_fields')
+    .select('*')
+    .eq('is_active', true)
+    .order('display_order', { ascending: true });
+  
+  return data || [];
+}
+
 export default async function EditContactPage({
   params,
 }: {
@@ -23,9 +33,10 @@ export default async function EditContactPage({
   await requirePermissionPage('contacts.update');
 
   const { id } = await params;
-  const [result, companies] = await Promise.all([
+  const [result, companies, customFields] = await Promise.all([
     getContact(id),
     getCompanies(),
+    getCustomFields(),
   ]);
 
   if (!result.success || !result.contact) {
@@ -73,7 +84,8 @@ export default async function EditContactPage({
         </CardHeader>
         <CardContent>
           <ContactForm 
-            companies={companies} 
+            companies={companies}
+            customFields={customFields}
             initialData={{
               id: contact.id,
               firstName: contact.first_name,
@@ -89,6 +101,7 @@ export default async function EditContactPage({
               state: contact.state || '',
               country: contact.country || '',
               tags: contact.tags || [],
+              customFields: contact.custom_fields || {},
             }}
           />
         </CardContent>

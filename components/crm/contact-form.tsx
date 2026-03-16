@@ -1,15 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createContact, updateContact } from '@/app/actions/crm/contacts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CustomFieldInput } from '@/components/crm/custom-field-input';
 
 interface Company {
   id: string;
   name: string;
+}
+
+interface CustomField {
+  id: number;
+  field_name: string;
+  field_label: string;
+  field_type: string;
+  field_group: string | null;
+  field_options: any;
+  is_required: boolean;
+  help_text: string | null;
+  default_value: string | null;
 }
 
 interface ContactFormData {
@@ -27,14 +40,16 @@ interface ContactFormData {
   state: string;
   country: string;
   tags: string[];
+  customFields?: Record<string, any>;
 }
 
 interface ContactFormProps {
   companies: Company[];
+  customFields?: CustomField[];
   initialData?: ContactFormData;
 }
 
-export function ContactForm({ companies, initialData }: ContactFormProps) {
+export function ContactForm({ companies, customFields = [], initialData }: ContactFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +70,7 @@ export function ContactForm({ companies, initialData }: ContactFormProps) {
       state: '',
       country: '',
       tags: [],
+      customFields: {},
     }
   );
 
@@ -63,6 +79,16 @@ export function ContactForm({ companies, initialData }: ContactFormProps) {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCustomFieldChange = (fieldName: string, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      customFields: {
+        ...prev.customFields,
+        [fieldName]: value,
+      },
+    }));
   };
 
   const handleAddTag = () => {
@@ -293,6 +319,42 @@ export function ContactForm({ companies, initialData }: ContactFormProps) {
           </div>
         </div>
       </div>
+
+      {/* Custom Fields */}
+      {customFields && customFields.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">Additional Information</h3>
+          
+          {/* Group custom fields */}
+          {(() => {
+            const grouped = customFields.reduce((acc, field) => {
+              const group = field.field_group || 'Other';
+              if (!acc[group]) acc[group] = [];
+              acc[group].push(field);
+              return acc;
+            }, {} as Record<string, typeof customFields>);
+
+            return Object.entries(grouped).map(([group, fields]) => (
+              <div key={group} className="space-y-4">
+                {Object.keys(grouped).length > 1 && (
+                  <h4 className="font-medium text-gray-900">{group}</h4>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {fields.map((field) => (
+                    <CustomFieldInput
+                      key={field.id}
+                      field={field}
+                      value={formData.customFields?.[field.field_name]}
+                      onChange={(value) => handleCustomFieldChange(field.field_name, value)}
+                      disabled={loading}
+                    />
+                  ))}
+                </div>
+              </div>
+            ));
+          })()}
+        </div>
+      )}
 
       {/* Tags */}
       <div className="space-y-4">

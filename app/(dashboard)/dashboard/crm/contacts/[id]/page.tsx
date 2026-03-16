@@ -180,6 +180,54 @@ export default async function ContactDetailPage({
               </div>
             )}
           </dl>
+          
+          {/* Custom Fields */}
+          {contact.custom_fields && Object.keys(contact.custom_fields).length > 0 && (
+            <>
+              <hr className="my-6" />
+              <div>
+                <h4 className="text-sm font-medium text-gray-900 mb-4">Additional Information</h4>
+                <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {Object.entries(contact.custom_fields).map(([key, value]) => {
+                    // Format the field label (convert snake_case to Title Case)
+                    const label = key
+                      .split('_')
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(' ');
+                    
+                    // Format the value
+                    let displayValue = value;
+                    if (Array.isArray(value)) {
+                      displayValue = value.join(', ');
+                    } else if (typeof value === 'boolean') {
+                      displayValue = value ? 'Yes' : 'No';
+                    } else if (value === null || value === undefined || value === '') {
+                      displayValue = '-';
+                    }
+
+                    return (
+                      <div key={key}>
+                        <dt className="text-sm font-medium text-gray-500">{label}</dt>
+                        <dd className="mt-1 text-sm text-gray-900">
+                          {Array.isArray(value) && value.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {value.map((v: string) => (
+                                <span key={v} className="inline-flex px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded">
+                                  {v}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            String(displayValue)
+                          )}
+                        </dd>
+                      </div>
+                    );
+                  })}
+                </dl>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 
@@ -220,9 +268,7 @@ export default async function ContactDetailPage({
                 <div key={deal.id} className="p-4 border rounded-lg">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-900">
-                        <Link href={`/dashboard/crm/deals/${deal.id}`}>{deal.name}</Link>
-                      </h3>
+                      <h3 className="font-medium text-gray-900">{deal.name}</h3>
                       <p className="text-sm text-gray-500 mt-1">{deal.description}</p>
                     </div>
                     <div className="text-right">
@@ -262,9 +308,7 @@ export default async function ContactDetailPage({
               {tasks.map((task: any) => (
                 <div key={task.id} className="p-3 border rounded-lg flex items-center justify-between">
                   <div>
-                     <div className="font-medium text-sm">
-                      <Link href={`/dashboard/crm/tasks/${task.id}`}>{task.title}</Link>
-                    </div>
+                    <div className="font-medium text-sm">{task.title}</div>
                     {task.description && (
                       <div className="text-xs text-gray-500 mt-1">{task.description}</div>
                     )}

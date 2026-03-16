@@ -7,9 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:migrate": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/002_crm_schema.sql'",
-    "db:migrate:contact-enhancements": "dotenv -e .env -- sh -c  'psql \"$DATABASE_URL\" -f database/migrations/003_contact_enhancements.sql'",
-    "db:seed": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/003_add_manage_roles_permission.sql'",
+    "db:migrate:initial-schema": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/001_initial_schema.sql'",
+    "db:migrate:crm-schema": "dotenv -e .env -- sh -c  'psql \"$DATABASE_URL\" -f database/migrations/002_crm_schema.sql'",
+    "db:migrate:contact-enhancements": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/003_contact_enhancements.sql'",
+    "db:migrate:advanced-features": "dotenv -e .env -- sh -c  'psql \"$DATABASE_URL\" -f database/migrations/004_advanced_features.sql'",
+    "db:seed:initial-data": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/001_initial_data.sql'",
+    "db:seed:crm-data": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/002_crm_data.sql'",
+    "db:seed:manage-roles-permission": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/003_add_manage_roles_permission.sql'",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
