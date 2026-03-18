@@ -12,19 +12,23 @@
     "db:migrate:contact-enhancements": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/003_contact_enhancements.sql'",
     "db:migrate:advanced-features": "dotenv -e .env -- sh -c  'psql \"$DATABASE_URL\" -f database/migrations/004_advanced_features.sql'",
     "db:add-settings-permission": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/005_add_settings_permission.sql'",
+    "db:add-custom-rbac": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/006_custom_rbac.sql'",
+    "db:grant-admin-rbac": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/007_grant_admin_rbac_permissions.sql'",
     "db:seed:initial-data": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/001_initial_data.sql'",
     "db:seed:crm-data": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/002_crm_data.sql'",
     "db:seed:manage-roles-permission": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/003_add_manage_roles_permission.sql'",
+    "db:seed:custom-rbac-permissions": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/006_custom_rbac_permissions.sql'",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
     "bcryptjs": "^2.4.3",
+    "eslint-config-next": "16.1.5",
+    "lucide-react": "^0.577.0",
     "next": "16.1.5",
+    "next-auth": "^4.24.11",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "eslint-config-next": "16.1.5",
-    "next-auth": "^4.24.11",
     "zod": "^3.24.1"
   },
   "devDependencies": {

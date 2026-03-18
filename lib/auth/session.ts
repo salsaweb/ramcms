@@ -82,7 +82,7 @@ export async function requirePermissionPage(permission: string) {
   }
   
   if (!session.user.permissions.includes(permission)) {
-    redirect('/dashboard?error=forbidden');
+    redirect(`/dashboard?error=forbidden&permission=${encodeURIComponent(permission)}`);
   }
   
   return session;
