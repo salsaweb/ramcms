@@ -1,16 +1,18 @@
-import { DashboardNav } from '@/components/dashboard/nav';
+import { getCurrentUser } from '@/lib/auth/session';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const user = await getCurrentUser();
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardNav />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
-      </main>
-    </div>
+    <DashboardLayout
+      user={{
+        name: user.name || 'User',
+        email: user.email || 'user@example.com',
+        avatar: user.image,
+      }}
+    >
+      {children}
+    </DashboardLayout>
   );
 }

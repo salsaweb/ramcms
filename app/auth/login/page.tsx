@@ -6,13 +6,17 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { BarChart3, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,90 +33,221 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError('Invalid email or password');
+        setError('Invalid email or password. Please try again.');
       } else {
         router.push('/dashboard');
         router.refresh();
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Enterprise CMS</CardTitle>
-          <CardDescription>
-            Sign in to your account to continue
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-            
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admin@cms.local"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+    <div className="min-h-screen flex">
+      {/* Left Side - Login Form */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-md space-y-8">
+          {/* Logo & Title */}
+          <div className="flex flex-col items-center text-center space-y-2">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <BarChart3 className="h-6 w-6" />
             </div>
-
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
-            </div>
-
-            <div className="text-sm text-muted-foreground bg-blue-50 p-3 rounded-md border border-blue-200">
-              <p className="font-medium text-blue-900 mb-1">Demo Credentials:</p>
-              <p className="text-blue-700">Email: admin@cms.local</p>
-              <p className="text-blue-700">Password: Admin@123</p>
-            </div>
-          </CardContent>
-
-          <CardFooter className="flex flex-col space-y-4">
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Signing in...' : 'Sign In'}
-            </Button>
-
-            <p className="text-sm text-center text-muted-foreground">
-              Don't have an account?{' '}
-              <Link href="/auth/register" className="text-primary hover:underline">
-                Register
-              </Link>
+            <h1 className="text-2xl font-bold tracking-tight">Enterprise CMS</h1>
+            <p className="text-sm text-muted-foreground">
+              Sign in to access your dashboard
             </p>
-          </CardFooter>
-        </form>
-      </Card>
+          </div>
+
+          {/* Login Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Welcome back</CardTitle>
+              <CardDescription>
+                Enter your credentials to continue
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Error Alert */}
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                {/* Email Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="name@company.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-9"
+                      required
+                      disabled={isLoading}
+                      autoComplete="email"
+                    />
+                  </div>
+                </div>
+
+                {/* Password Field */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    <Link
+                      href="/auth/forgot-password"
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-9"
+                      required
+                      disabled={isLoading}
+                      autoComplete="current-password"
+                    />
+                  </div>
+                </div>
+
+                {/* Remember Me */}
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember"
+                    checked={rememberMe}
+                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                    disabled={isLoading}
+                  />
+                  <Label
+                    htmlFor="remember"
+                    className="text-sm font-normal cursor-pointer"
+                  >
+                    Remember me for 30 days
+                  </Label>
+                </div>
+
+                {/* Demo Credentials */}
+                <div className="rounded-lg border bg-muted/50 p-3 space-y-2">
+                  <p className="text-xs font-medium flex items-center gap-2">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary text-[10px] font-bold">
+                      i
+                    </span>
+                    Demo Credentials
+                  </p>
+                  <div className="text-xs text-muted-foreground space-y-1 ml-7">
+                    <p className="font-mono">admin@cms.local</p>
+                    <p className="font-mono">Admin@123</p>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isLoading}
+                  size="lg"
+                >
+                  {isLoading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Signing in...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      Sign in
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  )}
+                </Button>
+
+                {/* Register Link */}
+                <div className="text-center text-sm">
+                  <span className="text-muted-foreground">Don't have an account? </span>
+                  <Link href="/auth/register" className="text-primary hover:underline font-medium">
+                    Create account
+                  </Link>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Footer */}
+          <p className="text-center text-xs text-muted-foreground">
+            By signing in, you agree to our{' '}
+            <Link href="/terms" className="underline hover:text-foreground">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy" className="underline hover:text-foreground">
+              Privacy Policy
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      {/* Right Side - Branding */}
+      <div className="hidden lg:flex flex-1 bg-primary items-center justify-center p-8">
+        <div className="max-w-md text-primary-foreground space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-3xl font-bold">
+              Manage your enterprise with confidence
+            </h2>
+            <p className="text-primary-foreground/80">
+              Powerful CRM and content management tools built for modern businesses.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20">
+                ✓
+              </div>
+              <div>
+                <h3 className="font-medium">Advanced Analytics</h3>
+                <p className="text-sm text-primary-foreground/70">
+                  Real-time insights into your business performance
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20">
+                ✓
+              </div>
+              <div>
+                <h3 className="font-medium">Role-Based Access</h3>
+                <p className="text-sm text-primary-foreground/70">
+                  Granular permissions for complete security control
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20">
+                ✓
+              </div>
+              <div>
+                <h3 className="font-medium">Seamless Integration</h3>
+                <p className="text-sm text-primary-foreground/70">
+                  Connect with your favorite tools and services
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
