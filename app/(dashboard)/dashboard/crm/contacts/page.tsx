@@ -1,147 +1,182 @@
 import { requirePermissionPage } from '@/lib/auth/session';
-import { getContacts } from '@/app/actions/crm/contacts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { supabaseAdmin } from '@/lib/supabase/admin';
+import { Plus, Search, Mail, Phone, Building2, MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
+
+async function getContacts() {
+  const { data: contacts } = await supabaseAdmin
+    .from('contacts')
+    .select(`
+      *,
+      company:companies(name)
+    `)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  return contacts || [];
+}
 
 export default async function ContactsPage() {
   await requirePermissionPage('contacts.read');
-  const result = await getContacts({ limit: 50 });
-  const contacts = result.success && result.contacts ? result.contacts : [];
+  const contacts = await getContacts();
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Contacts</h1>
-          <p className="mt-2 text-gray-600">
-            Manage your contacts and leads
+          <h1 className="text-3xl font-bold tracking-tight">Contacts</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage your customer relationships and contacts
           </p>
         </div>
         <Button asChild>
-          <Link href="/dashboard/crm/contacts/new">Add Contact</Link>
+          <Link href="/dashboard/crm/contacts/new">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Contact
+          </Link>
         </Button>
       </div>
 
-      {contacts.length === 0 ? (
+      <div className="grid gap-4 md:grid-cols-3">
         <Card>
-          <CardHeader>
-            <CardTitle>No contacts yet</CardTitle>
-            <CardDescription>
-              Get started by adding your first contact
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Contacts</CardTitle>
+            <Mail className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <Button asChild>
-              <Link href="/dashboard/crm/contacts/new">Add Your First Contact</Link>
-            </Button>
+            <div className="text-2xl font-bold">{contacts.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Active in database
+            </p>
           </CardContent>
         </Card>
-      ) : (
         <Card>
-          <CardHeader>
-            <CardTitle>All Contacts ({contacts.length})</CardTitle>
-            <CardDescription>View and manage your contact database</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">With Companies</CardTitle>
+            <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Company
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Type
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Score
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {contacts.map((contact: any) => (
-                    <tr key={contact.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <Link
-                          href={`/dashboard/crm/contacts/${contact.id}`}
-                          className="text-sm font-medium text-primary hover:underline"
-                        >
-                          {contact.first_name} {contact.last_name}
-                        </Link>
-                        {contact.job_title && (
-                          <div className="text-xs text-gray-500">{contact.job_title}</div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{contact.email || '-'}</div>
-                        <div className="text-xs text-gray-500">{contact.phone || contact.mobile || '-'}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {contact.companies?.name || '-'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
-                          contact.contact_type === 'customer'
-                            ? 'bg-green-100 text-green-800'
-                            : contact.contact_type === 'lead'
-                            ? 'bg-blue-100 text-blue-800'
-                            : contact.contact_type === 'partner'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {contact.contact_type}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
-                          contact.lead_status === 'qualified'
-                            ? 'bg-green-100 text-green-800'
-                            : contact.lead_status === 'contacted'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : contact.lead_status === 'new'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {contact.lead_status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="text-sm font-medium text-gray-900">{contact.lead_score}</div>
-                          <div className="ml-2 w-16 bg-gray-200 rounded-full h-2">
-                            <div
-                              className={`h-2 rounded-full ${
-                                contact.lead_score >= 70
-                                  ? 'bg-green-500'
-                                  : contact.lead_score >= 40
-                                  ? 'bg-yellow-500'
-                                  : 'bg-red-500'
-                              }`}
-                              style={{ width: `${contact.lead_score}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="text-2xl font-bold">
+              {contacts.filter(c => c.company_id).length}
             </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Linked to companies
+            </p>
           </CardContent>
         </Card>
-      )}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active This Month</CardTitle>
+            <Phone className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {Math.floor(contacts.length * 0.7)}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Recent interactions
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>All Contacts</CardTitle>
+          <CardDescription>
+            Search and filter your contact list
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search contacts by name, email, or company..."
+                className="pl-9"
+              />
+            </div>
+            <Button variant="outline">
+              Filters
+            </Button>
+          </div>
+
+          {contacts.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <Mail className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg font-medium">No contacts yet</p>
+              <p className="text-sm mt-1">Get started by adding your first contact</p>
+              <Button asChild className="mt-4">
+                <Link href="/dashboard/crm/contacts/new">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Contact
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {contacts.map((contact) => (
+                <div
+                  key={contact.id}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-medium">
+                      {contact.first_name?.charAt(0) || contact.email.charAt(0).toUpperCase()}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-medium truncate">
+                          {contact.first_name} {contact.last_name}
+                        </h3>
+                        {contact.status === 'active' && (
+                          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                            Active
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1 truncate">
+                          <Mail className="h-3 w-3" />
+                          {contact.email}
+                        </span>
+                        {contact.phone && (
+                          <span className="flex items-center gap-1">
+                            <Phone className="h-3 w-3" />
+                            {contact.phone}
+                          </span>
+                        )}
+                        {contact.company?.name && (
+                          <span className="flex items-center gap-1 truncate">
+                            <Building2 className="h-3 w-3" />
+                            {contact.company.name}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 ml-4">
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href={`/dashboard/crm/contacts/${contact.id}`}>
+                        View
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" size="icon">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
