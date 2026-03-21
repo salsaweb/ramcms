@@ -6,6 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppSidebar } from '@/components/layout/app-sidebar';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -51,6 +52,9 @@ export function DashboardLayout({ children, user, breadcrumbs }: DashboardLayout
                 </BreadcrumbList>
               </Breadcrumb>
             )}
+            <div className="ml-auto flex items-center gap-2">
+              <ThemeToggle />
+            </div>
           </header>
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
             <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min p-4 md:p-6 mt-5">
