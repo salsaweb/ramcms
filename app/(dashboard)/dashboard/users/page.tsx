@@ -3,6 +3,15 @@ import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { getUsers } from '@/app/actions/users';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 
 export default async function UsersPage() {
   await requirePermissionPage(PERMISSIONS.USERS_READ);
@@ -12,8 +21,8 @@ export default async function UsersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Users</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="text-3xl font-bold">Users</h1>
+        <p className="mt-2 text-muted-foreground">
           Manage user accounts and permissions
         </p>
       </div>
@@ -37,42 +46,30 @@ export default async function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Verified
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Last Login
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className='text-left text-gray-500 text-xs font-medium uppercase tracking-wider'>Name</TableHead>
+                    <TableHead className='text-left text-gray-500 text-xs font-medium uppercase tracking-wider'>Email</TableHead>
+                    <TableHead className='text-left text-gray-500 text-xs font-medium uppercase tracking-wider'>Status</TableHead>
+                    <TableHead className='text-left text-gray-500 text-xs font-medium uppercase tracking-wider'>Verified</TableHead>
+                    <TableHead className='text-left text-gray-500 text-xs font-medium uppercase tracking-wider'>Last Login</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {users.map((user: any) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <Link
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <Link
                           href={`/dashboard/users/${user.id}`}
                           className="text-sm font-medium text-primary hover:underline"
                         >
                           {user.name}
                         </Link>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{user.email}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <span
                           className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                             user.is_active
                               ? 'bg-green-100 text-green-800'
@@ -81,9 +78,9 @@ export default async function UsersPage() {
                         >
                           {user.is_active ? 'Active' : 'Inactive'}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
+                    </TableCell>
+                    <TableCell>
+                      <span
                           className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                             user.email_verified
                               ? 'bg-blue-100 text-blue-800'
@@ -92,16 +89,14 @@ export default async function UsersPage() {
                         >
                           {user.email_verified ? 'Verified' : 'Unverified'}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {user.last_login_at
-                          ? new Date(user.last_login_at).toLocaleDateString()
-                          : 'Never'}
-                      </td>
-                    </tr>
+                    </TableCell>
+                    <TableCell>
+                      {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString() : 'Never'}
+                    </TableCell>
+                  </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </CardContent>
         </Card>

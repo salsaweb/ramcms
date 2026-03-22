@@ -29,7 +29,7 @@ export function RoleCard({ role }: RoleCardProps) {
             />
           )}
           <div>
-            <h3 className="font-semibold text-gray-900">{role.name}</h3>
+            <h3 className="font-semibold">{role.name}</h3>
             {role.is_system && (
               <span className="text-xs text-gray-500">System Role</span>
             )}

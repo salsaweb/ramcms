@@ -52,7 +52,7 @@ export default async function SettingsPage() {
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {session?.user?.permissions?.map((permission) => (
-                <Badge key={permission} variant="secondary">
+                <Badge key={permission} variant="default">
                   {permission}
                 </Badge>
               ))}

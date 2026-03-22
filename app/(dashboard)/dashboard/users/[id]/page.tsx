@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { AssignRoleForm } from '@/components/users/assign-role-form';
 import { RemoveRoleButton } from '@/components/users/remove-role-button';
 import { UserStatusToggle } from '@/components/users/user-status-toggle';
+import { Badge } from '@/components/ui/badge';
 
 export default async function UserDetailPage({ 
   params 
@@ -55,8 +56,8 @@ export default async function UserDetailPage({
             <Button variant="outline">← Back</Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{user.name}</h1>
-            <p className="text-gray-600">{user.email}</p>
+            <h1 className="text-3xl font-bold">{user.name}</h1>
+            <p className="text-muted-foreground">{user.email}</p>
           </div>
         </div>
         <UserStatusToggle userId={user.id} isActive={user.is_active} />
@@ -70,15 +71,15 @@ export default async function UserDetailPage({
         <CardContent>
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <dt className="text-sm font-medium text-gray-500">Email</dt>
-              <dd className="mt-1 text-sm text-gray-900">{user.email}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Email</dt>
+              <dd className="mt-1 text-sm text-muted-foreground">{user.email}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Name</dt>
-              <dd className="mt-1 text-sm text-gray-900">{user.name}</dd>
+              <dt className="text-sm font-medium text-muted-foreground">Name</dt>
+              <dd className="mt-1 text-sm text-muted-foreground">{user.name}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Status</dt>
+              <dt className="text-sm font-medium text-muted-foreground">Status</dt>
               <dd className="mt-1">
                 <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
                   user.is_active
@@ -90,8 +91,8 @@ export default async function UserDetailPage({
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Member Since</dt>
-              <dd className="mt-1 text-sm text-gray-900">
+              <dt className="text-sm font-medium text-muted-foreground">Member Since</dt>
+              <dd className="mt-1 text-sm text-muted-foreground">
                 {new Date(user.created_at).toLocaleDateString()}
               </dd>
             </div>
@@ -118,7 +119,7 @@ export default async function UserDetailPage({
                   <div>
                     <div className="font-medium">{role.name}</div>
                     {role.description && (
-                      <div className="text-sm text-gray-500">{role.description}</div>
+                      <div className="text-sm text-muted-foreground">{role.description}</div>
                     )}
                   </div>
                   <RemoveRoleButton userId={user.id} roleId={role.id} roleName={role.name} />
@@ -126,7 +127,7 @@ export default async function UserDetailPage({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-500">No roles assigned</p>
+            <p className="text-sm text-muted-foreground">No roles assigned</p>
           )}
 
           {availableToAssign && availableToAssign.length > 0 && (
@@ -140,7 +141,7 @@ export default async function UserDetailPage({
       {/* Permissions Card */}
       <Card>
         <CardHeader>
-          <CardTitle>Effective Permissions</CardTitle>
+          <CardTitle>Effective Permissions ({user.permissions?.length || 0})</CardTitle>
           <CardDescription>
             All permissions this user has through their assigned roles
           </CardDescription>
@@ -149,23 +150,14 @@ export default async function UserDetailPage({
           {user.permissions && user.permissions.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {user.permissions.map((perm: { permission_name: string }) => (
-                <span
-                key={perm.permission_name}
-                className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
-              >
-                {perm.permission_name}
-              </span>
+                <Badge key={perm.permission_name} variant="default">
+                  {perm.permission_name}
+                </Badge>
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-500">No permissions</p>
+            <p className="text-sm text-muted-foreground">No permissions</p>
           )}
-          
-          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
-            <p className="text-sm text-blue-800">
-              <strong>Total Permissions:</strong> {user.permissions?.length || 0}
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>
