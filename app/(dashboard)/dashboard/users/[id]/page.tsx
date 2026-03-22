@@ -96,6 +96,12 @@ export default async function UserDetailPage({
                 {new Date(user.created_at).toLocaleDateString()}
               </dd>
             </div>
+            <div>
+              <dt className="text-sm font-medium text-muted-foreground">User ID</dt>
+              <dd className="mt-1 text-sm text-muted-foreground">
+                {user.id}
+              </dd>
+            </div>
           </dl>
         </CardContent>
       </Card>
