@@ -202,6 +202,21 @@ export const PERMISSIONS = {
   CATEGORIES_MANAGE: 'categories.manage',
   TAGS_MANAGE: 'tags.manage',
 
+  // Media
+  MEDIA_ACCESS: 'media.access',
+  
+  // Tracks
+  TRACKS_CREATE: 'tracks.create',
+  TRACKS_READ: 'tracks.read',
+  TRACKS_UPDATE: 'tracks.update',
+  TRACKS_DELETE: 'tracks.delete',
+  
+  // Playlists
+  PLAYLISTS_CREATE: 'playlists.create',
+  PLAYLISTS_READ: 'playlists.read',
+  PLAYLISTS_UPDATE: 'playlists.update',
+  PLAYLISTS_DELETE: 'playlists.delete',
+
   // System
   SETTINGS_VIEW: 'settings.view',
   SETTINGS_MANAGE: 'settings.manage',

@@ -14,6 +14,7 @@ import {
   Shield,
   Settings,
   ChevronDown,
+  Music,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -107,6 +108,29 @@ const navItems: NavItem[] = [
         title: 'Analytics',
         href: '/dashboard/crm/analytics',
         permission: 'crm.analytics',
+      },
+    ],
+  },
+  {
+    title: 'Media',
+    href: '/dashboard/media',
+    icon: Music,
+    permission: 'media.access',
+    items: [
+      {
+        title: 'Tracks',
+        href: '/dashboard/media/tracks',
+        permission: 'media.access',
+      },
+      {
+        title: 'Artists',
+        href: '/dashboard/media/artists',
+        permission: 'media.access',
+      },
+      {
+        title: 'Playlists',
+        href: '/dashboard/media/playlists',
+        permission: 'playlists.read',
       },
     ],
   },
