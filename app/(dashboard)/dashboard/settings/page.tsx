@@ -2,10 +2,23 @@ import { requirePermissionPage, getSession } from '@/lib/auth/session';
 import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { getSettings } from '@/app/actions/settings';
+import { getAllRoles } from '@/app/actions/user-management';
+import { SystemSettingsForm } from '@/components/settings/system-settings-form';
 
 export default async function SettingsPage() {
   await requirePermissionPage(PERMISSIONS.SETTINGS_VIEW);
   const session = await getSession();
+  const canManageSettings = session?.user?.permissions?.includes(PERMISSIONS.SETTINGS_MANAGE);
+
+  let settingsData: any = [];
+  let rolesData: any = [];
+
+  if (canManageSettings) {
+    const [s, r] = await Promise.all([getSettings(), getAllRoles()]);
+    settingsData = s.success ? s.settings : [];
+    rolesData = r.success ? r.roles : [];
+  }
 
   return (
     <div className="space-y-6">
@@ -110,6 +123,12 @@ export default async function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {canManageSettings && (
+          <div className="pt-4">
+            <SystemSettingsForm settings={settingsData} roles={rolesData} />
+          </div>
+        )}
       </div>
     </div>
   );

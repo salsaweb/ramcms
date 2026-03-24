@@ -19,6 +19,7 @@
     "db:api-authentication": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/009_api_authentication.sql'",
     "db:migrate:media-management": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/010_media_management.sql'",
     "db:migrate:practitioners": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/011_practitioners_schema.sql'",
+    "db:migrate:settings": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/013_system_settings.sql'",
     "db:grant-api-permissionsns": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f scripts/grant-api-permissions.sql'",
     "db:seed:initial-data": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/001_initial_data.sql'",
     "db:seed:crm-data": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/002_crm_data.sql'",

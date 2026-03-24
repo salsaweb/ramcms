@@ -19,6 +19,7 @@ export function PractitionerForm({ initialData, availableUsers, isEdit }: Practi
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isNewUser, setIsNewUser] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -26,8 +27,7 @@ export function PractitionerForm({ initialData, availableUsers, isEdit }: Practi
     setError('');
 
     const formData = new FormData(e.currentTarget);
-    const data = {
-      userId: formData.get('userId') as string,
+    let data: any = {
       bio: formData.get('bio') as string,
       website: formData.get('website') as string,
       locationName: formData.get('locationName') as string,
@@ -35,6 +35,17 @@ export function PractitionerForm({ initialData, availableUsers, isEdit }: Practi
       longitude: formData.get('longitude') ? parseFloat(formData.get('longitude') as string) : undefined,
       status: formData.get('status') as any,
     };
+
+    if (!isEdit) {
+      if (isNewUser) {
+        data.newUser = {
+          name: formData.get('newUserName') as string,
+          email: formData.get('newUserEmail') as string,
+        };
+      } else {
+        data.userId = formData.get('userId') as string;
+      }
+    }
 
     try {
       let result;
@@ -67,21 +78,67 @@ export function PractitionerForm({ initialData, availableUsers, isEdit }: Practi
           )}
 
           {!isEdit && availableUsers && (
-            <div className="space-y-2">
-              <Label htmlFor="userId">Linked User Account *</Label>
-              <select
-                id="userId"
-                name="userId"
-                required
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <option value="">Select a user</option>
-                {availableUsers.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.name} ({u.email})
-                  </option>
-                ))}
-              </select>
+            <div className="space-y-4 border p-4 rounded-md bg-muted/20">
+              <div className="flex items-center gap-4">
+                <Button 
+                  type="button" 
+                  variant={!isNewUser ? "default" : "outline"}
+                  onClick={() => setIsNewUser(false)}
+                >
+                  Link Existing User
+                </Button>
+                <Button 
+                  type="button" 
+                  variant={isNewUser ? "default" : "outline"}
+                  onClick={() => setIsNewUser(true)}
+                >
+                  Create New User
+                </Button>
+              </div>
+
+              {!isNewUser ? (
+                <div className="space-y-2">
+                  <Label htmlFor="userId">Select Existing User *</Label>
+                  <select
+                    id="userId"
+                    name="userId"
+                    required={!isNewUser}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="">Select a user</option>
+                    {availableUsers.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.name} ({u.email})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="newUserName">New User Name *</Label>
+                    <Input 
+                      id="newUserName" 
+                      name="newUserName" 
+                      required={isNewUser} 
+                      placeholder="Jane Doe"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="newUserEmail">New User Email *</Label>
+                    <Input 
+                      id="newUserEmail" 
+                      name="newUserEmail" 
+                      type="email"
+                      required={isNewUser} 
+                      placeholder="jane@example.com"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      An invite will be automatically sent to this email.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

@@ -2,6 +2,7 @@ import { requirePermissionPage } from '@/lib/auth/session';
 import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { getPractitionerById } from '@/app/actions/practitioners';
 import { PractitionerForm } from '@/components/practitioners/practitioner-form';
+import { ResendInviteButton } from '@/components/practitioners/resend-invite-button';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -39,6 +40,9 @@ export default async function EditPractitionerPage({
         <div>
           <h1 className="text-3xl font-bold">{practitioner.users?.name || 'Unknown'}</h1>
           <p className="text-muted-foreground">Practitioner Profile</p>
+        </div>
+        <div className="ml-auto">
+          <ResendInviteButton practitionerId={practitioner.id} />
         </div>
       </div>
 
