@@ -31,7 +31,7 @@ export default async function RoleDetailPage({
   }
 
   const role = roleResult.role;
-  const allPermissions = permissionsResult.success ? permissionsResult.permissions : [];
+  const allPermissions = (permissionsResult.success ? permissionsResult.permissions : []) || [];
 
   // Extract current permission IDs
   const currentPermissions = role.role_permissions?.map((rp: any) => rp.permission) || [];

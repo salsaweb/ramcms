@@ -5,7 +5,7 @@ import { getUserPlaylists } from '@/app/actions/media/playlists';
 import { getArtists } from '@/app/actions/media/artists';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Music, Users, ListMusic, TrendingUp } from 'lucide-react';
+import { Music, Users, ListMusic } from 'lucide-react';
 import Link from 'next/link';
 import { ImportTrackDialog } from '@/components/media/import-track-dialog';
 

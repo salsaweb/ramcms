@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Music, Clock, Zap, TrendingUp, Play, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Music, Clock, Zap, Play, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { formatDuration } from '@/lib/spotify/client';
 import { AddRelationDialog } from '@/components/media/add-relation-dialog';

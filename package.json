@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "generate-api-key": "node ./scripts/generate-api-key.ts",
     "db:migrate:initial-schema": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/001_initial_schema.sql'",
     "db:migrate:crm-schema": "dotenv -e .env -- sh -c  'psql \"$DATABASE_URL\" -f database/migrations/002_crm_schema.sql'",
@@ -51,17 +51,20 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^16.2.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.10.5",
     "@types/react": "^19.2.3",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.57.2",
+    "@typescript-eslint/parser": "^8.57.2",
     "autoprefixer": "^10.4.20",
     "dotenv-cli": "^11.0.0",
-    "eslint": "^9.18.0",
+    "eslint": "^9.39.4",
     "eslint-config-next": "^15.1.6",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.2"
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=18.0.0",

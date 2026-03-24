@@ -1,5 +1,5 @@
 import { getSession } from '@/lib/auth/session';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 
 async function getDashboardStats() {

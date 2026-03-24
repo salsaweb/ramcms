@@ -7,7 +7,7 @@
 'use server';
 
 import { supabaseAdmin } from '@/lib/supabase/admin';
-import { requirePermission, requireAuth } from '@/lib/rbac/guards';
+import { requirePermission } from '@/lib/rbac/guards';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 

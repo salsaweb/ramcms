@@ -7,7 +7,7 @@ import { MergeRuleBuilder } from '@/components/crm/merge-rule-builder';
 import { MergeRulesList } from '@/components/crm/merge-rules-list';
 
 async function getMergeRules() {
-  const { data, error } = await supabaseAdmin
+  const { data } = await supabaseAdmin
     .from('duplicate_merge_rules')
     .select('*')
     .order('created_at', { ascending: false });

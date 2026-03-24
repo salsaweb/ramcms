@@ -34,10 +34,17 @@ async function getUserPermissions(userId: string): Promise<string[]> {
   // Extract permission names from nested structure
   const permissions: string[] = [];
   for (const userRole of data) {
-    if (userRole.role?.role_permissions) {
-      for (const rp of userRole.role.role_permissions) {
-        if (rp.permission?.name) {
-          permissions.push(rp.permission.name);
+    const roleArray = Array.isArray(userRole.role) ? userRole.role : [userRole.role];
+    
+    for (const role of roleArray) {
+      if (role?.role_permissions) {
+        for (const rp of role.role_permissions) {
+          const permissionArray = Array.isArray(rp.permission) ? rp.permission : [rp.permission];
+          for (const perm of permissionArray) {
+            if (perm?.name) {
+              permissions.push(perm.name);
+            }
+          }
         }
       }
     }
@@ -101,8 +108,7 @@ async function authenticateWithApiKey(apiKey: string): Promise<AuthResult> {
     .from('api_keys')
     .update({ last_used_at: new Date().toISOString() })
     .eq('id', apiKeyRecord.id)
-    .then(() => {})
-    .catch(console.error);
+    .then(() => {});
 
   return {
     authenticated: true,

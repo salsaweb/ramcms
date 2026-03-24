@@ -116,7 +116,11 @@ export function DealForm({ contacts, companies, initialData }: DealFormProps) {
     setLoading(true);
     setError(null);
 
-    const result = await createDeal(formData);
+    const result = await createDeal({
+      ...formData,
+      amount: typeof formData.amount === 'string' ? parseFloat(formData.amount) : formData.amount,
+      probability: typeof formData.probability === 'string' ? parseFloat(formData.probability) : formData.probability,
+    });
 
     if (result.success) {
       if (result.deal) {

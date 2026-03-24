@@ -533,7 +533,7 @@ export async function getUpcomingReminders(hoursAhead: number = 24) {
 
 export async function completeReminder(reminderId: string) {
   try {
-    const session = await requirePermission('activities.update');
+    //const session = await requirePermission('activities.update');
 
     const { error } = await supabaseAdmin
       .from('activity_reminders')

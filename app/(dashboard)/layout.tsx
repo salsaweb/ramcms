@@ -9,7 +9,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       user={{
         name: user.name || 'User',
         email: user.email || 'user@example.com',
-        avatar: user.image,
+        avatar: user.avatarUrl ?? undefined,
       }}
     >
       {children}

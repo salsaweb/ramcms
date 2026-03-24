@@ -92,15 +92,21 @@ export function CompanyForm({ initialData }: CompanyFormProps) {
     setLoading(true);
     setError(null);
 
+    const cleanData = {
+      ...formData,
+      employeeCount: formData.employeeCount === '' ? '' : Number(formData.employeeCount),
+      annualRevenue: formData.annualRevenue === '' ? '' : Number(formData.annualRevenue),
+    };
+
     const result = initialData?.id
-      ? await updateCompany({ id: initialData.id, ...formData })
-      : await createCompany(formData);
+      ? await updateCompany({ id: initialData.id, ...cleanData } as Parameters<typeof updateCompany>[0])
+      : await createCompany(cleanData as Parameters<typeof createCompany>[0]);
 
     if (result.success) {
-      if (!initialData?.id && result.company) {
-        router.push(`/dashboard/crm/companies/${result.company.id}`);
-      } else {
-        router.push(`/dashboard/crm/companies/${initialData?.id}`);
+      if (!initialData?.id && 'company' in result && result.company) {
+        router.push(`/dashboard/crm/companies/${(result.company as { id: string }).id}`);
+      } else if (initialData?.id) {
+        router.push(`/dashboard/crm/companies/${initialData.id}`);
       }
     } else {
       setError(result.error || 'Failed to save company');

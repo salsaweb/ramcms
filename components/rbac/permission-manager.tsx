@@ -17,7 +17,6 @@ interface PermissionManagerProps {
 
 export function PermissionManager({
   roleId,
-  roleName,
   isSystemRole,
   currentPermissionIds,
   allPermissions,

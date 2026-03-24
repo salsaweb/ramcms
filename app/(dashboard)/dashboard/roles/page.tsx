@@ -14,8 +14,8 @@ export default async function RolesPage() {
     getRoleTemplates(),
   ]);
 
-  const roles = rolesResult.success ? rolesResult.roles : [];
-  const templates = templatesResult.success ? templatesResult.templates : [];
+  const roles = rolesResult.success && rolesResult.roles ? rolesResult.roles : [];
+  const templates = templatesResult.success && templatesResult.templates ? templatesResult.templates : [];
 
   const systemRoles = roles.filter((r: any) => r.is_system);
   const customRoles = roles.filter((r: any) => !r.is_system);

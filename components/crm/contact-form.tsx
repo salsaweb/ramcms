@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createContact, updateContact } from '@/app/actions/crm/contacts';
 import { Button } from '@/components/ui/button';
@@ -118,8 +118,8 @@ export function ContactForm({ companies, customFields = [], initialData }: Conta
       : await createContact(formData);
 
     if (result.success) {
-      if (!initialData?.id && result.contact) {
-        router.push(`/dashboard/crm/contacts/${result.contact.id}`);
+      if (!initialData?.id && formData.id) {
+        router.push(`/dashboard/crm/contacts/${formData.id}`);
       } else {
         router.push(`/dashboard/crm/contacts/${initialData?.id}`);
       }

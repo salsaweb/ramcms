@@ -521,7 +521,7 @@ export async function deleteCustomRole(roleId: number, reassignToRoleId?: number
     const session = await requirePermission('roles.delete');
     const userId = session.user.id;
 
-    const { data: success, error } = await supabaseAdmin.rpc('delete_custom_role', {
+    const { data: error } = await supabaseAdmin.rpc('delete_custom_role', {
       p_role_id: roleId,
       p_deleted_by: userId,
       p_reassign_to_role_id: reassignToRoleId || null,

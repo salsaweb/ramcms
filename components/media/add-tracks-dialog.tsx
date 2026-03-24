@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Search, Music, Loader2, Plus, Check } from 'lucide-react';
+import { Search, Music, Loader2, Plus } from 'lucide-react';
 import { formatDuration } from '@/lib/spotify/client';
 import { useToast } from '@/hooks/use-toast';
 

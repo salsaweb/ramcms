@@ -7,7 +7,7 @@ import { CustomFieldsList } from '@/components/crm/custom-fields-list';
 import { CustomFieldBuilder } from '@/components/crm/custom-field-builder';
 
 async function getCustomFields() {
-  const { data, error } = await supabaseAdmin
+  const { data } = await supabaseAdmin
     .from('contact_custom_fields')
     .select('*')
     .order('display_order', { ascending: true });

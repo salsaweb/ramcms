@@ -9,7 +9,7 @@ export default async function PlaylistsPage() {
   const user = await getCurrentUser();
 
   const result = await getUserPlaylists(user.id);
-  const playlists = result.success ? result.playlists : [];
+  const playlists = result.success ? result.playlists ?? [] : [];
 
   return (
     <div className="space-y-6">

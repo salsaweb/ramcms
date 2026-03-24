@@ -11,7 +11,7 @@ interface DeleteTaskButtonProps {
   taskTitle: string;
 }
 
-export function DeleteTaskButton({ taskId, taskTitle }: DeleteTaskButtonProps) {
+export function DeleteTaskButton({ taskId }: DeleteTaskButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

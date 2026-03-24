@@ -21,8 +21,8 @@ export default async function TasksPage() {
   // Group pending tasks by priority
   const urgentTasks = pendingTasks.filter((t: any) => t.priority === 'urgent');
   const highTasks = pendingTasks.filter((t: any) => t.priority === 'high');
-  const mediumTasks = pendingTasks.filter((t: any) => t.priority === 'medium');
-  const lowTasks = pendingTasks.filter((t: any) => t.priority === 'low');
+  //const mediumTasks = pendingTasks.filter((t: any) => t.priority === 'medium');
+  //const lowTasks = pendingTasks.filter((t: any) => t.priority === 'low');
 
   return (
     <div className="space-y-6">

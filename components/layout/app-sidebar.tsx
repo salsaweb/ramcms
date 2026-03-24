@@ -6,10 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   LayoutDashboard,
-  Users,
-  Building2,
   Briefcase,
-  CheckSquare,
   BarChart3,
   Shield,
   Settings,

@@ -88,9 +88,7 @@ export function TaskForm({ contacts, companies, deals, users, initialData }: Tas
       : await createTask(formData);
 
     if (result.success) {
-      if (!initialData?.id && result.task) {
-        router.push(`/dashboard/crm/tasks/${result.task.id}`);
-      } else if (initialData?.id) {
+      if (initialData?.id) {
         router.push(`/dashboard/crm/tasks/${initialData.id}`);
       } else {
         router.push('/dashboard/crm/tasks');

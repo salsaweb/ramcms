@@ -1,5 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-const crypto = require('crypto');
+const cryptoModule = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
@@ -16,11 +16,11 @@ function loadEnv() {
   const envContent = fs.readFileSync(envPath, 'utf-8');
   const envLines = envContent.split('\n');
 
-  envLines.forEach(line => {
-    const trimmed = line.trim();
+  envLines.forEach((line: string) => {
+    const trimmed: string = line.trim();
     if (trimmed && !trimmed.startsWith('#')) {
-      const [key, ...valueParts] = trimmed.split('=');
-      const value = valueParts.join('=').replace(/^["']|["']$/g, ''); // Remove quotes
+      const [key, ...valueParts]: string[] = trimmed.split('=');
+      const value: string = valueParts.join('=').replace(/^["']|["']$/g, ''); // Remove quotes
       process.env[key.trim()] = value.trim();
     }
   });
@@ -41,24 +41,48 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function generateApiKey(userId, name, expiresInDays) {
+interface ApiKeyInsertPayload {
+  user_id: string;
+  name: string;
+  key: string;
+  expires_at: string | null;
+  is_active: boolean;
+}
+
+interface ApiKeyResponse {
+  id: string;
+  user_id: string;
+  name: string;
+  key: string;
+  expires_at: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+async function generateApiKey(
+  userId: string,
+  keyName: string,
+  expiresInDays?: number
+): Promise<ApiKeyResponse | null> {
   try {
     // Generate secure random key
-    const key = `sk_live_${crypto.randomBytes(32).toString('hex')}`;
+    const key = `sk_live_${cryptoModule.randomBytes(32).toString('hex')}`;
 
     const expiresAt = expiresInDays
       ? new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000).toISOString()
       : null;
 
+    const payload: ApiKeyInsertPayload = {
+      user_id: userId,
+      name: keyName,
+      key,
+      expires_at: expiresAt,
+      is_active: true,
+    };
+
     const { data, error } = await supabase
       .from('api_keys')
-      .insert({
-        user_id: userId,
-        name,
-        key,
-        expires_at: expiresAt,
-        is_active: true,
-      })
+      .insert(payload)
       .select()
       .single();
 
@@ -85,7 +109,7 @@ async function generateApiKey(userId, name, expiresInDays) {
 
 // Parse command line arguments
 const userId = process.argv[2];
-const name = process.argv[3] || 'API Key';
+const keyName = process.argv[3] || 'API Key';
 const expiresInDays = process.argv[4] ? parseInt(process.argv[4]) : undefined;
 
 if (!userId) {
@@ -95,4 +119,4 @@ if (!userId) {
 }
 
 // Run
-generateApiKey(userId, name, expiresInDays).then(() => process.exit(0));
+generateApiKey(userId, keyName, expiresInDays).then(() => process.exit(0));

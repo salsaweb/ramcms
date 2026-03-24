@@ -57,14 +57,14 @@ export async function importTrackFromSpotify(
     const audioFeatures = await getSpotifyAudioFeatures(parsed.id);
 
     // 4. Get or create artist
-    let artistId: number | null = null;
+    let artistId: string | null = null;
     if (trackData.artists && trackData.artists.length > 0) {
       const mainArtist = trackData.artists[0];
       artistId = await getOrCreateArtist(mainArtist.id);
     }
 
     // 5. Get or create album
-    let albumId: number | null = null;
+    let albumId: string | null = null;
     if (trackData.album) {
       albumId = await getOrCreateAlbum(trackData.album.id);
     }
