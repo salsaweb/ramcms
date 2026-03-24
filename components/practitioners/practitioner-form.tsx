@@ -1,0 +1,171 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
+import { createPractitioner, updatePractitioner } from '@/app/actions/practitioners';
+
+interface PractitionerFormProps {
+  initialData?: any;
+  availableUsers?: any[];
+  isEdit?: boolean;
+}
+
+export function PractitionerForm({ initialData, availableUsers, isEdit }: PractitionerFormProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      userId: formData.get('userId') as string,
+      bio: formData.get('bio') as string,
+      website: formData.get('website') as string,
+      locationName: formData.get('locationName') as string,
+      latitude: formData.get('latitude') ? parseFloat(formData.get('latitude') as string) : undefined,
+      longitude: formData.get('longitude') ? parseFloat(formData.get('longitude') as string) : undefined,
+      status: formData.get('status') as any,
+    };
+
+    try {
+      let result;
+      if (isEdit) {
+        result = await updatePractitioner({ id: initialData?.id, ...data });
+      } else {
+        result = await createPractitioner(data);
+      }
+
+      if (result.success) {
+        router.push('/dashboard/practitioners');
+      } else {
+        setError(result.error || 'Something went wrong');
+      }
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <Card>
+      <CardContent className="pt-6">
+        <form onSubmit={onSubmit} className="space-y-4">
+          {error && (
+            <div className="bg-destructive/15 text-destructive p-3 rounded-md text-sm">
+              {error}
+            </div>
+          )}
+
+          {!isEdit && availableUsers && (
+            <div className="space-y-2">
+              <Label htmlFor="userId">Linked User Account *</Label>
+              <select
+                id="userId"
+                name="userId"
+                required
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="">Select a user</option>
+                {availableUsers.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name} ({u.email})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="bio">Biography</Label>
+            <Textarea 
+              id="bio" 
+              name="bio" 
+              defaultValue={initialData?.bio || ''} 
+              rows={4} 
+              placeholder="Practitioner's background and experience..."
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="website">Website URL</Label>
+            <Input 
+              id="website" 
+              name="website" 
+              type="url" 
+              defaultValue={initialData?.website || ''} 
+              placeholder="https://example.com"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="locationName">Location Name</Label>
+              <Input 
+                id="locationName" 
+                name="locationName" 
+                defaultValue={initialData?.location_name || ''} 
+                placeholder="e.g. Tulum, MX"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="latitude">Latitude</Label>
+              <Input 
+                id="latitude" 
+                name="latitude" 
+                type="number" 
+                step="any"
+                defaultValue={initialData?.latitude || ''} 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="longitude">Longitude</Label>
+              <Input 
+                id="longitude" 
+                name="longitude" 
+                type="number" 
+                step="any"
+                defaultValue={initialData?.longitude || ''} 
+              />
+            </div>
+          </div>
+
+          {isEdit && (
+            <div className="space-y-2">
+              <Label htmlFor="status">Status</Label>
+              <select
+                id="status"
+                name="status"
+                defaultValue={initialData?.status || 'pending'}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="pending">Pending</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="suspended">Suspended</option>
+              </select>
+            </div>
+          )}
+
+          <div className="pt-4 flex justify-end">
+            <Button type="button" variant="outline" className="mr-2" onClick={() => router.back()}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Saving...' : isEdit ? 'Save Changes' : 'Create Practitioner'}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}

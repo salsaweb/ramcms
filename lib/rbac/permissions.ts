@@ -217,6 +217,12 @@ export const PERMISSIONS = {
   PLAYLISTS_UPDATE: 'playlists.update',
   PLAYLISTS_DELETE: 'playlists.delete',
 
+  // Practitioners
+  PRACTITIONERS_CREATE: 'practitioners.create',
+  PRACTITIONERS_READ: 'practitioners.read',
+  PRACTITIONERS_UPDATE: 'practitioners.update',
+  PRACTITIONERS_DELETE: 'practitioners.delete',
+
   // System
   SETTINGS_VIEW: 'settings.view',
   SETTINGS_MANAGE: 'settings.manage',

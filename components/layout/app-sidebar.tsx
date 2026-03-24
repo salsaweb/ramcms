@@ -12,6 +12,7 @@ import {
   Settings,
   ChevronDown,
   Music,
+  Users,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -129,6 +130,23 @@ const navItems: NavItem[] = [
         href: '/dashboard/media/playlists',
         permission: 'playlists.read',
       },
+    ],
+  },
+  {
+    title: 'Community',
+    href: '/dashboard/practitioners',
+    icon: Users,
+    items: [
+      {
+        title: 'Practitioners',
+        href: '/dashboard/practitioners',
+        permission: 'practitioners.read',
+      },
+      {
+        title: 'Certifications',
+        href: '/dashboard/certifications',
+        permission: 'certifications.read',
+      }
     ],
   },
   {
