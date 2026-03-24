@@ -1,4 +1,4 @@
-# 🏢 Enterprise CMS - Production-Ready Authentication & RBAC System
+# 🏢 Ram CMS - Production-Ready Authentication & RBAC System
 
 A complete Next.js CMS with enterprise-grade authentication and role-based access control (RBAC).
 
