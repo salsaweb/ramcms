@@ -19,6 +19,12 @@ const createPractitionerSchema = z.object({
   locationName: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
+  phone: z.string().optional(),
+  instagram: z.string().optional(),
+  twitterHandle: z.string().optional(),
+  facebookUrl: z.string().url('Invalid Facebook URL').optional().or(z.literal('')),
+  youtube: z.string().url('Invalid YouTube URL').optional().or(z.literal('')),
+  linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
 }).refine(data => data.userId || data.newUser, {
   message: "Must provide either existing userId or new user details"
 });
@@ -30,6 +36,12 @@ const updatePractitionerSchema = z.object({
   locationName: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
+  phone: z.string().optional(),
+  instagram: z.string().optional(),
+  twitterHandle: z.string().optional(),
+  facebookUrl: z.string().url('Invalid Facebook URL').optional().or(z.literal('')),
+  youtube: z.string().url('Invalid YouTube URL').optional().or(z.literal('')),
+  linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
   status: z.enum(['pending', 'active', 'inactive', 'suspended']).optional(),
 });
 
@@ -183,6 +195,12 @@ export async function createPractitioner(formData: {
   locationName?: string;
   latitude?: number;
   longitude?: number;
+  phone?: string;
+  instagram?: string;
+  twitterHandle?: string;
+  facebookUrl?: string;
+  youtube?: string;
+  linkedinUrl?: string;
 }) {
   try {
     const session = await requirePermission(PERMISSIONS.PRACTITIONERS_CREATE);
@@ -268,6 +286,14 @@ export async function createPractitioner(formData: {
         location_name: input.locationName,
         latitude: input.latitude,
         longitude: input.longitude,
+        phone: input.phone,
+        social_links: {
+          instagram: input.instagram || undefined,
+          twitter_handle: input.twitterHandle || undefined,
+          facebook_url: input.facebookUrl || undefined,
+          youtube: input.youtube || undefined,
+          linkedin_url: input.linkedinUrl || undefined,
+        }
       })
       .select()
       .single();
@@ -314,6 +340,12 @@ export async function updatePractitioner(formData: {
   locationName?: string;
   latitude?: number;
   longitude?: number;
+  phone?: string;
+  instagram?: string;
+  twitterHandle?: string;
+  facebookUrl?: string;
+  youtube?: string;
+  linkedinUrl?: string;
   status?: 'pending' | 'active' | 'inactive' | 'suspended';
 }) {
   try {
@@ -335,6 +367,30 @@ export async function updatePractitioner(formData: {
     if (updates.locationName !== undefined) {
       cleanUpdates.location_name = updates.locationName;
       delete cleanUpdates.locationName;
+    }
+
+    // Build social links
+    if (
+      updates.instagram !== undefined ||
+      updates.twitterHandle !== undefined ||
+      updates.facebookUrl !== undefined ||
+      updates.youtube !== undefined ||
+      updates.linkedinUrl !== undefined
+    ) {
+      // In a real app we might want to merge with existing DB state, but for this form we can override the whole JSON object
+      cleanUpdates.social_links = {
+        instagram: updates.instagram || undefined,
+        twitter_handle: updates.twitterHandle || undefined,
+        facebook_url: updates.facebookUrl || undefined,
+        youtube: updates.youtube || undefined,
+        linkedin_url: updates.linkedinUrl || undefined,
+      };
+      
+      delete cleanUpdates.instagram;
+      delete cleanUpdates.twitterHandle;
+      delete cleanUpdates.facebookUrl;
+      delete cleanUpdates.youtube;
+      delete cleanUpdates.linkedinUrl;
     }
 
     const { data: practitioner, error } = await supabaseAdmin

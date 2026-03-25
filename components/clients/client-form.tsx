@@ -124,6 +124,60 @@ export function ClientForm({ initialData, isEdit = false }: ClientFormProps) {
         </div>
       )}
 
+      <div className="space-y-4 pt-4 border-t">
+        <h3 className="text-sm font-semibold text-muted-foreground">Social Networks</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="instagram">Instagram Username</Label>
+            <Input
+              id="instagram"
+              name="instagram"
+              defaultValue={initialData?.custom_fields?.instagram || ''}
+              placeholder="@username"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="twitterHandle">X (Twitter) Handle</Label>
+            <Input
+              id="twitterHandle"
+              name="twitterHandle"
+              defaultValue={initialData?.twitter_handle || ''}
+              placeholder="@username"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="facebookUrl">Facebook URL</Label>
+            <Input
+              id="facebookUrl"
+              name="facebookUrl"
+              type="url"
+              defaultValue={initialData?.facebook_url || ''}
+              placeholder="https://facebook.com/..."
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="youtube">YouTube URL</Label>
+            <Input
+              id="youtube"
+              name="youtube"
+              type="url"
+              defaultValue={initialData?.custom_fields?.youtube || ''}
+              placeholder="https://youtube.com/..."
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="linkedinUrl">LinkedIn URL</Label>
+            <Input
+              id="linkedinUrl"
+              name="linkedinUrl"
+              type="url"
+              defaultValue={initialData?.linkedin_url || ''}
+              placeholder="https://linkedin.com/in/..."
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="tags">Tags (comma-separated)</Label>
         <Input

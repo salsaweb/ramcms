@@ -16,6 +16,11 @@ const createClientSchema = z.object({
   phone: z.string().optional(),
   notes: z.string().optional(),
   tags: z.string().optional(), // We'll split by comma
+  linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
+  twitterHandle: z.string().optional(),
+  facebookUrl: z.string().url('Invalid Facebook URL').optional().or(z.literal('')),
+  instagram: z.string().optional(),
+  youtube: z.string().url('Invalid YouTube URL').optional().or(z.literal('')),
   createAccount: z.boolean().default(false),
 });
 
@@ -27,6 +32,11 @@ const updateClientSchema = z.object({
   phone: z.string().optional(),
   notes: z.string().optional(),
   tags: z.string().optional(),
+  linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
+  twitterHandle: z.string().optional(),
+  facebookUrl: z.string().url('Invalid Facebook URL').optional().or(z.literal('')),
+  instagram: z.string().optional(),
+  youtube: z.string().url('Invalid YouTube URL').optional().or(z.literal('')),
 });
 
 /**
@@ -44,6 +54,11 @@ export async function createClient(formData: FormData) {
       phone: formData.get('phone') as string,
       notes: formData.get('notes') as string,
       tags: formData.get('tags') as string,
+      linkedinUrl: formData.get('linkedinUrl') as string,
+      twitterHandle: formData.get('twitterHandle') as string,
+      facebookUrl: formData.get('facebookUrl') as string,
+      instagram: formData.get('instagram') as string,
+      youtube: formData.get('youtube') as string,
       createAccount: formData.get('createAccount') === 'true',
     };
 
@@ -124,7 +139,14 @@ export async function createClient(formData: FormData) {
         user_id: newUserId,
         contact_type: 'customer',
         tags: tagsArray,
-        custom_fields: input.notes ? { notes: input.notes } : {},
+        linkedin_url: input.linkedinUrl || null,
+        twitter_handle: input.twitterHandle || null,
+        facebook_url: input.facebookUrl || null,
+        custom_fields: { 
+          ...(input.notes ? { notes: input.notes } : {}),
+          ...(input.instagram ? { instagram: input.instagram } : {}),
+          ...(input.youtube ? { youtube: input.youtube } : {})
+        },
       })
       .select()
       .single();
@@ -220,6 +242,11 @@ export async function updateClient(formData: FormData) {
       phone: formData.get('phone') as string,
       notes: formData.get('notes') as string,
       tags: formData.get('tags') as string,
+      linkedinUrl: formData.get('linkedinUrl') as string,
+      twitterHandle: formData.get('twitterHandle') as string,
+      facebookUrl: formData.get('facebookUrl') as string,
+      instagram: formData.get('instagram') as string,
+      youtube: formData.get('youtube') as string,
     };
 
     const validated = updateClientSchema.safeParse(inputData);
@@ -251,7 +278,14 @@ export async function updateClient(formData: FormData) {
         email: input.email || null,
         phone: input.phone || null,
         tags: tagsArray,
-        custom_fields: input.notes ? { notes: input.notes } : {},
+        linkedin_url: input.linkedinUrl || null,
+        twitter_handle: input.twitterHandle || null,
+        facebook_url: input.facebookUrl || null,
+        custom_fields: { 
+          ...(input.notes ? { notes: input.notes } : {}),
+          ...(input.instagram ? { instagram: input.instagram } : {}),
+          ...(input.youtube ? { youtube: input.youtube } : {})
+        },
       })
       .eq('id', input.id);
 
