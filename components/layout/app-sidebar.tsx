@@ -143,6 +143,11 @@ const navItems: NavItem[] = [
         permission: 'practitioners.read',
       },
       {
+        title: 'My Clients',
+        href: '/dashboard/clients',
+        permission: 'dashboard.access',
+      },
+      {
         title: 'Certifications',
         href: '/dashboard/certifications',
         permission: 'certifications.read',

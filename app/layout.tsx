@@ -4,14 +4,14 @@ import { SessionProvider } from '@/app/providers/session-provider';
 import './globals.css';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 
-const outfit = Outfit({ 
+const outfit = Outfit({
   subsets: ['latin'],
   variable: '--font-sans',
 });
 
 export const metadata: Metadata = {
-  title: 'Enterprise CMS',
-  description: 'Production-ready CMS with RBAC authentication',
+  title: 'Janzu Portal',
+  description: 'Janzu Portal',
 };
 
 export default function RootLayout({
