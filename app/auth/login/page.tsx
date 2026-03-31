@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { BarChart3, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { Shell, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 export default function LoginPage() {
@@ -53,9 +53,9 @@ export default function LoginPage() {
           {/* Logo & Title */}
           <div className="flex flex-col items-center text-center space-y-2">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <BarChart3 className="h-6 w-6" />
+              <Shell className="h-6 w-6" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">Enterprise CMS</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Janzu Portal</h1>
             <p className="text-sm text-muted-foreground">
               Sign in to access your dashboard
             </p>
@@ -139,20 +139,6 @@ export default function LoginPage() {
                   >
                     Remember me for 30 days
                   </Label>
-                </div>
-
-                {/* Demo Credentials */}
-                <div className="rounded-lg border bg-muted/50 p-3 space-y-2">
-                  <p className="text-xs font-medium flex items-center gap-2">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary text-[10px] font-bold">
-                      i
-                    </span>
-                    Demo Credentials
-                  </p>
-                  <div className="text-xs text-muted-foreground space-y-1 ml-7">
-                    <p className="font-mono">admin@cms.local</p>
-                    <p className="font-mono">Admin@123</p>
-                  </div>
                 </div>
 
                 {/* Submit Button */}

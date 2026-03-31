@@ -13,8 +13,13 @@ import {
   ChevronDown,
   Music,
   Users,
+  Clock,
+  MessageSquare,
+  Award,
   type LucideIcon,
 } from 'lucide-react';
+
+import { SignOutButton } from '@/components/auth/sign-out-button';
 
 import {
   Sidebar,
@@ -53,6 +58,7 @@ interface NavItem {
     title: string;
     href: string;
     permission?: string;
+    icon?: LucideIcon;
   }[];
 }
 
@@ -143,6 +149,11 @@ const navItems: NavItem[] = [
         permission: 'practitioners.read',
       },
       {
+        title: 'Locations',
+        href: '/dashboard/locations',
+        permission: 'locations.read',
+      },
+      {
         title: 'My Clients',
         href: '/dashboard/clients',
         permission: 'dashboard.access',
@@ -150,7 +161,20 @@ const navItems: NavItem[] = [
       {
         title: 'Certifications',
         href: '/dashboard/certifications',
+        icon: Award,
         permission: 'certifications.read',
+      },
+      {
+        title: 'Sessions',
+        href: '/dashboard/sessions',
+        icon: Clock,
+        permission: 'sessions.read',
+      },
+      {
+        title: 'Feedback',
+        href: '/dashboard/feedback',
+        icon: MessageSquare,
+        permission: 'feedback.read',
       }
     ],
   },
@@ -352,9 +376,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                   <Link href="/dashboard/settings/profile">Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/api/auth/signout">Log out</Link>
-                </DropdownMenuItem>
+                <SignOutButton />
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

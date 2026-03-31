@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin';
 import { checkPermission } from '@/lib/rbac/guards';
 import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import Link from 'next/link';
 
 async function getAdminStats() {
@@ -28,8 +29,24 @@ async function getPractitionerStats(userId: string) {
     .select('id', { count: 'exact', head: true })
     .eq('owner_id', userId);
 
+  const { data: practitioner } = await supabaseAdmin
+    .from('practitioners')
+    .select('id')
+    .eq('user_id', userId)
+    .single();
+
+  let completedSessions = 0;
+  if (practitioner) {
+     const { count } = await supabaseAdmin
+       .from('session_feedback')
+       .select('*', { count: 'exact', head: true })
+       .eq('practitioner_id', practitioner.id);
+     completedSessions = count || 0;
+  }
+
   return {
     totalClients: count || 0,
+    completedSessions
   };
 }
 
@@ -182,12 +199,22 @@ async function PractitionerDashboard({ userId }: { userId: string }) {
       
       <Card className="md:col-span-2">
         <CardHeader>
-          <CardTitle>Upcoming Sessions</CardTitle>
+          <CardTitle>Certification Progress</CardTitle>
+          <CardDescription>
+             Track your journey toward becoming a Certified Janzu Practitioner
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            No upcoming sessions scheduled.
-          </p>
+           <div className="flex justify-between text-sm font-medium mb-2">
+              <span>{stats.completedSessions} Sessions with Feedback</span>
+              <span>Goal: 50</span>
+           </div>
+           <Progress value={Math.min((stats.completedSessions / 50) * 100, 100)} className="h-2" />
+           <div className="mt-4 flex justify-end">
+              <Button asChild size="sm" variant="ghost">
+                 <Link href="/dashboard/certifications">View Details</Link>
+              </Button>
+           </div>
         </CardContent>
       </Card>
     </div>

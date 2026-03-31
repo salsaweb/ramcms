@@ -223,6 +223,29 @@ export const PERMISSIONS = {
   PRACTITIONERS_UPDATE: 'practitioners.update',
   PRACTITIONERS_DELETE: 'practitioners.delete',
 
+  // Sessions
+  SESSIONS_CREATE: 'sessions.create',
+  SESSIONS_READ: 'sessions.read',
+  SESSIONS_UPDATE: 'sessions.update',
+  SESSIONS_DELETE: 'sessions.delete',
+
+  // Feedback
+  FEEDBACK_CREATE: 'feedback.create',
+  FEEDBACK_READ: 'feedback.read',
+  FEEDBACK_UPDATE: 'feedback.update',
+  FEEDBACK_DELETE: 'feedback.delete',
+
+  // Certifications
+  CERTIFICATIONS_REQUEST: 'certifications.request',
+  CERTIFICATIONS_READ: 'certifications.read',
+  CERTIFICATIONS_MANAGE: 'certifications.manage',
+
+  // Locations
+  LOCATIONS_CREATE: 'locations.create',
+  LOCATIONS_READ: 'locations.read',
+  LOCATIONS_UPDATE: 'locations.update',
+  LOCATIONS_MANAGE: 'locations.manage',
+
   // System
   SETTINGS_VIEW: 'settings.view',
   SETTINGS_MANAGE: 'settings.manage',
