@@ -13,6 +13,7 @@ import { Shell, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Water } from '@paper-design/shaders-react';
 import { JanzuQuote } from '@/components/auth/janzu-quote';
+import { useLocale } from 'next-intl';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const locale = useLocale();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -31,13 +33,14 @@ export default function LoginPage() {
       const result = await signIn('credentials', {
         email,
         password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: `/${locale}/dashboard`,
       });
 
       if (result?.error) {
         setError('Invalid email or password. Please try again.');
       } else {
-        router.push('/dashboard');
+        router.push(`/${locale}/dashboard`);
         router.refresh();
       }
     } catch (err) {

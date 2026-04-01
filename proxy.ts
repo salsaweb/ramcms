@@ -12,51 +12,73 @@
 
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
+import { locales } from './i18n/request';
+
+const intlMiddleware = createMiddleware({
+  locales,
+  defaultLocale: 'en',
+  localePrefix: 'always', //'as-needed',
+});
+
+function getLocaleFromPath(pathname: string) {
+  const segments = pathname.split('/');
+  return locales.includes(segments[1] as any)
+    ? segments[1]
+    : 'en';
+}
 
 export default withAuth(
   function middleware(req) {
-    const token = req.nextauth.token;
-    const path = req.nextUrl.pathname;
+    const response = intlMiddleware(req);
+    if (response) return response;
 
-    // Public routes - no auth required
+    const token = req.nextauth.token;
+
+    const pathname = req.nextUrl.pathname.replace(
+      new RegExp(`^/(${locales.join('|')})(?=/|$)`),
+      ''
+    );
+
+    const locale = getLocaleFromPath(req.nextUrl.pathname);
     const publicRoutes = ['/auth/login', '/auth/register', '/auth/error'];
-    if (publicRoutes.some(route => path.startsWith(route))) {
+
+    if (publicRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
     }
 
     // Root redirect to dashboard if authenticated, login if not
-    if (path === '/') {
-      if (token) {
-        return NextResponse.redirect(new URL('/dashboard', req.url));
-      }
-      return NextResponse.redirect(new URL('/auth/login', req.url));
+    if (pathname === '/') {
+      return NextResponse.redirect(
+        new URL(token ? `/${locale}/dashboard` : `/${locale}/auth/login`, req.url)
+      );
     }
 
     // Authenticated routes - require login
     if (!token) {
-      return NextResponse.redirect(new URL('/auth/login', req.url));
+      return NextResponse.redirect(new URL(`/${locale}/auth/login`, req.url));
     }
 
     const permissions = (token.permissions as string[]) || [];
 
     // Dashboard access
-    if (path.startsWith('/dashboard')) {
+    if (pathname.startsWith('/dashboard')) {
       if (!permissions.includes('dashboard.access')) {
-        return NextResponse.redirect(new URL('/auth/error?error=forbidden', req.url));
+        return NextResponse.redirect(new URL(`/${locale}/auth/error?error=forbidden`, req.url));
       }
     }
 
     // User management routes
-    if (path.startsWith('/dashboard/users')) {
+    if (pathname.startsWith('/dashboard/users')) {
       if (!permissions.includes('users.read')) {
-        return NextResponse.redirect(new URL('/dashboard?error=forbidden', req.url));
+        return NextResponse.redirect(new URL(`/${locale}/dashboard?error=forbidden`, req.url));
       }
     }
 
     // Settings routes
-    if (path.startsWith('/dashboard/settings')) {
+    if (pathname.startsWith('/dashboard/settings')) {
       if (!permissions.includes('settings.view')) {
-        return NextResponse.redirect(new URL('/dashboard?error=forbidden', req.url));
+        return NextResponse.redirect(new URL(`/${locale}/dashboard?error=forbidden`, req.url));
       }
     }
 
@@ -65,10 +87,13 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        const path = req.nextUrl.pathname;
+        const pathname = req.nextUrl.pathname.replace(
+          new RegExp(`^/(${locales.join('|')})`),
+          ''
+        );
         // Allow public routes without token
         const publicRoutes = ['/auth/login', '/auth/register', '/auth/error'];
-        if (publicRoutes.some(route => path.startsWith(route))) {
+        if (publicRoutes.some(route => pathname.startsWith(route))) {
           return true;
         }
         return !!token;
@@ -79,13 +104,6 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - api/auth (NextAuth endpoints)
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+     '/((?!api|_next|_vercel|.*\\..*).*)',
   ],
 };
