@@ -5,6 +5,7 @@ import { checkPermission } from '@/lib/rbac/guards';
 import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { getTranslations, getLocale } from 'next-intl/server';
 import Link from 'next/link';
 
 async function getAdminStats() {
@@ -82,14 +83,17 @@ export default async function DashboardPage() {
     
   const isParticipant = !!contact;
 
+  const locale = await getLocale();
+  const t = await getTranslations('dashboard');
+
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">
-          Welcome back, {session.user.name}
+          {t('welcomeBack')} {session.user.name}
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Here is your personalized portal overview.
+          {t('portalOverview')}
         </p>
       </div>
 
@@ -105,7 +109,7 @@ export default async function DashboardPage() {
             </p>
             <div className="mt-4">
                <Button asChild>
-                 <Link href="/dashboard/settings/profile">Complete Profile</Link>
+                 <Link href={`/${locale}/dashboard/settings/profile`}>Complete Profile</Link>
                </Button>
             </div>
           </CardContent>
@@ -114,21 +118,21 @@ export default async function DashboardPage() {
 
       {isAdmin && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold tracking-tight">Admin Overview</h2>
+          <h2 className="text-xl font-semibold tracking-tight">{t('adminOverview')}</h2>
           <AdminDashboard />
         </div>
       )}
 
       {isPractitioner && !isAdmin && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold tracking-tight">My Practice</h2>
+          <h2 className="text-xl font-semibold tracking-tight">{t('myPractice')}</h2>
           <PractitionerDashboard userId={userId} />
         </div>
       )}
 
       {isParticipant && !isAdmin && !isPractitioner && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold tracking-tight">My Journey</h2>
+          <h2 className="text-xl font-semibold tracking-tight">{t('myJourney')}</h2>
           <ParticipantDashboard />
         </div>
       )}
@@ -138,11 +142,12 @@ export default async function DashboardPage() {
 
 async function AdminDashboard() {
   const stats = await getAdminStats();
+  const t = await getTranslations('dashboard');
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('totalPosts')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.totalPosts}</div>
@@ -150,7 +155,7 @@ async function AdminDashboard() {
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.totalUsers}</div>
@@ -158,7 +163,7 @@ async function AdminDashboard() {
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total CRM Contacts</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('totalCrmContacts')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.totalContacts}</div>
@@ -166,7 +171,7 @@ async function AdminDashboard() {
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Deals</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('totalDeals')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.totalDeals}</div>
@@ -178,20 +183,22 @@ async function AdminDashboard() {
 
 async function PractitionerDashboard({ userId }: { userId: string }) {
   const stats = await getPractitionerStats(userId);
+  const t = await getTranslations('dashboard');
+  const locale = await getLocale();
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">My Clients</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('myClients')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.totalClients}</div>
           <p className="text-xs text-muted-foreground mt-1">
-            Active participants in your CRM
+            {t('myClientsDescription')}
           </p>
           <div className="mt-4">
              <Button asChild size="sm" variant="outline" className="w-full">
-               <Link href="/dashboard/clients">Manage Clients</Link>
+               <Link href="/dashboard/clients">{t('manageClients')}</Link>
              </Button>
           </div>
         </CardContent>
@@ -199,20 +206,20 @@ async function PractitionerDashboard({ userId }: { userId: string }) {
       
       <Card className="md:col-span-2">
         <CardHeader>
-          <CardTitle>Certification Progress</CardTitle>
+          <CardTitle>{t('certificationProgress')}</CardTitle>
           <CardDescription>
-             Track your journey toward becoming a Certified Janzu Practitioner
+             {t('certificationProgressDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
            <div className="flex justify-between text-sm font-medium mb-2">
-              <span>{stats.completedSessions} Sessions with Feedback</span>
-              <span>Goal: 50</span>
+              <span>{stats.completedSessions} {t('sessionsWithFeedback')}</span>
+              <span>{t('goal')}: 50</span>
            </div>
            <Progress value={Math.min((stats.completedSessions / 50) * 100, 100)} className="h-2" />
            <div className="mt-4 flex justify-end">
               <Button asChild size="sm" variant="ghost">
-                 <Link href="/dashboard/certifications">View Details</Link>
+                 <Link href={`/${locale}/dashboard/certifications`}>{t('viewDetails')}</Link>
               </Button>
            </div>
         </CardContent>
@@ -222,22 +229,24 @@ async function PractitionerDashboard({ userId }: { userId: string }) {
 }
 
 async function ParticipantDashboard() {
+  const t = await getTranslations('dashboard');
+  const locale = await getLocale();
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card className="md:col-span-2">
         <CardHeader>
-          <CardTitle>Welcome to Janzu</CardTitle>
+          <CardTitle>{t('welcomeBack')}</CardTitle>
           <CardDescription>
-            Your participant profile is active and securely linked to your practitioner.
+            {t('participantProfileDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            In future updates, you will be able to review your session history, track your progress, and securely communicate with your practitioner directly from this portal.
+            {t('participantProfileDescriptionFutureUpdates')}
           </p>
           <div className="mt-6 flex space-x-4">
              <Button asChild>
-               <Link href="/dashboard/settings/profile">Update My Profile</Link>
+               <Link href={`/${locale}/dashboard/settings/profile`}>{t('updateMyProfile')}</Link>
              </Button>
           </div>
         </CardContent>

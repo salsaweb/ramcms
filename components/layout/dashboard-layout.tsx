@@ -7,6 +7,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { LanguageSwitcher } from '@/components/dashboard/language-switcher';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -53,6 +54,7 @@ export function DashboardLayout({ children, user, breadcrumbs }: DashboardLayout
               </Breadcrumb>
             )}
             <div className="ml-auto flex items-center gap-2">
+              <LanguageSwitcher />
               <ThemeToggle />
             </div>
           </header>

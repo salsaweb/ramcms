@@ -6,6 +6,7 @@ import { TrackCard } from '@/components/media/track-card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default async function TracksPage({
   searchParams,
@@ -14,6 +15,7 @@ export default async function TracksPage({
 }) {
   await requirePermissionPage(PERMISSIONS.TRACKS_READ);
   const user = await getCurrentUser();
+  const t = useTranslations('media');
 
   // Get filters from URL
   const filters = {
@@ -33,7 +35,7 @@ export default async function TracksPage({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Tracks</h1>
+          <h1 className="text-3xl font-bold">{t('tracks')}</h1>
           <p className="text-muted-foreground mt-1">
             {total} {total === 1 ? 'track' : 'tracks'} in your library
           </p>
