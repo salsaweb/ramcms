@@ -11,6 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shell, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Water } from '@paper-design/shaders-react';
+import { JanzuQuote } from '@/components/auth/janzu-quote';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -187,51 +189,26 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Branding */}
-      <div className="hidden lg:flex flex-1 bg-primary items-center justify-center p-8">
+      <div className="hidden lg:flex flex-1 items-center justify-center p-8">
+        <div className="absolute inset-0 z-[-1]">
+          <Water
+            style={{ height: "100%", width: "100%" }}
+            image="https://paper.design/flowers.webp"
+            colorBack="#8f8f8f"
+            colorHighlight="#ffffff"
+            highlights={0.07}
+            layering={0.5}
+            edges={0.8}
+            waves={0.3}
+            caustic={0.1}
+            size={0.2}
+            speed={0.25}
+            scale={1.36}
+            fit="cover"
+          />
+        </div>
         <div className="max-w-md text-primary-foreground space-y-6">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-bold">
-              Manage your enterprise with confidence
-            </h2>
-            <p className="text-primary-foreground/80">
-              Powerful CRM and content management tools built for modern businesses.
-            </p>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20">
-                ✓
-              </div>
-              <div>
-                <h3 className="font-medium">Advanced Analytics</h3>
-                <p className="text-sm text-primary-foreground/70">
-                  Real-time insights into your business performance
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20">
-                ✓
-              </div>
-              <div>
-                <h3 className="font-medium">Role-Based Access</h3>
-                <p className="text-sm text-primary-foreground/70">
-                  Granular permissions for complete security control
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20">
-                ✓
-              </div>
-              <div>
-                <h3 className="font-medium">Seamless Integration</h3>
-                <p className="text-sm text-primary-foreground/70">
-                  Connect with your favorite tools and services
-                </p>
-              </div>
-            </div>
-          </div>
+          <JanzuQuote />
         </div>
       </div>
     </div>
