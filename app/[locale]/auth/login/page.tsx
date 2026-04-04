@@ -13,7 +13,7 @@ import { Shell, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Water } from '@paper-design/shaders-react';
 import { JanzuQuote } from '@/components/auth/janzu-quote';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,6 +23,8 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const locale = useLocale();
+  const t = useTranslations('auth');
+  const tCommon = useTranslations('common');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -60,18 +62,18 @@ export default function LoginPage() {
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Shell className="h-6 w-6" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">Janzu Portal</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t('appTitle')}</h1>
             <p className="text-sm text-muted-foreground">
-              Sign in to access your dashboard
+              {t('signInToAccess')}
             </p>
           </div>
 
           {/* Login Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Welcome back</CardTitle>
+              <CardTitle>{t('welcomeBack')}</CardTitle>
               <CardDescription>
-                Enter your credentials to continue
+                {t('enterCredentials')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -86,13 +88,13 @@ export default function LoginPage() {
 
                 {/* Email Field */}
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email address</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Label htmlFor="email">{t('emailAddress')}</Label>
+                  <div className="relative flex items-center">
+                    <Mail className="absolute left-3 h-4 w-4 text-muted-foreground pointer-events-none" />
                     <Input
                       id="email"
                       type="email"
-                      placeholder="name@company.com"
+                      placeholder={t('emailPlaceholder')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-9"
@@ -106,20 +108,20 @@ export default function LoginPage() {
                 {/* Password Field */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">{t('password')}</Label>
                     <Link
                       href="/auth/forgot-password"
                       className="text-xs text-primary hover:underline"
                     >
-                      Forgot password?
+                      {t('forgotPassword')}
                     </Link>
                   </div>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <div className="relative flex items-center">
+                    <Lock className="absolute left-3 h-4 w-4 text-muted-foreground pointer-events-none" />
                     <Input
                       id="password"
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder={t('passwordPlaceholder')}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="pl-9"
@@ -142,7 +144,7 @@ export default function LoginPage() {
                     htmlFor="remember"
                     className="text-sm font-normal cursor-pointer"
                   >
-                    Remember me for 30 days
+                    {t('rememberMe')}
                   </Label>
                 </div>
 
@@ -156,11 +158,11 @@ export default function LoginPage() {
                   {isLoading ? (
                     <span className="flex items-center gap-2">
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                      Signing in...
+                      {t('signingIn')}
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
-                      Sign in
+                      {t('signIn')}
                       <ArrowRight className="h-4 w-4" />
                     </span>
                   )}
@@ -168,9 +170,9 @@ export default function LoginPage() {
 
                 {/* Register Link */}
                 <div className="text-center text-sm">
-                  <span className="text-muted-foreground">Don't have an account? </span>
+                  <span className="text-muted-foreground">{t('noAccount')}</span>{' '}
                   <Link href="/auth/register" className="text-primary hover:underline font-medium">
-                    Create account
+                    {t('createAccount')}
                   </Link>
                 </div>
               </form>
@@ -179,13 +181,13 @@ export default function LoginPage() {
 
           {/* Footer */}
           <p className="text-center text-xs text-muted-foreground">
-            By signing in, you agree to our{' '}
+            {t('agreeToTerms')}{' '}
             <Link href="/terms" className="underline hover:text-foreground">
-              Terms of Service
+              {tCommon('termsOfService')}
             </Link>{' '}
-            and{' '}
+            &amp;{' '}
             <Link href="/privacy" className="underline hover:text-foreground">
-              Privacy Policy
+              {tCommon('privacyPolicy')}
             </Link>
           </p>
         </div>

@@ -17,7 +17,7 @@ import { locales } from './i18n/request';
 
 const intlMiddleware = createMiddleware({
   locales,
-  defaultLocale: 'en',
+  defaultLocale: 'es',
   localePrefix: 'always', //'as-needed',
 });
 
@@ -41,7 +41,13 @@ export default withAuth(
     );
 
     const locale = getLocaleFromPath(req.nextUrl.pathname);
-    const publicRoutes = ['/auth/login', '/auth/register', '/auth/error'];
+    const publicRoutes = [
+      '/auth/login',
+      '/auth/register',
+      '/auth/forgot-password',
+      '/auth/reset-password',
+      '/auth/error'
+    ];
 
     if (publicRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
@@ -92,7 +98,13 @@ export default withAuth(
           ''
         );
         // Allow public routes without token
-        const publicRoutes = ['/auth/login', '/auth/register', '/auth/error'];
+        const publicRoutes = [
+          '/auth/login',
+          '/auth/register',
+          '/auth/forgot-password',
+          '/auth/reset-password',
+          '/auth/error'
+        ];
         if (publicRoutes.some(route => pathname.startsWith(route))) {
           return true;
         }

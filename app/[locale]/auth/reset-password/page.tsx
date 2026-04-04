@@ -1,30 +1,33 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Water } from '@paper-design/shaders-react';
 import { JanzuQuote } from '@/components/auth/janzu-quote';
 import { Shell } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { registerUser } from '@/app/actions/auth';
+import { resetPassword } from '@/app/actions/auth';
 import { useLocale, useTranslations } from 'next-intl';
 
-export default function RegisterPage() {
-  const router = useRouter();
+export default function ResetPasswordPage() {
+  const params = useSearchParams();
+  const token = params.get('token') || '';
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
+    newPassword: '',
     confirmPassword: '',
   });
+
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const t = useTranslations('auth');
   const locale = useLocale();
+  
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -32,15 +35,15 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const result = await registerUser(formData);
+      const result = await resetPassword(formData, token);
 
       if (!result.success) {
-        setError(result.error || 'Registration failed');
+        setError(result.error || t('resetPasswordFailed'));
       } else {
-        router.push('/auth/login?registered=true');
+        setSuccess(true);
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError(t('unexpectedError'));
     } finally {
       setIsLoading(false);
     }
@@ -59,14 +62,23 @@ export default function RegisterPage() {
             <h1 className="text-2xl font-bold tracking-tight">{t('appTitle')}</h1>
           </div>
 
-          {/* Forget Password Card */}
+          {/* Reset Password Card */}
           <Card className="w-full max-w-md">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold">{t('createAccount')}</CardTitle>
+              <CardTitle className="text-2xl font-bold">{t('resetPassword')}</CardTitle>
               <CardDescription>
-                {t('enterDetails')}
+                {success && (
+                  <>
+                    <p className="text-sm text-muted-foreground">{t('passwordUpdateSuccess')}</p>
+
+                    <Link href={`/${locale}/auth/login`} className="text-primary hover:underline">
+                    {t('backToLogin')}
+                  </Link>
+                  </>
+                )}
               </CardDescription>
             </CardHeader>
+            {!success && (
             <form onSubmit={handleSubmit}>
               <CardContent className="space-y-4">
                 {error && (
@@ -74,47 +86,17 @@ export default function RegisterPage() {
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
-                
-                <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium">
-                    {t('fullName')}
-                  </label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder={t('namePlaceholder')}
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium">
-                    {t('email')}
+                  <label htmlFor="newPassword" className="text-sm font-medium">
+                    {t('newPassword')}
                   </label>
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder={t('emailPlaceholder')}
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="password" className="text-sm font-medium">
-                    {t('password')}
-                  </label>
-                  <Input
-                    id="password"
+                    id="newPassword"
                     type="password"
                     placeholder={t('passwordPlaceholder')}
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    value={formData.newPassword}
+                    onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
                     required
                     disabled={isLoading}
                   />
@@ -137,25 +119,26 @@ export default function RegisterPage() {
                     disabled={isLoading}
                   />
                 </div>
+              
               </CardContent>
-
               <CardFooter className="flex flex-col space-y-4">
                 <Button
                   type="submit"
                   className="w-full"
                   disabled={isLoading}
                 >
-                  {isLoading ? t('creatingAccount') : t('createAccount')}
+                  {isLoading ? t('sendingResetLink') : t('resetPassword')}
                 </Button>
 
                 <p className="text-sm text-center text-muted-foreground">
-                  {t('alreadyHaveAccount')}{' '}
+                    {t('rememberedPassword')}{' '}
                   <Link href={`/${locale}/auth/login`} className="text-primary hover:underline">
-                    {t('signIn')}
+                    {t('backToLogin')}
                   </Link>
                 </p>
               </CardFooter>
             </form>
+            )}
           </Card>
         </div>
       </div>
@@ -183,12 +166,6 @@ export default function RegisterPage() {
           <JanzuQuote />
         </div>
       </div>
-    </div>
-  );
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      
     </div>
   );
 }

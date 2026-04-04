@@ -7,11 +7,13 @@
 
 'use server';
 
+import crypto from 'crypto';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { hashPassword, verifyPassword } from '@/lib/auth/password';
-import { registerSchema, changePasswordSchema } from '@/lib/validations/schemas';
+import { registerSchema, changePasswordSchema, resetPasswordSchema } from '@/lib/validations/schemas';
 import { requireAuth } from '@/lib/rbac/guards';
 import { assignUserRole } from '@/lib/rbac/permissions';
+import { sendResetEmail } from '@/lib/email/send-reset-email';
 
 /**
  * Register a new user
@@ -113,6 +115,191 @@ export async function registerUser(formData: {
       error: 'Registration failed',
     };
   }
+}
+
+/**
+ * Request a password reset
+ *
+ * @returns { success: boolean; error?: string }
+ */
+export async function forgotPassword(email: string) {
+  try {
+    if (!email) {
+      return {
+        success: false,
+        error: 'Email is required',
+      };
+    }
+
+    const { data: user, error: userError } = await supabaseAdmin
+      .from('users')
+      .select('email, id')
+      .eq('email', email.toLowerCase())
+      .single();
+
+    if (userError || !user) {
+      return {
+        success: false,
+        error: userError ? 'Failed to look up email' : 'Email not found',
+      };
+    }
+
+    const token = await createPasswordResetToken(user.id);
+
+    console.log('Sending password reset email to:', user.email, token);
+
+    await sendResetEmail(user.email, token);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    return {
+      success: false,
+      error: 'Failed to process password reset',
+    };
+  }
+}
+
+/** Reset user password
+ * 
+ * @returns { success: boolean; error?: string }
+ */
+export async function resetPassword(formData: {
+  newPassword: string;
+  confirmPassword: string;
+}, token: string) {
+  try {
+    if (!token) {
+      return {
+        success: false,
+        error: 'Invalid or missing token',
+      };
+    }
+
+    // Validate input
+    const validated = resetPasswordSchema.safeParse(formData);
+    
+    if (!validated.success) {
+      return {
+        success: false,
+        error: validated.error.errors[0].message,
+      };
+    }
+
+    const { newPassword } = validated.data;
+
+    // Hash token for lookup
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(token)
+      .digest('hex');
+
+    // Find token in DB
+    const { data: tokenRecord, error: tokenError } = await supabaseAdmin
+      .from('password_reset_tokens')
+      .select('user_id, expires_at')
+      .eq('token', hashedToken)
+      .single();
+
+    if (tokenError || !tokenRecord) {
+      return {
+        success: false,
+        error: 'Invalid or expired token',
+      };
+    }
+
+    //  Check token expiry  
+    const now = new Date();
+    if (tokenRecord.expires_at < now) {
+      return {
+        success: false,
+        error: 'Invalid or expired token',
+      };
+    }
+    const userId = tokenRecord.user_id;
+
+    // Hash new password
+    const newPasswordHash = await hashPassword(newPassword);
+
+    // Update user's password
+    const { error: updateError } = await supabaseAdmin
+      .from('users')
+      .update({ password_hash: newPasswordHash })
+      .eq('id', userId);
+
+    if (updateError) {
+      console.error('Password reset failed:', updateError);
+      return {
+        success: false,
+        error: 'Failed to reset password',
+      };
+    }
+
+    // Audit log
+    await supabaseAdmin.from('audit_logs').insert({
+      user_id: userId,
+      action: 'user.password_reset',
+      resource_type: 'users',
+      resource_id: userId,
+    });
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error('Reset password error:', error);
+    return {
+      success: false,
+      error: 'Failed to reset password',
+    };
+  } finally {
+    // Always delete token after attempt to prevent reuse
+    if (token) {
+      const hashedToken = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+      await supabaseAdmin
+        .from('password_reset_tokens')
+        .delete()
+        .eq('token', hashedToken);
+    }
+  }
+}
+
+
+async function createPasswordResetToken(userId: number) {
+  const TOKEN_EXPIRY_MS = 1000 * 60 * 60; // 1 hour
+
+  // 1. Generate raw token (sent via email)
+  const rawToken = crypto.randomBytes(32).toString('hex');
+
+  // 2. Hash token (stored in DB)
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(rawToken)
+    .digest('hex');
+
+  const expiresAt = new Date(Date.now() + TOKEN_EXPIRY_MS);
+
+  // 3. Delete existing tokens (important!)
+  await supabaseAdmin
+    .from('password_reset_tokens')
+    .delete()
+    .eq('user_id', userId);
+
+  // 4. Store new token
+  await supabaseAdmin.from('password_reset_tokens').insert({
+    user_id: userId,
+    token: hashedToken,
+    expires_at: expiresAt.toISOString(),
+  });
+
+  // 5. Return RAW token (never hashed)
+  return rawToken;
 }
 
 /**
