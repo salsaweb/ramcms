@@ -8,11 +8,12 @@ import { useLocale } from 'next-intl';
 import {
   LayoutDashboard,
   Briefcase,
-  BarChart3,
   Shield,
   ChevronDown,
   Music,
+  Shell,
   Users,
+  Locate,
   Clock,
   MessageSquare,
   Award,
@@ -65,6 +66,7 @@ interface NavItem {
 }
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  isAdmin?: boolean;
   user?: {
     name: string;
     email: string;
@@ -72,7 +74,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   };
 }
 
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
+export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
   const pathname = usePathname();
   const locale = useLocale();
   const { data: session } = useSession();
@@ -150,7 +152,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
   {
     title: t('community'),
     href: `/${locale}/dashboard/practitioners`,
-    icon: Users,
+    icon: Shell,
     items: [
       {
         title: t('practitioners'),
@@ -204,7 +206,46 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       },
     ],
   }
-];
+  ];
+
+  const userNavItems: NavItem[] = [
+    {
+        title: t('dashboard'),
+        href: `/${locale}/dashboard`,
+        icon: LayoutDashboard,
+        permission: 'dashboard.access',
+    },
+    {
+        title: t('locations'),
+        href: `/${locale}/dashboard/locations`,
+        icon: Locate,
+        permission: 'locations.read',
+      },
+      {
+        title: t('myClients'),
+        href: `/${locale}/dashboard/clients`,
+        icon: Users,
+        permission: 'dashboard.access',
+      },
+      {
+        title: t('certifications'),
+        href: `/${locale}/dashboard/certifications`,
+        icon: Award,
+        permission: 'certifications.read',
+      },
+      {
+        title: t('sessions'),
+        href: `/${locale}/dashboard/sessions`,
+        icon: Clock,
+        permission: 'sessions.read',
+      },
+      {
+        title: t('feedback'),
+        href: `/${locale}/dashboard/feedback`,
+        icon: MessageSquare,
+        permission: 'feedback.read',
+      }
+  ];
 
   const hasPermission = (permission?: string) => {
     if (!permission) return true;
@@ -225,7 +266,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       .filter((item): item is NavItem => item !== null);
   };
 
-  const filteredNavItems = filterNavItems(navItems);
+  const filteredNavItems = filterNavItems(isAdmin ? navItems : userNavItems);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -235,10 +276,10 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             <SidebarMenuButton size="lg" asChild>
               <Link href={`/${locale}/dashboard`}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <BarChart3 className="size-4" />
+                  <Shell className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Ram CMS</span>
+                  <span className="truncate font-semibold">Janzu CRM</span>
                 </div>
               </Link>
             </SidebarMenuButton>

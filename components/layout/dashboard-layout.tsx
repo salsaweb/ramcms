@@ -11,6 +11,7 @@ import { LanguageSwitcher } from '@/components/dashboard/language-switcher';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  isAdmin?: boolean;
   user?: {
     name: string;
     email: string;
@@ -22,11 +23,11 @@ interface DashboardLayoutProps {
   }[];
 }
 
-export function DashboardLayout({ children, user, breadcrumbs }: DashboardLayoutProps) {
+export function DashboardLayout({ children, isAdmin, user, breadcrumbs }: DashboardLayoutProps) {
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <AppSidebar user={user} />
+        <AppSidebar user={user} isAdmin={isAdmin} />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
