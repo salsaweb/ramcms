@@ -48,7 +48,8 @@
     "userPlaceholder": "Usuario",
     "emailPlaceholder": "usuario@ejemplo.com",
     "termsOfService": "Términos de Servicio",
-    "privacyPolicy": "Política de Privacidad"
+    "privacyPolicy": "Política de Privacidad",
+    "added": "Agregado"
   },
   "auth": {
     "login": "Iniciar Sesión",
@@ -187,11 +188,55 @@
     "createContact": "Crear Contacto",
     "required": "*"
   },
+  "clients": {
+    "myClients": "Mis clientes",
+    "myClientsDescription": "Gestiona tus clientes de Janzu",
+    "totalClients": "Total de clientes",
+    "activeClients": "Clientes activos en tu práctica",
+    "clientName": "Nombre del cliente",
+    "filtersBtn": "Filtros",
+    "searchPlaceholder": "Buscar clientes por nombre, correo o teléfono...",
+    "addClient": "Agregar cliente",
+    "noClients": "Aún no hay clientes.",
+    "getStarted": "Empieza agregando tu primer cliente",
+    "clientProfile": "Perfil del cliente",
+    "editDetails": "Editar detalles",
+    "overviewAndSessions": "Resumen y sesiones",
+    "sessionHistory": "Historial de sesiones",
+    "sessionDescription": "Todas las sesiones programadas y pasadas con este cliente.",
+    "upcomingSessions": "Próximas sesiones",
+    "completedSessions": "Sesiones completadas",
+    "pendingRequests": "Solicitudes pendientes",
+    "newSession": "Nueva sesión",
+    "viewSession": "Ver sesión",
+    "noSessionsRecorded": "No se encontraron sesiones para este cliente.",
+    "addNewClient": "Agregar nuevo cliente",
+    "createClientDescription": "Crea un nuevo registro de cliente en tu práctica",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "socialNetworks": "Redes sociales",
+    "facebook": "URL de Facebook",
+    "twitter": "Usuario de X (Twitter)",
+    "instagram": "Usuario de Instagram",
+    "linkedin": "URL de LinkedIn",
+    "youtube": "URL del canal de YouTube",
+    "website": "Sitio web",
+    "tags": "Etiquetas (separadas por comas)",
+    "tagsPlaceholder": "lesión, vip, referido",
+    "notes": "Notas del cliente",
+    "notesPlaceholder": "Agrega aquí notas específicas de salud o personales...",
+    "updateClient": "Actualizar cliente",
+    "createClient": "Crear cliente",
+    "saving": "Guardando..."
+  },
   "errors": {
     "generic": "Ocurrió un error",
     "unauthorized": "No estás autorizado para realizar esta acción",
     "notFound": "No encontrado",
     "invalidSpotifyUrl": "URL de pista de Spotify inválida",
-    "failedToImport": "Falló la importación de la pista"
+    "failedToImport": "Falló la importación de la pista",
+    "failedToSaveClient": "Falló al guardar el cliente"
   }
 }

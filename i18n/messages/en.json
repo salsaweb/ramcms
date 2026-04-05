@@ -48,7 +48,8 @@
     "userPlaceholder": "User",
     "emailPlaceholder": "user@example.com",
     "termsOfService": "Terms of Service",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "added": "Added"
   },
   "auth": {
     "login": "Log in",
@@ -187,11 +188,56 @@
     "createContact": "Create Contact",
     "required": "*"
   },
+  "clients": {
+    "myClients": "My Clients",
+    "myClientsDescription": "Manage your personal Janzu clients",
+    "totalClients": "Total Clients",
+    "activeClients": "Active clients in your practice",
+    "clientName": "Client Name",
+    "filtersBtn": "Filters",
+    "searchPlaceholder": "Search clients by name, email, or phone...",
+    "addClient": "Add Client",
+    "noClients": "No clients yet.",
+    "getStarted": "Get started by adding your first client",
+    "clientProfile": "Client Profile",
+    "editDetails": "Edit Details",
+    "overviewAndSessions": "Overview & Sessions",
+    "sessionHistory": "Session History",
+    "sessionDescription": "All scheduled and past sessions with this client.",
+    "upcomingSessions": "Upcoming Sessions",
+    "completedSessions": "Completed Sessions",
+    "pendingRequests": "Pending Requests",
+    "newSession": "New Session",
+    "viewSession": "View Session",
+    "noSessionsRecorded": "No sessions found for this client.",
+    "addNewClient": "Add New Client",
+    "createClientDescription": "Create a new client record in your practice",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "socialNetworks": "Social Networks",
+    "facebook": "Facebook URL",
+    "twitter": "X (Twitter) Handle",
+    "instagram": "Instagram Username",
+    "linkedin": "LinkedIn URL", 
+    "youtube": "YouTube Channel URL",
+    "website": "Website URL",
+    "tags": "Tags (comma-separated)",
+    "tagsPlaceholder": "injury, vip, referral",
+    "notes": "Client Notes",
+    "notesPlaceholder": "Add any specific health or personal notes here...",
+    "updateClient": "Update Client",
+    "createClient": "Create Client",
+    "saving": "Saving..."
+
+  },
   "errors": {
     "generic": "An error occurred",
     "unauthorized": "You are not authorized to perform this action",
     "notFound": "Not found",
     "invalidSpotifyUrl": "Invalid Spotify track URL",
-    "failedToImport": "Failed to import track"
+    "failedToImport": "Failed to import track",
+    "failedToSaveClient": "Failed to save client"
   }
 }
