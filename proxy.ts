@@ -54,7 +54,7 @@ export default withAuth(
     }
 
     // Root redirect to dashboard if authenticated, login if not
-    if (pathname === '/') {
+    if (pathname === '/' || pathname === '') {
       return NextResponse.redirect(
         new URL(token ? `/${locale}/dashboard` : `/${locale}/auth/login`, req.url)
       );

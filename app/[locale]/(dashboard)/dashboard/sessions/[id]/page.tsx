@@ -55,18 +55,18 @@ export default async function EditSessionPage({ params }: { params: Promise<{ id
           </Card>
 
           {session.session_feedback && (Array.isArray(session.session_feedback) ? session.session_feedback.length > 0 : Object.keys(session.session_feedback).length > 0) ? (
-            <Card className="border-green-200 bg-green-50/50">
+            <Card className="border border-success/30 bg-success/10">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-green-700">
+                <CardTitle className="flex items-center gap-2 text-success">
                   <MessageSquareCheck className="h-5 w-5" />
                   Feedback Submitted
                 </CardTitle>
-                <CardDescription className="text-green-600/80">
+                <CardDescription className="text-muted-foreground">
                   Your client has provided feedback for this completed session.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                 <Button asChild size="sm" variant="outline" className="border-green-600 text-green-700 hover:bg-green-100">
+                 <Button asChild size="sm" variant="secondary" className="border-success text-success hover:bg-success/10">
                     <Link href={`/dashboard/feedback/${Array.isArray(session.session_feedback) ? session.session_feedback[0].id : session.session_feedback.id}`}>
                       Read Feedback
                     </Link>

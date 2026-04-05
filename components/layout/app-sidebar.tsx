@@ -10,7 +10,6 @@ import {
   Briefcase,
   BarChart3,
   Shield,
-  Settings,
   ChevronDown,
   Music,
   Users,
@@ -204,13 +203,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         permission: 'roles.read',
       },
     ],
-  },
-  {
-    title: t('settings'),
-    href: `/${locale}/dashboard/settings`,
-    icon: Settings,
-    permission: 'settings.view',
-  },
+  }
 ];
 
   const hasPermission = (permission?: string) => {

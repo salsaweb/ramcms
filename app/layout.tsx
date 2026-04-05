@@ -19,7 +19,7 @@ export default async function RootLayout({
 
   return (
     <html suppressHydrationWarning>
-      <body className={outfit.variable}>{children}</body>
+      <body suppressHydrationWarning className={outfit.variable}>{children}</body>
     </html>
   );
 }

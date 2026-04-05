@@ -98,7 +98,8 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
               id="scheduledAt"
               name="scheduledAt"
               type="datetime-local"
-              required
+              disabled={isEdit && initialData?.status === 'completed'}
+              required={!isEdit || initialData?.status !== 'completed'}
               defaultValue={getDefaultDateTime()}
             />
           </div>
@@ -110,7 +111,8 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
               type="number"
               min="15"
               max="480"
-              required
+              disabled={isEdit && initialData?.status === 'completed'}
+              required={!isEdit || initialData?.status !== 'completed'}
               defaultValue={initialData?.duration_minutes || 60}
             />
           </div>
@@ -121,7 +123,8 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
           <select
             id="status"
             name="status"
-            required
+            disabled={isEdit && initialData?.status === 'completed'}
+            required={!isEdit || initialData?.status !== 'completed'}
             defaultValue={initialData?.status || 'confirmed'}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
           >

@@ -61,6 +61,9 @@
     --sidebar-accent-foreground: 210 10% 20%;
     --sidebar-border: 40 15% 85%;
     --sidebar-ring: 182 32% 42%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
   }
 
   .dark {
@@ -112,6 +115,9 @@
     --sidebar-accent-foreground: 40 20% 92%;
     --sidebar-border: 210 15% 18%;
     --sidebar-ring: 182 40% 55%;
+
+    --success: 142 70% 45%;
+    --success-foreground: 0 0% 100%;
   }
 }
 

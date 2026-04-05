@@ -55,6 +55,7 @@ export default async function SettingsPage() {
           </CardContent>
         </Card>
 
+        {canManageSettings && (
         <Card>
           <CardHeader>
             <CardTitle>Permissions</CardTitle>
@@ -72,7 +73,8 @@ export default async function SettingsPage() {
             </div>
           </CardContent>
         </Card>
-
+        )}
+        
         <Card>
           <CardHeader>
             <CardTitle>Security</CardTitle>
@@ -99,35 +101,37 @@ export default async function SettingsPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>System Information</CardTitle>
-            <CardDescription>
-              CMS version and configuration
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-sm font-medium">Version</span>
-              <span className="text-sm text-muted-foreground">1.0.0</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm font-medium">Environment</span>
-              <span className="text-sm text-muted-foreground">
-                {process.env.NODE_ENV || 'development'}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm font-medium">Database</span>
-              <span className="text-sm text-muted-foreground">PostgreSQL (Supabase)</span>
-            </div>
-          </CardContent>
-        </Card>
-
         {canManageSettings && (
+          <>
+          <Card>
+            <CardHeader>
+              <CardTitle>System Information</CardTitle>
+              <CardDescription>
+                CMS version and configuration
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm font-medium">Version</span>
+                <span className="text-sm text-muted-foreground">1.0.0</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm font-medium">Environment</span>
+                <span className="text-sm text-muted-foreground">
+                  {process.env.NODE_ENV || 'development'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm font-medium">Database</span>
+                <span className="text-sm text-muted-foreground">PostgreSQL (Supabase)</span>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="pt-4">
             <SystemSettingsForm settings={settingsData} roles={rolesData} />
           </div>
+          </>
         )}
       </div>
     </div>
