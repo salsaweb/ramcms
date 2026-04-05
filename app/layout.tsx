@@ -12,16 +12,13 @@ const outfit = Outfit({
 });
 
 export default async function RootLayout({
-  children,
-  params,
+  children
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <body className={outfit.variable}>{children}</body>
     </html>
   );

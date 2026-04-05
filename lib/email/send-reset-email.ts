@@ -7,7 +7,7 @@ export async function sendResetEmail(email: string, token: string) {
 
   await resend.emails.send({
     from: 'Your App <onboarding@resend.dev>',
-    to: ['delivered@resend.dev'], //email,
+    to: email, // ['delivered@resend.dev']
     subject: 'Reset your password',
     html: getEmailTemplate(resetUrl),
   });
