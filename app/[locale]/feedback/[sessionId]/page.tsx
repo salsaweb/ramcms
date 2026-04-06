@@ -3,6 +3,8 @@ import { FeedbackForm } from '@/components/feedback/feedback-form';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { notFound } from 'next/navigation';
 import { Water } from '@paper-design/shaders-react';
+import { getTranslations } from 'next-intl/server';
+import { LanguageSwitcher } from '@/components/dashboard/language-switcher';
 
 export default async function FeedbackPage({ params }: { params: Promise<{ sessionId: string }> }) {
   // Await the params to unpack them in Next.js 15
@@ -14,11 +16,13 @@ export default async function FeedbackPage({ params }: { params: Promise<{ sessi
     notFound();
   }
 
+  const t = await getTranslations('feedback-form');
+  const tError = await getTranslations('errors');
   const result = await getSessionForFeedback(sessionId);
 
   return (
-    <div className="min-h-screen flex flex-col py-12 px-4 sm:px-6 lg:px-8">
-      <div className="absolute inset-0 z-[-1]">
+    <div className="min-h-screen relative flex flex-col py-12 px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-[-1] bg-white">
         <Water
           style={{ height: "100%", width: "100%" }}
           image="https://paper.design/flowers.webp"
@@ -35,13 +39,14 @@ export default async function FeedbackPage({ params }: { params: Promise<{ sessi
           fit="cover"
         />
       </div>
-      <div className="max-w-2xl w-full mx-auto space-y-8">
+      <div className="max-w-2xl w-full mx-auto space-y-8 bg-white/80 p-10 rounded-lg">
 
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Janzu Feedback</h1>
+          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">{t('title')}</h1>
           <p className="text-lg text-slate-600">
-            Share your experience to help us improve.
+            {t('description')}
           </p>
+          <LanguageSwitcher className="bg-black" />
         </div>
 
         <Card className="shadow-lg border-0">
@@ -49,28 +54,28 @@ export default async function FeedbackPage({ params }: { params: Promise<{ sessi
             <CardContent className="pt-6">
               <div className="text-center py-12">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-4">
-                  <svg className="h-6 w-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="h-6 w-6 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-foreground">Unable to load feedback form</h3>
+                <h3 className="text-lg font-medium text-foreground">{tError('unableToLoadFeedbackForm')}</h3>
                 <p className="mt-2 text-muted-foreground max-w-sm mx-auto">{result.error}</p>
               </div>
             </CardContent>
           ) : (
             <>
               <CardHeader className="bg-muted/50 border-b pb-6">
-                <CardTitle>Session Details</CardTitle>
+                <CardTitle>{t('sessionDetails')}</CardTitle>
 
                 <CardDescription className="text-base mt-2 text-muted-foreground">
-                  Session provided by{" "}
+                  {t('sessionProvidedBy')}{" "}
                   <strong className="text-foreground">
-                    {(result.session as any)?.practitioners?.users?.name || "your practitioner"}
+                    {(result.session as any)?.practitioners?.users?.name || t('practitioner')}
                   </strong>.
                 </CardDescription>
 
                 <CardDescription className="text-muted-foreground">
-                  Please answer truthfully. Your feedback is sent directly to your practitioner.
+                  {t('shareExperience')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6">
@@ -81,7 +86,7 @@ export default async function FeedbackPage({ params }: { params: Promise<{ sessi
         </Card>
 
         <div className="text-center text-sm text-slate-500">
-          <p>Powered by the Janzu Community Portal</p>
+          <p>{t('poweredBy')}</p>
         </div>
       </div>
     </div>

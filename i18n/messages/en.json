@@ -49,7 +49,11 @@
     "emailPlaceholder": "user@example.com",
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy",
-    "added": "Added"
+    "added": "Added",
+    "back": "Back",
+    "next": "Next",
+    "submitting": "Submitting...",
+    "submit": "Submit"
   },
   "auth": {
     "login": "Log in",
@@ -220,7 +224,7 @@
     "facebook": "Facebook URL",
     "twitter": "X (Twitter) Handle",
     "instagram": "Instagram Username",
-    "linkedin": "LinkedIn URL", 
+    "linkedin": "LinkedIn URL",
     "youtube": "YouTube Channel URL",
     "website": "Website URL",
     "tags": "Tags (comma-separated)",
@@ -230,7 +234,42 @@
     "updateClient": "Update Client",
     "createClient": "Create Client",
     "saving": "Saving..."
-
+  },
+  "feedback-form": {
+    "title": "Janzu Session Feedback",
+    "description": "Share your experience to help us improve.",
+    "sessionDetails": "Session Details",
+    "sessionProvidedBy": "Session provided by",
+    "practitioner": "your practitioner",
+    "shareExperience": "Please answer truthfully. Your feedback is sent directly to your practitioner.",
+    "submitFeedback": "Submit Feedback",
+    "saving": "Saving...",
+    "poweredBy": "Powered by the Janzu Community Portal",
+    "thankYou": "Thank You!",
+    "feedbackSubmitted": "Your feedback has been successfully submitted and helps us improve our sessions.",
+    "question": "Question",
+    "of": "of",
+    "completed": "Completed",
+    "form": {
+      "howDidYouFeelInTheArmsOfYourFacilitator": "How did you feel in the arms of your facilitator?",
+      "howDidYouFeelInTheArmsOfYourFacilitatorPlaceholder": "Please describe your feelings...",
+      "overallExperience": "Overall experience of your Janzu session",
+      "overallExperiencePlaceholder": "Please describe your overall experience...",
+      "didYouFeelSupportedAtTheEndOfYourSession": "Did you feel supported at the end of the session?",
+      "didYouFeelSupportedAtTheEndOfYourSessionPlaceholder": "Please describe how you felt supported...",
+      "additionalComments": "Is there anything else about your session you'd like to comment on?",
+      "additionalCommentsPlaceholder": "Any other comments...",
+      "continueProcess": "Would you like to continue your process in the water?",
+      "continueProcessPlaceholder": "Please indicate if you would like to continue the process...",
+      "almostDone": "Almost done!",
+      "almostDoneDescription": "One final question before you submit your feedback.",
+      "yes": "Yes",
+      "notEnough": "Not enough",
+      "other": "Other",
+      "continueProcessOption1": "I would like to receive another session",
+      "continueProcessOption2": "No, thank you",
+      "interestedInLearning": "I would be interested in learning Janzu"
+    }
   },
   "errors": {
     "generic": "An error occurred",
@@ -238,6 +277,9 @@
     "notFound": "Not found",
     "invalidSpotifyUrl": "Invalid Spotify track URL",
     "failedToImport": "Failed to import track",
-    "failedToSaveClient": "Failed to save client"
+    "failedToSaveClient": "Failed to save client",
+    "unableToLoadFeedbackForm": "Unable to load feedback form",
+    "thereWasAnErrorSubmittingYourFeedback": "There was an error submitting your feedback.",
+    "unexpectedError": "An unexpected error occurred. Please try again."
   }
 }

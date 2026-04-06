@@ -49,7 +49,11 @@
     "emailPlaceholder": "usuario@ejemplo.com",
     "termsOfService": "Términos de Servicio",
     "privacyPolicy": "Política de Privacidad",
-    "added": "Agregado"
+    "added": "Agregado",
+    "back": "Volver",
+    "next": "Siguiente",
+    "submitting": "Enviando...",
+    "submit": "Enviar"
   },
   "auth": {
     "login": "Iniciar Sesión",
@@ -231,12 +235,50 @@
     "createClient": "Crear cliente",
     "saving": "Guardando..."
   },
+  "feedback-form": {
+    "title": "Retroalimentación de la sesión de Janzu",
+    "description": "Comparte tu experiencia para ayudarnos a mejorar.",
+    "sessionDetails": "Detalles de la sesión",
+    "sessionProvidedBy": "Sesión proporcionada por",
+    "practitioner": "tu practicante",
+    "shareExperience": "Por favor responde con sinceridad. Tu retroalimentación se envía directamente a tu practicante.",
+    "submitFeedback": "Enviar retroalimentación",
+    "saving": "Guardando...",
+    "poweredBy": "Impulsado por el Portal de la Comunidad Janzu",
+    "thankYou": "¡Gracias!",
+    "feedbackSubmitted": "Tu retroalimentación ha sido enviada con éxito y nos ayuda a mejorar nuestras sesiones.",
+    "question": "Pregunta",
+    "of": "de",
+    "completed": "Completado",
+    "form": {
+      "howDidYouFeelInTheArmsOfYourFacilitator": "¿Cómo te sentiste en los brazos de tu facilitador?",
+      "howDidYouFeelInTheArmsOfYourFacilitatorPlaceholder": "Por favor describe tus sensaciones...",
+      "overallExperience": "Experiencia general de tu sesión de Janzu",
+      "overallExperiencePlaceholder": "Por favor describe tu experiencia general...",
+      "didYouFeelSupportedAtTheEndOfYourSession": "¿Te sentiste acompañado/a al final de la sesión?",
+      "didYouFeelSupportedAtTheEndOfYourSessionPlaceholder": "Por favor describe cómo te sentiste acompañado/a...",
+      "additionalComments": "¿Hay algo más sobre tu sesión que te gustaría comentar?",
+      "additionalCommentsPlaceholder": "Cualquier otro comentario...",
+      "continueProcess": "¿Te gustaría continuar tu proceso en el agua?",
+      "continueProcessPlaceholder": "Por favor indica si te gustaría continuar el proceso...",
+      "almostDone": "¡Casi terminamos!",
+      "almostDoneDescription": "Una última pregunta antes de enviar tu retroalimentación.",
+      "yes": "Sí",
+      "notEnough": "No fue suficiente",
+      "other": "Otro",
+      "continueProcessOption1": "Me gustaría recibir otra sesión",
+      "continueProcessOption2": "No, gracias",
+      "interestedInLearning": "Me interesaría aprender Janzu"
+    }
+  },
   "errors": {
     "generic": "Ocurrió un error",
     "unauthorized": "No estás autorizado para realizar esta acción",
     "notFound": "No encontrado",
     "invalidSpotifyUrl": "URL de pista de Spotify inválida",
     "failedToImport": "Falló la importación de la pista",
-    "failedToSaveClient": "Falló al guardar el cliente"
+    "failedToSaveClient": "Falló al guardar el cliente",
+    "unableToLoadFeedbackForm": "No se pudo cargar el formulario de retroalimentación",
+    "thereWasAnErrorSubmittingYourFeedback": "Hubo un error al enviar tu retroalimentación."
   }
 }

@@ -16,7 +16,7 @@ const languages = [
   { code: 'es', name: 'Español', flag: '🇪🇸' },
 ];
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ className }: { className?: string }) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -26,7 +26,7 @@ export function LanguageSwitcher() {
     const segments = pathname.split('/');
     segments[1] = newLocale;
     const newPathname = segments.join('/');
-    console.log('newPathname',newPathname);
+    console.log('newPathname', newPathname);
     router.push(newPathname);
     //router.refresh();
   };
@@ -36,7 +36,7 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" className={className}>
           <Languages className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>

@@ -46,7 +46,8 @@ export default withAuth(
       '/auth/register',
       '/auth/forgot-password',
       '/auth/reset-password',
-      '/auth/error'
+      '/auth/error',
+      '/feedback'
     ];
 
     if (publicRoutes.some(route => pathname.startsWith(route))) {
@@ -103,7 +104,8 @@ export default withAuth(
           '/auth/register',
           '/auth/forgot-password',
           '/auth/reset-password',
-          '/auth/error'
+          '/auth/error',
+          '/feedback'
         ];
         if (publicRoutes.some(route => pathname.startsWith(route))) {
           return true;
@@ -116,6 +118,6 @@ export default withAuth(
 
 export const config = {
   matcher: [
-     '/((?!api|_next|_vercel|.*\\..*).*)',
+    '/((?!api|_next|_vercel|.*\\..*).*)',
   ],
 };
