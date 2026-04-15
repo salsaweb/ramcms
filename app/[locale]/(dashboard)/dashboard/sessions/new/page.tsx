@@ -3,9 +3,11 @@ import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { getClients } from '@/app/actions/clients';
 import { SessionForm } from '@/components/sessions/session-form';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { getTranslations } from 'next-intl/server';
 
 export default async function NewSessionPage() {
   await requirePermissionPage(PERMISSIONS.SESSIONS_CREATE);
+  const t = await getTranslations('sessions');
   
   // Need to pass clients array so practitioner can select who the session is for
   const clients = await getClients();
@@ -13,9 +15,9 @@ export default async function NewSessionPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Schedule Session</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t('newTitle')}</h1>
         <p className="text-muted-foreground">
-          Book a new Janzu session with an active client.
+          {t('newDescription')}
         </p>
       </div>
 
@@ -24,9 +26,9 @@ export default async function NewSessionPage() {
           {clients.length === 0 ? (
             <Card>
               <CardHeader>
-                <CardTitle>No Clients Available</CardTitle>
+                <CardTitle>{t('noClientsTitle')}</CardTitle>
                 <CardDescription>
-                  You must add a client to your CRM before you can schedule a session.
+                  {t('noClientsDesc')}
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -38,11 +40,11 @@ export default async function NewSessionPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg text-primary">Notifications</CardTitle>
+              <CardTitle className="text-lg text-primary">{t('notificationsHeader')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                When you create a session, the client will immediately receive an email notification indicating their session status.
+                {t('notificationsDesc')}
               </p>
             </CardContent>
           </Card>

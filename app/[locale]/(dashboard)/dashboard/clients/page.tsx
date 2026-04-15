@@ -50,7 +50,7 @@ export default async function ClientsPage() {
 
       <Card>
         <CardContent className="pt-6">
-          <div className="flex items-center gap-4 mb-6">
+          {/* <div className="flex items-center gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -59,7 +59,7 @@ export default async function ClientsPage() {
               />
             </div>
             <Button variant="outline">{t('filtersBtn')}</Button>
-          </div>
+          </div> */}
 
           {clients.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">

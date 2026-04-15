@@ -4,10 +4,12 @@ import { getCertificationProgress, getAllCertifications } from '@/app/actions/ce
 import { PractitionerView } from '@/components/certifications/practitioner-view';
 import { AdminView } from '@/components/certifications/admin-view';
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 export default async function CertificationsDashboardPage() {
   const sessionUser = await requirePermissionPage(PERMISSIONS.CERTIFICATIONS_READ);
   const permissions = await getUserPermissions(sessionUser.user.id);
+  const t = await getTranslations('certifications');
   
   const canManage = permissions.includes(PERMISSIONS.CERTIFICATIONS_MANAGE);
   const canRequest = permissions.includes(PERMISSIONS.CERTIFICATIONS_REQUEST);
@@ -40,9 +42,9 @@ export default async function CertificationsDashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Certifications</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
           <p className="text-muted-foreground mt-1">
-            {canManage ? 'Manage practitioner certification requests' : 'Track your certification journey'}
+            {canManage ? t('descriptionAdmin') : t('descriptionPractitioner')}
           </p>
         </div>
       </div>

@@ -129,9 +129,10 @@ export async function submitFeedback(formData: FormData) {
 }
 
 /**
- * Fetch feedback assigned to a practitioner (Requires Auth)
+ * Fetch feedback assigned to a practitioner (Requires Auth).
+ * Admins may pass an optional practitionerId to filter by a specific facilitator.
  */
-export async function getPractitionerFeedback() {
+export async function getPractitionerFeedback(practitionerIdFilter?: string) {
   try {
     const sessionUser = await requirePermission(PERMISSIONS.FEEDBACK_READ);
     const userId = sessionUser.user.id;
@@ -159,8 +160,8 @@ export async function getPractitionerFeedback() {
       `)
       .order('created_at', { ascending: false });
 
-    // If not admin, restrict to their own practitioner profile
     if (!isAdmin) {
+      // Non-admins: restrict to their own practitioner profile
       const { data: practitioner } = await supabaseAdmin
         .from('practitioners')
         .select('id')
@@ -172,15 +173,52 @@ export async function getPractitionerFeedback() {
       }
 
       query = query.eq('practitioner_id', practitioner.id);
+    } else if (practitionerIdFilter) {
+      // Admins: apply optional filter
+      query = query.eq('practitioner_id', practitionerIdFilter);
     }
 
     const { data, error } = await query;
 
     if (error) throw error;
 
-    return { success: true, feedback: data || [] };
+    return { success: true, feedback: data || [], isAdmin };
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Failed to fetch feedback' };
+  }
+}
+
+/**
+ * Returns a minimal list of practitioners (id + name) for use in admin filter dropdowns.
+ * Requires admin privileges (USERS_READ permission).
+ */
+export async function getAllPractitionersForFilter() {
+  try {
+    const sessionUser = await requirePermission(PERMISSIONS.USERS_READ);
+    const userId = sessionUser.user.id;
+
+    const { data: permissions } = await supabaseAdmin.rpc('get_user_permissions', { p_user_id: userId });
+    const isAdmin = permissions?.some((p: any) => p.permission_name === PERMISSIONS.USERS_READ);
+
+    if (!isAdmin) {
+      return { success: false, error: 'Forbidden' };
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('practitioners')
+      .select(`
+        id,
+        users (
+          name
+        )
+      `)
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+
+    return { success: true, practitioners: data || [] };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to fetch practitioners' };
   }
 }
 

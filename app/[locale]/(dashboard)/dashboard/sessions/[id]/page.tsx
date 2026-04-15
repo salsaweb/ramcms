@@ -9,12 +9,14 @@ import { Button } from '@/components/ui/button';
 import { MessageSquareCheck } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 export default async function EditSessionPage({ params }: { params: Promise<{ id: string }> }) {
   await requirePermissionPage(PERMISSIONS.SESSIONS_READ);
-  
+
   // Unwrap Next.js 15 async params safely!
   const { id } = await params;
+  const t = await getTranslations('sessions');
 
   const [sessionRes, clients] = await Promise.all([
     getSessionById(id),
@@ -30,9 +32,9 @@ export default async function EditSessionPage({ params }: { params: Promise<{ id
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Edit Session</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t('editTitle')}</h1>
         <p className="text-muted-foreground">
-          Manage session details and schedule for {session.contacts?.first_name} {session.contacts?.last_name}.
+          {t('editDescription', { name: `${session.contacts?.first_name} ${session.contacts?.last_name}` })}
         </p>
       </div>
 
@@ -44,12 +46,12 @@ export default async function EditSessionPage({ params }: { params: Promise<{ id
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg text-primary">Status Tracker</CardTitle>
+              <CardTitle className="text-lg text-primary">{t('statusTracker')}</CardTitle>
             </CardHeader>
             <CardDescription className="px-6 pb-6">
               <div className="space-y-4 text-sm text-muted-foreground">
-                <p>Currently marked as <strong>{session.status.toUpperCase()}</strong>.</p>
-                <p>If you mark this session as 'Completed', it will lock scheduling edits but allow you to update your internal notes.</p>
+                <p>{t('currentlyMarkedAsStart')} <strong>{session.status.toUpperCase()}</strong>{t('currentlyMarkedAsEnd')}</p>
+                <p>{t('statusNotes')}</p>
               </div>
             </CardDescription>
           </Card>
@@ -57,20 +59,20 @@ export default async function EditSessionPage({ params }: { params: Promise<{ id
           {session.session_feedback && (Array.isArray(session.session_feedback) ? session.session_feedback.length > 0 : Object.keys(session.session_feedback).length > 0) ? (
             <Card className="border border-success/30 bg-success/10">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-success">
+                <CardTitle className="flex items-center gap-2 text-success text-lg">
                   <MessageSquareCheck className="h-5 w-5" />
-                  Feedback Submitted
+                  {t('feedbackSubmittedTitle')}
                 </CardTitle>
                 <CardDescription className="text-muted-foreground">
-                  Your client has provided feedback for this completed session.
+                  {t('feedbackSubmittedDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                 <Button asChild size="sm" variant="secondary" className="border-success text-success hover:bg-success/10">
-                    <Link href={`/dashboard/feedback/${Array.isArray(session.session_feedback) ? session.session_feedback[0].id : session.session_feedback.id}`}>
-                      Read Feedback
-                    </Link>
-                 </Button>
+                <Button asChild size="sm" variant="secondary" className="border-success text-success hover:bg-success/10">
+                  <Link href={`/dashboard/feedback/${Array.isArray(session.session_feedback) ? session.session_feedback[0].id : session.session_feedback.id}`}>
+                    {t('readFeedbackBtn')}
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
           ) : (

@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { CheckCircle2, ChevronLeft, User } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 export default async function FeedbackDetailPage({ params }: { params: Promise<{ id: string }> }) {
   await requirePermissionPage(PERMISSIONS.FEEDBACK_READ);
   const { id } = await params;
+  const t = await getTranslations('feedback');
 
   const result = await getFeedbackById(id);
   if (!result.success || !result.feedback) {
@@ -27,9 +29,9 @@ export default async function FeedbackDetailPage({ params }: { params: Promise<{
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Feedback Report</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('detailTitle')}</h1>
           <p className="text-muted-foreground mt-1">
-            Detailed feedback submitted by client
+            {t('detailDescription')}
           </p>
         </div>
       </div>
@@ -45,15 +47,15 @@ export default async function FeedbackDetailPage({ params }: { params: Promise<{
                 </Link>
               </CardTitle>
               <CardDescription className="mt-2 text-base">
-                Session Date: <Link href={`/dashboard/sessions/${feedback.session_id}`} className="text-primary hover:underline">{feedback.sessions?.scheduled_at ? new Date(feedback.sessions.scheduled_at).toLocaleDateString(undefined, { dateStyle: 'long' }) : 'Unknown'}</Link>
+                {t('sessionDate')} <Link href={`/dashboard/sessions/${feedback.session_id}`} className="text-primary hover:underline">{feedback.sessions?.scheduled_at ? new Date(feedback.sessions.scheduled_at).toLocaleDateString(undefined, { dateStyle: 'long' }) : t('unknownDate')}</Link>
                 <span className="mx-2">•</span>
-                Submitted on {new Date(feedback.created_at).toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' })}
+                {t('submittedOn')} {new Date(feedback.created_at).toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' })}
               </CardDescription>
             </div>
             <div className="flex flex-col gap-2 items-start md:items-end">
               {feedback.interested_in_learning && (
                 <span className="inline-flex items-center rounded-md bg-purple-100 dark:bg-purple-900/30 px-3 py-1 text-sm font-medium text-purple-700 dark:text-purple-300 ring-1 ring-inset ring-purple-700/20 dark:ring-purple-400/20">
-                  Interested in Learning Janzu
+                  {t('interestedInLearning')}
                 </span>
               )}
             </div>
@@ -62,21 +64,21 @@ export default async function FeedbackDetailPage({ params }: { params: Promise<{
         <CardContent className="pt-8">
 
           <div className="space-y-3 mb-4">
-            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">How did you feel in the arms of your facilitator?</h4>
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{t('qFeelingInArms')}</h4>
             <p className="text-base bg-muted/30 p-4 rounded-lg leading-relaxed text-foreground">
               "{feedback.feeling_in_arms}"
             </p>
           </div>
 
           <div className="space-y-3 mb-4">
-            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Overall experience</h4>
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{t('qOverallExperience')}</h4>
             <p className="text-base bg-muted/30 p-4 rounded-lg leading-relaxed text-foreground">
               "{feedback.overall_experience}"
             </p>
           </div>
 
           <div className="space-y-3 mb-4">
-            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Did you feel supported at the end of the session?</h4>
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{t('qFeltSupported')}</h4>
             <div className="bg-muted/30 p-4 rounded-lg">
               <p className="text-base font-semibold text-foreground border-b pb-2 mb-2">{feedback.felt_supported}</p>
               {feedback.felt_supported_details ? (
@@ -84,13 +86,13 @@ export default async function FeedbackDetailPage({ params }: { params: Promise<{
                   {feedback.felt_supported_details}
                 </p>
               ) : (
-                <p className="text-sm text-muted-foreground italic">No additional details provided.</p>
+                <p className="text-sm text-muted-foreground italic">{t('noDetailsProvided')}</p>
               )}
             </div>
           </div>
 
           <div className="space-y-3 mb-4">
-            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Additional Comments</h4>
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{t('qAdditionalComments')}</h4>
             <p className="text-base bg-muted/30 p-4 rounded-lg leading-relaxed text-foreground">
               "{feedback.additional_comments}"
             </p>
@@ -98,7 +100,7 @@ export default async function FeedbackDetailPage({ params }: { params: Promise<{
 
           <div className="space-y-3 md:col-span-2 pt-6 border-t">
             <div className="bg-primary/5 p-6 rounded-xl border border-primary/10">
-              <h4 className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">Intentions</h4>
+              <h4 className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">{t('intentions')}</h4>
               <div className="flex items-center gap-3">
                 {feedback.continue_process.includes('another session') ? (
                   <CheckCircle2 className="h-6 w-6 text-green-600" />
@@ -117,3 +119,4 @@ export default async function FeedbackDetailPage({ params }: { params: Promise<{
     </div>
   );
 }
+

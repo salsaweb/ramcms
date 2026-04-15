@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { createSession, updateSession } from '@/app/actions/sessions';
+import { useTranslations } from 'next-intl';
 
 interface SessionFormProps {
   initialData?: any;
@@ -16,6 +17,7 @@ interface SessionFormProps {
 
 export function SessionForm({ initialData, clients, isEdit = false }: SessionFormProps) {
   const router = useRouter();
+  const t = useTranslations('session-form');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -54,7 +56,7 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
     if (result.success) {
       router.push('/dashboard/sessions');
     } else {
-      setError(result.error || 'Failed to save session');
+      setError(result.error || t('failedToSave'));
       setLoading(false);
     }
   }
@@ -70,7 +72,7 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
       {/* Basic details */}
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="clientId">Client *</Label>
+          <Label htmlFor="clientId">{t('clientLabel')}</Label>
           <select
             id="clientId"
             name="clientId"
@@ -79,21 +81,21 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
             disabled={isEdit}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <option value="" disabled>Select a client</option>
+            <option value="" disabled>{t('selectClient')}</option>
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.first_name} {c.last_name} ({c.email || 'No email'})
+                {c.first_name} {c.last_name} ({c.email || t('noEmail')})
               </option>
             ))}
           </select>
           {isEdit && (
-            <p className="text-xs text-muted-foreground">Client cannot be changed after session creation.</p>
+            <p className="text-xs text-muted-foreground">{t('clientCannotBeChanged')}</p>
           )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="scheduledAt">Date & Time *</Label>
+            <Label htmlFor="scheduledAt">{t('dateTimeLabel')}</Label>
             <Input
               id="scheduledAt"
               name="scheduledAt"
@@ -104,7 +106,7 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="durationMinutes">Duration (Minutes) *</Label>
+            <Label htmlFor="durationMinutes">{t('durationLabel')}</Label>
             <Input
               id="durationMinutes"
               name="durationMinutes"
@@ -119,7 +121,7 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="status">Status *</Label>
+          <Label htmlFor="status">{t('statusLabel')}</Label>
           <select
             id="status"
             name="status"
@@ -128,37 +130,37 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
             defaultValue={initialData?.status || 'confirmed'}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
           >
-            <option value="requested">Requested (Pending)</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="no_show">No Show</option>
+            <option value="requested">{t('statusRequested')}</option>
+            <option value="confirmed">{t('statusConfirmed')}</option>
+            <option value="completed">{t('statusCompleted')}</option>
+            <option value="cancelled">{t('statusCancelled')}</option>
+            <option value="no_show">{t('statusNoShow')}</option>
           </select>
         </div>
       </div>
 
       <div className="space-y-4 pt-4 border-t">
-        <h3 className="text-sm font-semibold text-muted-foreground">Notes</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground">{t('notesSection')}</h3>
         
         <div className="space-y-2">
-          <Label htmlFor="clientNotes">Client Notes (Shared)</Label>
+          <Label htmlFor="clientNotes">{t('clientNotesLabel')}</Label>
           <Textarea
             id="clientNotes"
             name="clientNotes"
             rows={3}
             defaultValue={initialData?.client_notes || ''}
-            placeholder="Notes visible to the client (e.g. preparation instructions)..."
+            placeholder={t('clientNotesPlaceholder')}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="internalNotes">Internal Notes (Private)</Label>
+          <Label htmlFor="internalNotes">{t('internalNotesLabel')}</Label>
           <Textarea
             id="internalNotes"
             name="internalNotes"
             rows={3}
             defaultValue={initialData?.internal_notes || ''}
-            placeholder="Your private notes about this session..."
+            placeholder={t('internalNotesPlaceholder')}
           />
         </div>
       </div>
@@ -170,10 +172,10 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
           onClick={() => router.back()}
           disabled={loading}
         >
-          Cancel
+          {t('cancel')}
         </Button>
         <Button type="submit" disabled={loading}>
-          {loading ? 'Saving...' : (isEdit ? 'Update Session' : 'Save Session')}
+          {loading ? t('saving') : (isEdit ? t('updateBtn') : t('saveBtn'))}
         </Button>
       </div>
     </form>

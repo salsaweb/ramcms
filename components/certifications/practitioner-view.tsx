@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Award, AlertCircle, Clock } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface PractitionerProgress {
   completedSessions: number;
@@ -13,6 +14,7 @@ interface PractitionerProgress {
 }
 
 export function PractitionerView({ progress }: { progress: PractitionerProgress }) {
+  const t = useTranslations('certifications');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -33,7 +35,7 @@ export function PractitionerView({ progress }: { progress: PractitionerProgress 
     const result = await requestCertification(formData);
     
     if (!result.success) {
-      setError(result.error || 'Failed to submit application.');
+      setError(result.error || t('failedToSubmit'));
     }
     setLoading(false);
   }
@@ -57,33 +59,33 @@ export function PractitionerView({ progress }: { progress: PractitionerProgress 
              )}
           </div>
           <CardTitle className="text-2xl">
-            {isApproved ? 'You are Certified!' : isPending ? 'Application Submitted' : 'Application Rejected'}
+            {isApproved ? t('statusCertified') : isPending ? t('statusSubmitted') : t('statusRejected')}
           </CardTitle>
           <CardDescription className="text-base mt-2 max-w-md mx-auto">
-            {isApproved && "Congratulations! Your account has been officially verified as a Certified Janzu Practitioner."}
-            {isPending && "Your application for certification has been received and is currently under review by an administrator."}
-            {isRejected && "Unfortunately, your application was not approved at this time."}
+            {isApproved && t('descCertified')}
+            {isPending && t('descSubmitted')}
+            {isRejected && t('descRejected')}
           </CardDescription>
         </CardHeader>
         <CardContent className="text-center pt-6">
            <div className="bg-muted/30 rounded-lg p-6 max-w-md mx-auto border text-sm text-left space-y-3">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Type:</span>
+                <span className="text-muted-foreground">{t('typeLabel')}</span>
                 <span className="font-medium">{activeRequest.type}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Submitted:</span>
+                <span className="text-muted-foreground">{t('submittedLabel')}</span>
                 <span className="font-medium">{new Date(activeRequest.submitted_at).toLocaleDateString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Status:</span>
+                <span className="text-muted-foreground">{t('statusLabel')}</span>
                 <span className={`font-medium capitalize ${
                   isApproved ? 'text-green-600' : isPending ? 'text-amber-600' : 'text-destructive'
                 }`}>{activeRequest.status}</span>
               </div>
               {activeRequest.admin_notes && (
                 <div className="pt-3 border-t mt-3">
-                   <span className="text-muted-foreground block mb-1">Admin Notes:</span>
+                   <span className="text-muted-foreground block mb-1">{t('adminNotesLabel')}</span>
                    <p className="font-medium text-slate-800 bg-white p-2 border rounded">
                      {activeRequest.admin_notes}
                    </p>
@@ -93,7 +95,7 @@ export function PractitionerView({ progress }: { progress: PractitionerProgress 
 
            {isRejected && (
               <Button onClick={handleApply} disabled={loading} className="mt-8">
-                {loading ? 'Re-applying...' : 'Submit New Application'}
+                {loading ? t('reApplyingBtn') : t('submitNewBtn')}
               </Button>
            )}
         </CardContent>
@@ -107,10 +109,10 @@ export function PractitionerView({ progress }: { progress: PractitionerProgress 
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Award className="h-5 w-5 text-primary" />
-          Certification Progress
+          {t('progressTitle')}
         </CardTitle>
         <CardDescription>
-          Track your progress towards becoming a Certified Janzu Practitioner.
+          {t('progressDesc')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -121,15 +123,15 @@ export function PractitionerView({ progress }: { progress: PractitionerProgress 
         )}
 
         <div className="flex justify-between text-sm font-medium mb-2">
-           <span>{currentCount} Sessions with Feedback</span>
-           <span>Goal: {requiredSessions}</span>
+           <span>{currentCount} {t('sessionsWithFeedback')}</span>
+           <span>{t('goalLabel')} {requiredSessions}</span>
         </div>
         <Progress value={percentage} className="h-4" />
         
         <div className="mt-8 text-center pt-8 border-t">
-           <h3 className="text-xl font-semibold mb-2">Ready to apply?</h3>
+           <h3 className="text-xl font-semibold mb-2">{t('readyToApply')}</h3>
            <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-             You need at least {requiredSessions} sessions with client feedback logged in the portal to submit your application for review.
+             {t('requirementsDesc', { required: requiredSessions })}
            </p>
 
            <Button 
@@ -138,7 +140,7 @@ export function PractitionerView({ progress }: { progress: PractitionerProgress 
              disabled={!isEligible || loading}
              className={isEligible ? 'bg-primary hover:bg-primary/90' : ''}
            >
-             {loading ? 'Submitting...' : isEligible ? 'Apply for Certification' : `${requiredSessions - currentCount} More Feedbacks Needed`}
+             {loading ? t('submittingBtn') : isEligible ? t('applyBtn') : t('moreFeedbacksNeeded', { count: requiredSessions - currentCount })}
            </Button>
         </div>
       </CardContent>

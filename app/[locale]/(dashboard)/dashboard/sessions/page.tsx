@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Plus, Calendar, Clock, Video, MessageSquareCheck, MessageSquareDashed } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 export default async function SessionsPage() {
   await requirePermissionPage(PERMISSIONS.SESSIONS_READ);
+  const t = await getTranslations('sessions');
   const response = await getSessions();
   const sessions = response.success ? response.sessions || [] : [];
 
@@ -27,15 +29,15 @@ export default async function SessionsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Sessions</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
           <p className="text-muted-foreground mt-1">
-            Manage your past and upcoming Janzu sessions
+            {t('description')}
           </p>
         </div>
         <Button asChild>
           <Link href="/dashboard/sessions/new">
             <Plus className="h-4 w-4 mr-2" />
-            New Session
+            {t('newSession')}
           </Link>
         </Button>
       </div>
@@ -43,7 +45,7 @@ export default async function SessionsPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Upcoming Sessions</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('upcomingSessions')}</CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -54,7 +56,7 @@ export default async function SessionsPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('pendingRequests')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -65,7 +67,7 @@ export default async function SessionsPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('completed')}</CardTitle>
             <Video className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -80,11 +82,11 @@ export default async function SessionsPage() {
         <CardContent className="pt-6">
           {sessions.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              <p className="text-lg font-medium">No sessions scheduled.</p>
+              <p className="text-lg font-medium">{t('noSessions')}</p>
               <Button asChild className="mt-4">
                 <Link href="/dashboard/sessions/new">
                   <Plus className="h-4 w-4 mr-2" />
-                  Schedule One
+                  {t('scheduleOne')}
                 </Link>
               </Button>
             </div>
@@ -117,12 +119,12 @@ export default async function SessionsPage() {
                       {session.session_feedback && (Array.isArray(session.session_feedback) ? session.session_feedback.length > 0 : Object.keys(session.session_feedback).length > 0) ? (
                         <span className="flex items-center gap-1 text-green-600 font-medium">
                           <MessageSquareCheck className="h-3.5 w-3.5" />
-                          Feedback Provided
+                          {t('feedbackProvided')}
                         </span>
                       ) : session.status === 'completed' ? (
                         <span className="flex items-center gap-1 text-amber-600 font-medium">
                           <MessageSquareDashed className="h-3.5 w-3.5" />
-                          Pending Feedback
+                          {t('pendingFeedback')}
                         </span>
                       ) : null}
                     </div>
@@ -131,7 +133,7 @@ export default async function SessionsPage() {
                   <div className="flex items-center gap-2 md:justify-end shrink-0">
                     <Button variant="outline" size="sm" asChild>
                       <Link href={`/dashboard/sessions/${session.id}`}>
-                        View Details
+                        {t('viewDetails')}
                       </Link>
                     </Button>
                   </div>
