@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/table";
 
 
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
+
 export default async function UsersPage() {
   await requirePermissionPage(PERMISSIONS.USERS_READ);
   const result = await getUsers();
@@ -20,11 +23,19 @@ export default async function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Users</h1>
-        <p className="mt-2 text-muted-foreground">
-          Manage user accounts and permissions
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Users</h1>
+          <p className="mt-2 text-muted-foreground">
+            Manage user accounts and permissions
+          </p>
+        </div>
+        <Link href="/dashboard/users/new">
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Create User
+          </Button>
+        </Link>
       </div>
 
       {!result.success || users.length === 0 ? (

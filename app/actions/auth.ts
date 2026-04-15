@@ -271,9 +271,17 @@ export async function resetPassword(formData: {
 }
 
 
-async function createPasswordResetToken(userId: number) {
-  const TOKEN_EXPIRY_MS = 1000 * 60 * 60; // 1 hour
-
+/**
+ * Create a password reset / invite token for a user.
+ *
+ * @param userId  - User UUID
+ * @param ttlMs   - Token TTL in milliseconds (default: 1 hour)
+ * @returns Raw token string to embed in the email link (never stored)
+ */
+export async function createPasswordResetToken(
+  userId: string,
+  ttlMs: number = 1000 * 60 * 60 // 1 hour default
+) {
   // 1. Generate raw token (sent via email)
   const rawToken = crypto.randomBytes(32).toString('hex');
 
@@ -283,22 +291,22 @@ async function createPasswordResetToken(userId: number) {
     .update(rawToken)
     .digest('hex');
 
-  const expiresAt = new Date(Date.now() + TOKEN_EXPIRY_MS);
+  const expiresAt = new Date(Date.now() + ttlMs);
 
-  // 3. Delete existing tokens (important!)
+  // 3. Delete existing tokens for this user (prevent stale tokens)
   await supabaseAdmin
     .from('password_reset_tokens')
     .delete()
     .eq('user_id', userId);
 
-  // 4. Store new token
+  // 4. Store new hashed token
   await supabaseAdmin.from('password_reset_tokens').insert({
     user_id: userId,
     token: hashedToken,
     expires_at: expiresAt.toISOString(),
   });
 
-  // 5. Return RAW token (never hashed)
+  // 5. Return RAW token (never hashed — embedded in email link)
   return rawToken;
 }
 

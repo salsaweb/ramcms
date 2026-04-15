@@ -10,18 +10,22 @@ import { supabaseAdmin } from '@/lib/supabase/admin';
 import { createUserSchema, updateUserSchema, assignRoleSchema } from '@/lib/validations/schemas';
 import { requirePermission } from '@/lib/rbac/guards';
 import { PERMISSIONS, assignUserRole, revokeUserRole } from '@/lib/rbac/permissions';
-import { hashPassword } from '@/lib/auth/password';
+import { createPasswordResetToken } from '@/app/actions/auth';
+import { sendInviteEmail } from '@/lib/email/send-invite-email';
 import { revalidatePath } from 'next/cache';
+import crypto from 'crypto';
 
 /**
- * Create a new user (Admin only)
- * 
+ * Create a new user and send an invite email (Admin only)
+ *
+ * The admin provides name, email, and role. No password is set —
+ * the user receives an invite link and sets their own password.
+ *
  * Permission: users.create
  */
 export async function createUser(formData: {
   name: string;
   email: string;
-  password: string;
   roleId: number;
 }) {
   try {
@@ -29,7 +33,7 @@ export async function createUser(formData: {
     const adminId = session.user.id;
 
     const validated = createUserSchema.safeParse(formData);
-    
+
     if (!validated.success) {
       return {
         success: false,
@@ -37,7 +41,7 @@ export async function createUser(formData: {
       };
     }
 
-    const { name, email, password, roleId } = validated.data;
+    const { name, email, roleId } = validated.data;
 
     // Check email uniqueness
     const { data: existingUser } = await supabaseAdmin
@@ -53,8 +57,9 @@ export async function createUser(formData: {
       };
     }
 
-    // Hash password
-    const passwordHash = await hashPassword(password);
+    // Store a random unusable password stub — the real password is set
+    // by the user themselves after accepting the invite.
+    const passwordStub = crypto.randomBytes(32).toString('hex');
 
     // Create user
     const { data: newUser, error: createError } = await supabaseAdmin
@@ -62,8 +67,8 @@ export async function createUser(formData: {
       .insert({
         name,
         email: email.toLowerCase(),
-        password_hash: passwordHash,
-        email_verified: true, // Admin-created users are pre-verified
+        password_hash: passwordStub,
+        email_verified: true,   // Admin-invited users are pre-verified
         is_active: true,
       })
       .select('id')
@@ -78,6 +83,13 @@ export async function createUser(formData: {
 
     // Assign role
     await assignUserRole(newUser.id, roleId, adminId);
+
+    // Generate a 72-hour invite token (reuses password_reset_tokens table)
+    const TTL_72H = 1000 * 60 * 60 * 72;
+    const inviteToken = await createPasswordResetToken(newUser.id, TTL_72H);
+
+    // Send invite email
+    await sendInviteEmail(email.toLowerCase(), name, inviteToken);
 
     // Audit log
     await supabaseAdmin.from('audit_logs').insert({

@@ -17,6 +17,8 @@ import {
   Clock,
   MessageSquare,
   Award,
+  Globe2,
+  Calendar,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -82,169 +84,187 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
   const t = useTranslations('navigation');
 
   const navItems: NavItem[] = [
-  {
-    title: t('dashboard'),
-    href: `/${locale}/dashboard`,
-    icon: LayoutDashboard,
-    permission: 'dashboard.access',
-  },
-  {
-    title: t('crm'),
-    href: `/${locale}/dashboard/crm`,
-    icon: Briefcase,
-    permission: 'crm.access',
-    items: [
-      {
-        title: t('dashboard'),
-        href: `/${locale}/dashboard/crm`,
-        permission: 'crm.access',
-      },
-      {
-        title: t('contacts'),
-        href: `/${locale}/dashboard/crm/contacts`,
-        permission: 'contacts.read',
-      },
-      {
-        title: t('companies'),
-        href: `/${locale}/dashboard/crm/companies`,
-        permission: 'companies.read',
-      },
-      {
-        title: t('deals'),
-        href: `/${locale}/dashboard/crm/deals`,
-        permission: 'deals.read',
-      },
-      {
-        title: t('tasks'),
-        href: `/${locale}/dashboard/crm/tasks`,
-        permission: 'tasks.read',
-      },
-      {
-        title: t('analytics'),
-        href: `/${locale}/dashboard/crm/analytics`,
-        permission: 'crm.analytics',
-      },
-    ],
-  },
-  {
-    title: t('media'),
-    href: `/${locale}/dashboard/media`,
-    icon: Music,
-    permission: 'media.access',
-    items: [
-      {
-        title: t('tracks'),
-        href: `/${locale}/dashboard/media/tracks`,
-        permission: 'media.access',
-      },
-      {
-        title: t('artists'),
-        href: `/${locale}/dashboard/media/artists`,
-        permission: 'media.access',
-      },
-      {
-        title: t('playlists'),
-        href: `/${locale}/dashboard/media/playlists`,
-        permission: 'playlists.read',
-      },
-    ],
-  },
-  {
-    title: t('community'),
-    href: `/${locale}/dashboard/practitioners`,
-    icon: Shell,
-    items: [
-      {
-        title: t('practitioners'),
-        href: `/${locale}/dashboard/practitioners`,
-        permission: 'practitioners.read',
-      },
-      {
-        title: t('locations'),
-        href: `/${locale}/dashboard/locations`,
-        permission: 'locations.read',
-      },
-      {
-        title: t('myClients'),
-        href: `/${locale}/dashboard/clients`,
-        permission: 'dashboard.access',
-      },
-      {
-        title: t('certifications'),
-        href: `/${locale}/dashboard/certifications`,
-        icon: Award,
-        permission: 'certifications.read',
-      },
-      {
-        title: t('sessions'),
-        href: `/${locale}/dashboard/sessions`,
-        icon: Clock,
-        permission: 'sessions.read',
-      },
-      {
-        title: t('feedback'),
-        href: `/${locale}/dashboard/feedback`,
-        icon: MessageSquare,
-        permission: 'feedback.read',
-      }
-    ],
-  },
-  {
-    title: t('admin'),
-    href: `/${locale}/dashboard/admin`,
-    icon: Shield,
-    items: [
-      {
-        title: t('users'),
-        href: `/${locale}/dashboard/users`,
-        permission: 'users.read',
-      },
-      {
-        title: t('roles'),
-        href: `/${locale}/dashboard/roles`,
-        permission: 'roles.read',
-      },
-    ],
-  }
+    {
+      title: t('dashboard'),
+      href: `/${locale}/dashboard`,
+      icon: LayoutDashboard,
+      permission: 'dashboard.access',
+    },
+    {
+      title: t('crm'),
+      href: `/${locale}/dashboard/crm`,
+      icon: Briefcase,
+      permission: 'crm.access',
+      items: [
+        {
+          title: t('dashboard'),
+          href: `/${locale}/dashboard/crm`,
+          permission: 'crm.access',
+        },
+        {
+          title: t('contacts'),
+          href: `/${locale}/dashboard/crm/contacts`,
+          permission: 'contacts.read',
+        },
+        {
+          title: t('companies'),
+          href: `/${locale}/dashboard/crm/companies`,
+          permission: 'companies.read',
+        },
+        {
+          title: t('deals'),
+          href: `/${locale}/dashboard/crm/deals`,
+          permission: 'deals.read',
+        },
+        {
+          title: t('tasks'),
+          href: `/${locale}/dashboard/crm/tasks`,
+          permission: 'tasks.read',
+        },
+        {
+          title: t('analytics'),
+          href: `/${locale}/dashboard/crm/analytics`,
+          permission: 'crm.analytics',
+        },
+      ],
+    },
+    {
+      title: t('media'),
+      href: `/${locale}/dashboard/media`,
+      icon: Music,
+      permission: 'media.access',
+      items: [
+        {
+          title: t('tracks'),
+          href: `/${locale}/dashboard/media/tracks`,
+          permission: 'media.access',
+        },
+        {
+          title: t('artists'),
+          href: `/${locale}/dashboard/media/artists`,
+          permission: 'media.access',
+        },
+        {
+          title: t('playlists'),
+          href: `/${locale}/dashboard/media/playlists`,
+          permission: 'playlists.read',
+        },
+      ],
+    },
+    {
+      title: t('community'),
+      href: `/${locale}/dashboard/practitioners`,
+      icon: Shell,
+      items: [
+        {
+          title: t('practitioners'),
+          href: `/${locale}/dashboard/practitioners`,
+          permission: 'practitioners.read',
+        },
+        {
+          title: t('locations'),
+          href: `/${locale}/dashboard/locations`,
+          permission: 'locations.read',
+        },
+        {
+          title: 'Global Map',
+          href: `/${locale}/dashboard/map`,
+          icon: Globe2,
+          permission: 'dashboard.access',
+        },
+        {
+          title: t('myClients'),
+          href: `/${locale}/dashboard/clients`,
+          permission: 'dashboard.access',
+        },
+        {
+          title: t('certifications'),
+          href: `/${locale}/dashboard/certifications`,
+          icon: Award,
+          permission: 'certifications.read',
+        },
+        {
+          title: t('sessions'),
+          href: `/${locale}/dashboard/sessions`,
+          icon: Clock,
+          permission: 'sessions.read',
+        },
+        {
+          title: t('feedback'),
+          href: `/${locale}/dashboard/feedback`,
+          icon: MessageSquare,
+          permission: 'feedback.read',
+        },
+        {
+          title: 'Events',
+          href: `/${locale}/dashboard/events`,
+          icon: Calendar,
+          permission: 'events.read',
+        }
+      ],
+    },
+    {
+      title: t('admin'),
+      href: `/${locale}/dashboard/admin`,
+      icon: Shield,
+      items: [
+        {
+          title: t('users'),
+          href: `/${locale}/dashboard/users`,
+          permission: 'users.read',
+        },
+        {
+          title: t('roles'),
+          href: `/${locale}/dashboard/roles`,
+          permission: 'roles.read',
+        },
+      ],
+    }
   ];
 
   const userNavItems: NavItem[] = [
     {
-        title: t('dashboard'),
-        href: `/${locale}/dashboard`,
-        icon: LayoutDashboard,
-        permission: 'dashboard.access',
+      title: t('dashboard'),
+      href: `/${locale}/dashboard`,
+      icon: LayoutDashboard,
+      permission: 'dashboard.access',
     },
     {
-        title: t('locations'),
-        href: `/${locale}/dashboard/locations`,
-        icon: Locate,
-        permission: 'locations.read',
-      },
-      {
-        title: t('myClients'),
-        href: `/${locale}/dashboard/clients`,
-        icon: Users,
-        permission: 'dashboard.access',
-      },
-      {
-        title: t('certifications'),
-        href: `/${locale}/dashboard/certifications`,
-        icon: Award,
-        permission: 'certifications.read',
-      },
-      {
-        title: t('sessions'),
-        href: `/${locale}/dashboard/sessions`,
-        icon: Clock,
-        permission: 'sessions.read',
-      },
-      {
-        title: t('feedback'),
-        href: `/${locale}/dashboard/feedback`,
-        icon: MessageSquare,
-        permission: 'feedback.read',
-      }
+      title: t('locations'),
+      href: `/${locale}/dashboard/locations`,
+      icon: Locate,
+      permission: 'locations.read',
+    },
+    {
+      title: t('myClients'),
+      href: `/${locale}/dashboard/clients`,
+      icon: Users,
+      permission: 'dashboard.access',
+    },
+    {
+      title: t('certifications'),
+      href: `/${locale}/dashboard/certifications`,
+      icon: Award,
+      permission: 'certifications.read',
+    },
+    {
+      title: t('sessions'),
+      href: `/${locale}/dashboard/sessions`,
+      icon: Clock,
+      permission: 'sessions.read',
+    },
+    {
+      title: t('feedback'),
+      href: `/${locale}/dashboard/feedback`,
+      icon: MessageSquare,
+      permission: 'feedback.read',
+    },
+    {
+      title: 'Events',
+      href: `/${locale}/dashboard/events`,
+      icon: Calendar,
+      permission: 'events.read',
+    }
   ];
 
   const hasPermission = (permission?: string) => {

@@ -119,7 +119,6 @@ export const publishPostSchema = z.object({
 export const createUserSchema = z.object({
   name: z.string().min(2).max(255).trim(),
   email: z.string().email().toLowerCase().trim(),
-  password: z.string().min(8).max(100),
   roleId: z.number().int().positive(),
 });
 

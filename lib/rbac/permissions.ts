@@ -246,6 +246,19 @@ export const PERMISSIONS = {
   LOCATIONS_UPDATE: 'locations.update',
   LOCATIONS_MANAGE: 'locations.manage',
 
+  // Events & RSVPs
+  EVENTS_CREATE: 'events.create',
+  EVENTS_READ: 'events.read',
+  EVENTS_UPDATE: 'events.update',
+  EVENTS_DELETE: 'events.delete',
+  EVENTS_MANAGE: 'events.manage',
+  RSVPS_CREATE: 'rsvps.create',
+  RSVPS_READ: 'rsvps.read',
+
+  // Notifications
+  NOTIFICATIONS_READ: 'notifications.read',
+  NOTIFICATIONS_UPDATE: 'notifications.update',
+
   // System
   SETTINGS_VIEW: 'settings.view',
   SETTINGS_MANAGE: 'settings.manage',
