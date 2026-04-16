@@ -36,7 +36,7 @@ export async function registerUser(formData: {
   try {
     // Validate input
     const validated = registerSchema.safeParse(formData);
-    
+
     if (!validated.success) {
       return {
         success: false,
@@ -180,7 +180,7 @@ export async function resetPassword(formData: {
 
     // Validate input
     const validated = resetPasswordSchema.safeParse(formData);
-    
+
     if (!validated.success) {
       return {
         success: false,
@@ -327,7 +327,7 @@ export async function changePassword(formData: {
 
     // Validate input
     const validated = changePasswordSchema.safeParse(formData);
-    
+
     if (!validated.success) {
       return {
         success: false,
@@ -353,7 +353,7 @@ export async function changePassword(formData: {
 
     // Verify current password
     const isValidPassword = await verifyPassword(currentPassword, user.password_hash);
-    
+
     if (!isValidPassword) {
       return {
         success: false,

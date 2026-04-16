@@ -13,8 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Water } from '@paper-design/shaders-react';
-import { JanzuQuote } from '@/components/auth/janzu-quote';
 import { Shell, CheckCircle } from 'lucide-react';
 import { resetPassword } from '@/app/actions/auth';
 import { useLocale } from 'next-intl';
@@ -57,9 +55,9 @@ export default function AcceptInvitePage() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex items-center justify-center">
       {/* Left Side */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-background">
+      <div className="flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md space-y-8">
           {/* Logo */}
           <div className="flex flex-col items-center text-center space-y-2">
@@ -177,30 +175,6 @@ export default function AcceptInvitePage() {
               </CardContent>
             </Card>
           )}
-        </div>
-      </div>
-
-      {/* Right Side — Branding */}
-      <div className="hidden lg:flex flex-1 items-center justify-center p-8 relative overflow-hidden">
-        <div className="absolute inset-0 z-[-1]">
-          <Water
-            style={{ height: '100%', width: '100%' }}
-            image="https://paper.design/flowers.webp"
-            colorBack="#8f8f8f"
-            colorHighlight="#ffffff"
-            highlights={0.07}
-            layering={0.5}
-            edges={0.8}
-            waves={0.3}
-            caustic={0.1}
-            size={0.2}
-            speed={0.25}
-            scale={1.36}
-            fit="cover"
-          />
-        </div>
-        <div className="max-w-md text-primary-foreground space-y-6">
-          <JanzuQuote />
         </div>
       </div>
     </div>

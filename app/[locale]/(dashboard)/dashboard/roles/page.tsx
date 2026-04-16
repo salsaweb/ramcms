@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { CreateRoleDialog } from '@/components/rbac/create-role-dialog';
 import { RoleCard } from '@/components/rbac/role-card';
 import { getJsonbArrayLength } from '@/lib/utils/jsonb';
+import { getTranslations } from 'next-intl/server';
 
 export default async function RolesPage() {
   await requirePermissionPage('roles.read');
+  const t = await getTranslations('roles');
 
   const [rolesResult, templatesResult] = await Promise.all([
     getAllRoles(),
@@ -25,14 +27,14 @@ export default async function RolesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Roles & Permissions</h1>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
           <p className="mt-2 text-muted-foreground">
-            Manage user roles and their permissions
+            {t('description')}
           </p>
         </div>
         <CreateRoleDialog 
           templates={templates} 
-          trigger={<Button>+ Create Role</Button>} 
+          trigger={<Button>{t('createRole')}</Button>} 
         />
       </div>
 
@@ -40,7 +42,7 @@ export default async function RolesPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Roles</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('statTotalRoles')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{roles.length}</div>
@@ -48,7 +50,7 @@ export default async function RolesPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">System Roles</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('statSystemRoles')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{systemRoles.length}</div>
@@ -56,7 +58,7 @@ export default async function RolesPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Custom Roles</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('statCustomRoles')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{customRoles.length}</div>
@@ -64,7 +66,7 @@ export default async function RolesPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Templates</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('statTemplates')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{templates.length}</div>
@@ -74,9 +76,9 @@ export default async function RolesPage() {
 
       {/* System Roles */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">System Roles</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('systemRolesTitle')}</h2>
         <p className="text-sm text-muted-foreground mb-4">
-          Built-in roles that cannot be deleted or renamed. Permissions can be modified.
+          {t('systemRolesDesc')}
         </p>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {systemRoles.map((role: any) => (
@@ -89,9 +91,9 @@ export default async function RolesPage() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-semibold">Custom Roles</h2>
+            <h2 className="text-xl font-semibold">{t('customRolesTitle')}</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              User-created roles with custom permission sets
+              {t('customRolesDesc')}
             </p>
           </div>
         </div>
@@ -101,13 +103,13 @@ export default async function RolesPage() {
             <CardContent className="py-12">
               <div className="text-center">
                 <div className="text-4xl my-4">🎭</div>
-                <h3 className="text-lg font-medium mb-2">No Custom Roles</h3>
+                <h3 className="text-lg font-medium mb-2">{t('noCustomRoles')}</h3>
                 <p className="text-muted-foreground mb-4">
-                  Create custom roles to define specific permission sets for your team
+                  {t('noCustomRolesDesc')}
                 </p>
                 <CreateRoleDialog 
                   templates={templates} 
-                  trigger={<Button>+ Create Role</Button>} 
+                  trigger={<Button>{t('createRole')}</Button>} 
                 />
               </div>
             </CardContent>
@@ -125,9 +127,9 @@ export default async function RolesPage() {
       {templates.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Quick Start Templates</CardTitle>
+            <CardTitle>{t('templatesTitle')}</CardTitle>
             <CardDescription>
-              Pre-configured roles for common use cases
+              {t('templatesDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -141,14 +143,14 @@ export default async function RolesPage() {
                     <h4 className="font-medium">{template.name}</h4>
                     <p className="text-sm text-muted-foreground">{template.description}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {getJsonbArrayLength(template.template_permissions)} permissions included
+                      {getJsonbArrayLength(template.template_permissions)} {t('permissionsIncluded')}
                     </p>
                   </div>
                   <CreateRoleDialog 
                     templates={templates} 
                     defaultTemplateId={template.id}
                     trigger={<Button variant="outline" size="sm">
-                      Use Template
+                      {t('useTemplate')}
                     </Button>} 
                   />
                 </div>
@@ -159,17 +161,17 @@ export default async function RolesPage() {
       )}
 
       {/* Help Section */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900">
         <CardHeader>
-          <CardTitle className="text-blue-900">💡 Managing Roles</CardTitle>
+          <CardTitle className="text-blue-900 dark:text-blue-400">{t('helpTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2 text-blue-800">
-            <p>• <strong>System Roles:</strong> Built-in roles (Admin, User). Can modify permissions but not delete.</p>
-            <p>• <strong>Custom Roles:</strong> Create roles with specific permission sets for your organization.</p>
-            <p>• <strong>Templates:</strong> Quick-start roles for common positions (Sales Rep, Manager, etc.).</p>
-            <p>• <strong>Permissions:</strong> Click on any role to view and modify its permissions.</p>
-            <p>• <strong>Clone:</strong> Duplicate existing roles to quickly create similar roles.</p>
+          <div className="space-y-2 text-blue-800 dark:text-blue-300">
+            <p>• <strong>{t('helpSystemRolesTitle')}</strong> {t('helpSystemRoles')}</p>
+            <p>• <strong>{t('helpCustomRolesTitle')}</strong> {t('helpCustomRoles')}</p>
+            <p>• <strong>{t('helpTemplatesTitle')}</strong> {t('helpTemplates')}</p>
+            <p>• <strong>{t('helpPermissionsTitle')}</strong> {t('helpPermissions')}</p>
+            <p>• <strong>{t('helpCloneTitle')}</strong> {t('helpClone')}</p>
           </div>
         </CardContent>
       </Card>

@@ -7,6 +7,8 @@ import { hashPassword } from '@/lib/auth/password';
 import { getSettingByKey } from '@/app/actions/settings';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { createPasswordResetToken } from '@/app/actions/auth';
+import { sendInviteEmail } from '@/lib/email/send-invite-email';
 
 const createPractitionerSchema = z.object({
   userId: z.string().uuid('Invalid user ID').optional(),
@@ -256,7 +258,7 @@ export async function createPractitioner(formData: {
 
       let practitionerRoleId: number | null = null;
       const defaultRoleIdStr = await getSettingByKey('default_practitioner_role_id');
-      
+
       if (defaultRoleIdStr) {
         practitionerRoleId = parseInt(defaultRoleIdStr, 10);
       } else {
@@ -269,8 +271,12 @@ export async function createPractitioner(formData: {
         await assignUserRole(finalUserId, practitionerRoleId, adminId);
       }
 
-      // Simulate sending invite (stub)
-      console.log(`[INVITE SYSTEM] Sent invite to ${email} to complete practitioner profile.`);
+      // Generate a 72-hour invite token (reuses password_reset_tokens table)
+      const TTL_72H = 1000 * 60 * 60 * 72;
+      const inviteToken = await createPasswordResetToken(finalUserId as string, TTL_72H);
+
+      // Send invite email
+      await sendInviteEmail(email.toLowerCase(), name, inviteToken);
     }
 
     if (!finalUserId) {
@@ -385,7 +391,7 @@ export async function updatePractitioner(formData: {
         youtube: updates.youtube || undefined,
         linkedin_url: updates.linkedinUrl || undefined,
       };
-      
+
       delete cleanUpdates.instagram;
       delete cleanUpdates.twitterHandle;
       delete cleanUpdates.facebookUrl;
@@ -485,7 +491,7 @@ export async function resendPractitionerInvite(id: string) {
 
     const { data: practitioner, error } = await supabaseAdmin
       .from('practitioners')
-      .select('users(email)')
+      .select('users(email, name, id)')
       .eq('id', id)
       .single();
 
@@ -502,9 +508,19 @@ export async function resendPractitionerInvite(id: string) {
     }
 
     const email = userEmail;
+    const name = Array.isArray(practitioner.users)
+      ? practitioner.users[0]?.name
+      : (practitioner.users as any)?.name;
+    const userId = Array.isArray(practitioner.users)
+      ? practitioner.users[0]?.id
+      : (practitioner.users as any)?.id;
 
-    // Simulate sending invite (stub)
-    console.log(`[INVITE SYSTEM] Resent invite to ${email} to complete practitioner profile.`);
+    // Generate a 72-hour invite token (reuses password_reset_tokens table)
+    const TTL_72H = 1000 * 60 * 60 * 72;
+    const inviteToken = await createPasswordResetToken(userId as string, TTL_72H);
+
+    // Send invite email
+    await sendInviteEmail(email.toLowerCase(), name, inviteToken);
 
     // Audit log
     await supabaseAdmin.from('audit_logs').insert({
