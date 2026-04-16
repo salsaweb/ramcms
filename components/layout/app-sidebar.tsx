@@ -152,6 +152,12 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
       ],
     },
     {
+      title: t('myClients'),
+      href: `/${locale}/dashboard/clients`,
+      icon: Users,
+      permission: 'dashboard.access',
+    },
+    {
       title: t('community'),
       href: `/${locale}/dashboard/practitioners`,
       icon: Shell,
@@ -170,13 +176,9 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
           title: 'Global Map',
           href: `/${locale}/dashboard/map`,
           icon: Globe2,
-          permission: 'dashboard.access',
+          permission: 'locations.read',
         },
-        {
-          title: t('myClients'),
-          href: `/${locale}/dashboard/clients`,
-          permission: 'dashboard.access',
-        },
+
         {
           title: t('certifications'),
           href: `/${locale}/dashboard/certifications`,

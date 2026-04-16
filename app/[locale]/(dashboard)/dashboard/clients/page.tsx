@@ -3,7 +3,7 @@ import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { getClients } from '@/app/actions/clients';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, Phone, Plus } from 'lucide-react';
+import { Mail, User, Phone, Plus } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { getTranslations, getLocale } from 'next-intl/server';
@@ -63,7 +63,7 @@ export default async function ClientsPage() {
           {clients.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <p className="text-lg font-medium">{t('noClients')}</p>
-              <p className="text-sm mt-1">{t('noClientsDescription')}</p>
+              <p className="text-sm mt-1">{t('getStarted')}</p>
               <Button asChild className="mt-4">
                 <Link href={`/${locale}/dashboard/clients/new`}>
                   <Plus className="h-4 w-4 mr-2" />
