@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createUser } from '@/app/actions/users';
+import { useLocale } from 'next-intl';
 import { toast } from 'sonner';
 
 export interface CreateUserFormProps {
@@ -22,6 +23,7 @@ export function CreateUserForm({ roles }: CreateUserFormProps) {
     setLoading(true);
     setError('');
 
+    const locale = useLocale();
     const form = e.currentTarget;
     const name = (form.elements.namedItem('name') as HTMLInputElement).value;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
@@ -34,7 +36,7 @@ export function CreateUserForm({ roles }: CreateUserFormProps) {
 
     if (result.success) {
       toast.success('User invited successfully. An email has been sent.');
-      router.push('/dashboard/users');
+      router.push(`/${locale}/dashboard/users`);
       router.refresh();
     } else {
       setError(result.error || 'Failed to create user');

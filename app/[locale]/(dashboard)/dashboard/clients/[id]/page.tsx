@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, Plus } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Calendar, Clock, CheckCircle2 } from 'lucide-react';
+import { Calendar, Clock, CheckCircle2, MessageSquareCheck, MessageSquareDashed } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { FeedbackLinkButton } from '@/components/feedback/feedback-link-button';
 import { getSessions } from '@/app/actions/sessions';
 import { getTranslations, getLocale } from 'next-intl/server';
 
@@ -34,9 +35,10 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
 
   const locale = await getLocale();
   const t = await getTranslations('clients');
+  const tSession = await getTranslations('sessions');
 
   const sessions = sessionsResponse.success ? sessionsResponse.sessions || [] : [];
-  
+
   // Stats
   const completedSessions = sessions.filter(s => s.status === 'completed').length;
   const upcomingSessions = sessions.filter(s => s.status === 'confirmed').length;
@@ -47,7 +49,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
       case 'confirmed': return 'default';
       case 'requested': return 'secondary';
       case 'completed': return 'outline';
-      case 'cancelled': 
+      case 'cancelled':
       case 'no_show': return 'destructive';
       default: return 'outline';
     }
@@ -78,7 +80,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
             <TabsTrigger value="overview">{t('overviewAndSessions')}</TabsTrigger>
             <TabsTrigger value="edit">{t('editDetails')}</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="overview" className="space-y-6 w-full">
             <div className="grid gap-4 md:grid-cols-3">
               <Card>
@@ -124,7 +126,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
                     </Link>
                   </Button>
                 </div>
-                
+
               </CardHeader>
               <CardContent>
                 {sessions.length === 0 ? (
@@ -144,7 +146,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
                               {session.status.replace('_', ' ')}
                             </Badge>
                           </div>
-                          
+
                           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground mt-2">
                             <span className="flex items-center gap-1">
                               <Calendar className="h-3.5 w-3.5" />
@@ -154,11 +156,28 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
                               <Clock className="h-3.5 w-3.5" />
                               {new Date(session.scheduled_at).toLocaleTimeString(undefined, { timeStyle: 'short' })} ({session.duration_minutes} min)
                             </span>
+                            {session.session_feedback && (Array.isArray(session.session_feedback) ? session.session_feedback.length > 0 : Object.keys(session.session_feedback).length > 0) ? (
+                              <span className="flex items-center gap-1 text-green-600 font-medium">
+                                <Button asChild size="sm" variant="secondary" className="border-success text-success hover:bg-success/10">
+                                  <Link href={`/${locale}/dashboard/feedback/${Array.isArray(session.session_feedback) ? session.session_feedback[0].id : session.session_feedback.id}`}>
+                                    <MessageSquareCheck className="h-3.5 w-3.5" />
+                                    {tSession('feedbackProvided')}
+                                  </Link>
+                                </Button>
+                              </span>
+                            ) : session.status === 'completed' ? (
+                              <span className="flex items-center gap-1 text-amber-600 font-medium">
+                                <FeedbackLinkButton sessionId={session.id} locale={locale}>
+                                  <MessageSquareDashed className="h-3.5 w-3.5" />
+                                  {tSession('pendingFeedback')}
+                                </FeedbackLinkButton>
+                              </span>
+                            ) : null}
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2 md:justify-end shrink-0">
-                          <Link 
+                          <Link
                             href={`/dashboard/sessions/${session.id}`}
                             className="text-sm border px-3 py-1.5 rounded-md hover:bg-muted"
                           >
@@ -172,7 +191,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="edit" className="mt-4 w-full">
             <ClientForm initialData={client} isEdit={true} />
           </TabsContent>

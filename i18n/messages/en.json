@@ -262,6 +262,7 @@
   "feedback-form": {
     "title": "Janzu Session Feedback",
     "description": "Share your experience to help us improve.",
+    "selectLanguage": "Select language",
     "sessionDetails": "Session Details",
     "sessionProvidedBy": "Session provided by",
     "practitioner": "your practitioner",
@@ -396,7 +397,9 @@
     "qFeltSupported": "Did you feel supported at the end of the session?",
     "noDetailsProvided": "No additional details provided.",
     "qAdditionalComments": "Additional Comments",
-    "intentions": "Intentions"
+    "intentions": "Intentions",
+    "feedbackLink": "Feedback Link",
+    "feedbackLinkDescription": "Share this unique link with your client so they can provide anonymous feedback on this session."
   },
   "errors": {
     "generic": "An error occurred",
@@ -407,6 +410,7 @@
     "failedToSaveClient": "Failed to save client",
     "unableToLoadFeedbackForm": "Unable to load feedback form",
     "thereWasAnErrorSubmittingYourFeedback": "There was an error submitting your feedback.",
-    "unexpectedError": "An unexpected error occurred. Please try again."
+    "unexpectedError": "An unexpected error occurred. Please try again.",
+    "failedToCopyText": "Failed to copy text"
   }
 }

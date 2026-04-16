@@ -5,12 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Calendar, Clock, Video, MessageSquareCheck, MessageSquareDashed } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { FeedbackLinkButton } from '@/components/feedback/feedback-link-button';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 
 export default async function SessionsPage() {
   await requirePermissionPage(PERMISSIONS.SESSIONS_READ);
   const t = await getTranslations('sessions');
+  const locale = await getLocale();
   const response = await getSessions();
   const sessions = response.success ? response.sessions || [] : [];
 
@@ -19,7 +21,7 @@ export default async function SessionsPage() {
       case 'confirmed': return 'default';
       case 'requested': return 'secondary';
       case 'completed': return 'outline';
-      case 'cancelled': 
+      case 'cancelled':
       case 'no_show': return 'destructive';
       default: return 'outline';
     }
@@ -35,7 +37,7 @@ export default async function SessionsPage() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/dashboard/sessions/new">
+          <Link href={`/${locale}/dashboard/sessions/new`}>
             <Plus className="h-4 w-4 mr-2" />
             {t('newSession')}
           </Link>
@@ -49,7 +51,7 @@ export default async function SessionsPage() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="w-full text-2xl font-bold text-center">
               {sessions.filter(s => s.status === 'confirmed').length}
             </div>
           </CardContent>
@@ -60,7 +62,7 @@ export default async function SessionsPage() {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="w-full text-2xl font-bold text-center">
               {sessions.filter(s => s.status === 'requested').length}
             </div>
           </CardContent>
@@ -71,7 +73,7 @@ export default async function SessionsPage() {
             <Video className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="w-full text-2xl font-bold text-center">
               {sessions.filter(s => s.status === 'completed').length}
             </div>
           </CardContent>
@@ -84,7 +86,7 @@ export default async function SessionsPage() {
             <div className="text-center py-12 text-muted-foreground">
               <p className="text-lg font-medium">{t('noSessions')}</p>
               <Button asChild className="mt-4">
-                <Link href="/dashboard/sessions/new">
+                <Link href={`/${locale}/dashboard/sessions/new`}>
                   <Plus className="h-4 w-4 mr-2" />
                   {t('scheduleOne')}
                 </Link>
@@ -100,13 +102,15 @@ export default async function SessionsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold text-lg truncate">
-                        {session.contacts?.first_name} {session.contacts?.last_name}
+                        <Link href={`/${locale}/dashboard/clients/${session.contacts?.id}`}>
+                          {session.contacts?.first_name} {session.contacts?.last_name}
+                        </Link>
                       </h3>
                       <Badge variant={getStatusBadgeVariant(session.status)} className="capitalize px-2 py-0 border-primary/20">
                         {session.status.replace('_', ' ')}
                       </Badge>
                     </div>
-                    
+
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3.5 w-3.5" />
@@ -118,13 +122,19 @@ export default async function SessionsPage() {
                       </span>
                       {session.session_feedback && (Array.isArray(session.session_feedback) ? session.session_feedback.length > 0 : Object.keys(session.session_feedback).length > 0) ? (
                         <span className="flex items-center gap-1 text-green-600 font-medium">
-                          <MessageSquareCheck className="h-3.5 w-3.5" />
-                          {t('feedbackProvided')}
+                          <Button asChild size="sm" variant="secondary" className="border-success text-success hover:bg-success/10">
+                            <Link href={`/${locale}/dashboard/feedback/${Array.isArray(session.session_feedback) ? session.session_feedback[0].id : session.session_feedback.id}`}>
+                              <MessageSquareCheck className="h-3.5 w-3.5" />
+                              {t('feedbackProvided')}
+                            </Link>
+                          </Button>
                         </span>
                       ) : session.status === 'completed' ? (
                         <span className="flex items-center gap-1 text-amber-600 font-medium">
-                          <MessageSquareDashed className="h-3.5 w-3.5" />
-                          {t('pendingFeedback')}
+                          <FeedbackLinkButton sessionId={session.id} locale={locale}>
+                            <MessageSquareDashed className="h-3.5 w-3.5" />
+                            {t('pendingFeedback')}
+                          </FeedbackLinkButton>
                         </span>
                       ) : null}
                     </div>
@@ -132,7 +142,7 @@ export default async function SessionsPage() {
 
                   <div className="flex items-center gap-2 md:justify-end shrink-0">
                     <Button variant="outline" size="sm" asChild>
-                      <Link href={`/dashboard/sessions/${session.id}`}>
+                      <Link href={`/${locale}/dashboard/sessions/${session.id}`}>
                         {t('viewDetails')}
                       </Link>
                     </Button>
@@ -143,6 +153,6 @@ export default async function SessionsPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </div >
   );
 }

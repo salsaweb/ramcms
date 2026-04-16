@@ -168,13 +168,14 @@ export default function LoginPage() {
                   )}
                 </Button>
 
-                {/* Register Link */}
+                {/* Register Link 
                 <div className="text-center text-sm">
                   <span className="text-muted-foreground">{t('noAccount')}</span>{' '}
                   <Link href="/auth/register" className="text-primary hover:underline font-medium">
                     {t('createAccount')}
                   </Link>
                 </div>
+                */}
               </form>
             </CardContent>
           </Card>

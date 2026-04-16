@@ -38,11 +38,11 @@ async function getPractitionerStats(userId: string) {
 
   let completedSessions = 0;
   if (practitioner) {
-     const { count } = await supabaseAdmin
-       .from('session_feedback')
-       .select('*', { count: 'exact', head: true })
-       .eq('practitioner_id', practitioner.id);
-     completedSessions = count || 0;
+    const { count } = await supabaseAdmin
+      .from('session_feedback')
+      .select('*', { count: 'exact', head: true })
+      .eq('practitioner_id', practitioner.id);
+    completedSessions = count || 0;
   }
 
   return {
@@ -53,7 +53,7 @@ async function getPractitionerStats(userId: string) {
 
 export default async function DashboardPage() {
   const session = await getSession();
-  
+
   if (!session?.user) {
     return <div>Unauthorized</div>;
   }
@@ -62,25 +62,25 @@ export default async function DashboardPage() {
 
   // 1. Check roles
   const isAdmin = await checkPermission(PERMISSIONS.USERS_READ);
-  
+
   const { data: practitioner } = await supabaseAdmin
     .from('practitioners')
     .select('id')
     .eq('user_id', userId)
     .maybeSingle();
-    
+
   // An admin might also be a practitioner, but usually they just want the admin view.
   // We can show both or prioritize. Let's show Admin if they are admin.
   // Wait, if they are both, we can render BOTH blocks.
-  
+
   const isPractitioner = !!practitioner;
-  
+
   const { data: contact } = await supabaseAdmin
     .from('contacts')
     .select('id, owner_id')
     .eq('user_id', userId)
     .maybeSingle();
-    
+
   const isParticipant = !!contact;
 
   const locale = await getLocale();
@@ -108,9 +108,9 @@ export default async function DashboardPage() {
               Please complete your profile or contact your administrator to receive access to portal features.
             </p>
             <div className="mt-4">
-               <Button asChild>
-                 <Link href={`/${locale}/dashboard/settings/profile`}>Complete Profile</Link>
-               </Button>
+              <Button asChild>
+                <Link href={`/${locale}/dashboard/settings/profile`}>Complete Profile</Link>
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -192,36 +192,36 @@ async function PractitionerDashboard({ userId }: { userId: string }) {
           <CardTitle className="text-sm font-medium">{t('myClients')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.totalClients}</div>
-          <p className="text-xs text-muted-foreground mt-1">
+          <div className="w-full text-2xl font-bold text-center">{stats.totalClients}</div>
+          <p className="w-full text-xs text-muted-foreground mt-1 text-center">
             {t('myClientsDescription')}
           </p>
           <div className="mt-4">
-             <Button asChild size="sm" variant="outline" className="w-full">
-               <Link href="/dashboard/clients">{t('manageClients')}</Link>
-             </Button>
+            <Button asChild size="sm" variant="outline" className="w-full">
+              <Link href={`/${locale}/dashboard/clients`}>{t('manageClients')}</Link>
+            </Button>
           </div>
         </CardContent>
       </Card>
-      
+
       <Card className="md:col-span-2">
         <CardHeader>
           <CardTitle>{t('certificationProgress')}</CardTitle>
           <CardDescription>
-             {t('certificationProgressDescription')}
+            {t('certificationProgressDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
-           <div className="flex justify-between text-sm font-medium mb-2">
-              <span>{stats.completedSessions} {t('sessionsWithFeedback')}</span>
-              <span>{t('goal')}: 50</span>
-           </div>
-           <Progress value={Math.min((stats.completedSessions / 50) * 100, 100)} className="h-2" />
-           <div className="mt-4 flex justify-end">
-              <Button asChild size="sm" variant="ghost">
-                 <Link href={`/${locale}/dashboard/certifications`}>{t('viewDetails')}</Link>
-              </Button>
-           </div>
+          <div className="flex justify-between text-sm font-medium mb-2">
+            <span>{stats.completedSessions} {t('sessionsWithFeedback')}</span>
+            <span>{t('goal')}: 50</span>
+          </div>
+          <Progress value={Math.min((stats.completedSessions / 50) * 100, 100)} className="h-2" />
+          <div className="mt-4 flex justify-end">
+            <Button asChild size="sm" variant="ghost">
+              <Link href={`/${locale}/dashboard/certifications`}>{t('viewDetails')}</Link>
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -245,9 +245,9 @@ async function ParticipantDashboard() {
             {t('participantProfileDescriptionFutureUpdates')}
           </p>
           <div className="mt-6 flex space-x-4">
-             <Button asChild>
-               <Link href={`/${locale}/dashboard/settings/profile`}>{t('updateMyProfile')}</Link>
-             </Button>
+            <Button asChild>
+              <Link href={`/${locale}/dashboard/settings/profile`}>{t('updateMyProfile')}</Link>
+            </Button>
           </div>
         </CardContent>
       </Card>

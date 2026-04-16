@@ -46,7 +46,7 @@ export default async function FeedbackPage({ params }: { params: Promise<{ sessi
           <p className="text-lg text-slate-600">
             {t('description')}
           </p>
-          <LanguageSwitcher className="bg-black" />
+          <div className="flex justify-center"><p className="text-lg text-slate-600 mr-2">{t('selectLanguage')}: </p><LanguageSwitcher className="bg-black" /></div>
         </div>
 
         <Card className="shadow-lg border-0">

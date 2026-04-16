@@ -46,6 +46,7 @@ export default withAuth(
       '/auth/register',
       '/auth/forgot-password',
       '/auth/reset-password',
+      '/auth/accept-invite',
       '/auth/error',
       '/feedback'
     ];
@@ -104,6 +105,7 @@ export default withAuth(
           '/auth/register',
           '/auth/forgot-password',
           '/auth/reset-password',
+          '/auth/accept-invite',
           '/auth/error',
           '/feedback'
         ];

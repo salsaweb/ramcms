@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { MessageSquareQuote, CheckCircle2, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { FacilitatorFilter } from './facilitator-filter';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 
 interface PageProps {
   searchParams: Promise<{ practitionerId?: string }>;
@@ -16,6 +16,7 @@ export default async function FeedbackDashboardPage({ searchParams }: PageProps)
 
   const { practitionerId } = await searchParams;
   const t = await getTranslations('feedback');
+  const locale = await getLocale();
 
   const response = await getPractitionerFeedback(practitionerId);
   const feedbackList = response.success ? response.feedback || [] : [];
@@ -52,7 +53,7 @@ export default async function FeedbackDashboardPage({ searchParams }: PageProps)
             <MessageSquareQuote className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{completed}</div>
+            <div className="w-full text-2xl font-bold text-center">{completed}</div>
           </CardContent>
         </Card>
         <Card>
@@ -61,7 +62,7 @@ export default async function FeedbackDashboardPage({ searchParams }: PageProps)
             <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{retentionRate}%</div>
+            <div className="w-full text-2xl font-bold text-center">{retentionRate}%</div>
           </CardContent>
         </Card>
       </div>
@@ -80,7 +81,7 @@ export default async function FeedbackDashboardPage({ searchParams }: PageProps)
                 <FacilitatorFilter practitioners={practitioners} currentValue={practitionerId} />
                 {practitionerId && (
                   <Link
-                    href="/dashboard/feedback"
+                    href={`/${locale}/dashboard/feedback`}
                     className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2"
                   >
                     {t('clear')}
@@ -124,7 +125,7 @@ export default async function FeedbackDashboardPage({ searchParams }: PageProps)
                       <tr key={f.id} className="border-b hover:bg-muted/30 transition-colors">
                         <td className="px-4 py-4">
                           <Link
-                            href={`/dashboard/clients/${f.client_id}`}
+                            href={`/${locale}/dashboard/clients/${f.client_id}`}
                             className="font-medium hover:underline text-primary"
                           >
                             {f.contacts?.first_name} {f.contacts?.last_name}
@@ -134,7 +135,7 @@ export default async function FeedbackDashboardPage({ searchParams }: PageProps)
                         {isAdmin && (
                           <td className="px-4 py-4">
                             <Link
-                              href={`/dashboard/practitioners/${f.practitioner_id}`}
+                              href={`/${locale}/dashboard/practitioners/${f.practitioner_id}`}
                               className="hover:underline text-primary"
                             >
                               {f.practitioners?.users?.name ?? '—'}
@@ -144,7 +145,7 @@ export default async function FeedbackDashboardPage({ searchParams }: PageProps)
 
                         <td className="px-4 py-4">
                           <Link
-                            href={`/dashboard/sessions/${f.session_id}`}
+                            href={`/${locale}/dashboard/sessions/${f.session_id}`}
                             className="hover:underline text-primary"
                           >
                             {f.sessions?.scheduled_at
@@ -177,7 +178,7 @@ export default async function FeedbackDashboardPage({ searchParams }: PageProps)
                         </td>
                         <td className="px-4 py-4 text-right">
                           <Link
-                            href={`/dashboard/feedback/${f.id}`}
+                            href={`/${locale}/dashboard/feedback/${f.id}`}
                             className="inline-block px-3 py-1.5 border rounded text-xs font-medium hover:bg-muted"
                           >
                             {t('viewFull')}

@@ -3,8 +3,7 @@ import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { getClients } from '@/app/actions/clients';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Search, Mail, Phone, Plus } from 'lucide-react';
+import { User, Phone, Plus } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { getTranslations, getLocale } from 'next-intl/server';
@@ -37,11 +36,11 @@ export default async function ClientsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('totalClients')}</CardTitle>
-            <Mail className="h-4 w-4 text-muted-foreground" />
+            <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{clients.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <div className="w-full text-2xl font-bold text-center">{clients.length}</div>
+            <p className="w-full text-xs text-muted-foreground mt-1 text-center">
               {t('activeClients')}
             </p>
           </CardContent>
@@ -86,7 +85,7 @@ export default async function ClientsPage() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <Link href={`/dashboard/clients/${client.id}`} className="font-medium hover:underline truncate">
+                        <Link href={`/${locale}/dashboard/clients/${client.id}`} className="font-medium hover:underline truncate">
                           {client.first_name} {client.last_name}
                         </Link>
                         {client.tags?.map((tag: string) => (
@@ -117,7 +116,7 @@ export default async function ClientsPage() {
                       {tCommon('added')} {new Date(client.created_at).toLocaleDateString()}
                     </span>
                     <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/dashboard/clients/${client.id}`}>
+                      <Link href={`/${locale}/dashboard/clients/${client.id}`}>
                         {tCommon('edit')}
                       </Link>
                     </Button>

@@ -14,6 +14,7 @@ import { createPasswordResetToken } from '@/app/actions/auth';
 import { sendInviteEmail } from '@/lib/email/send-invite-email';
 import { revalidatePath } from 'next/cache';
 import crypto from 'crypto';
+import { getLocale } from 'next-intl/server';
 
 /**
  * Create a new user and send an invite email (Admin only)
@@ -68,7 +69,7 @@ export async function createUser(formData: {
         name,
         email: email.toLowerCase(),
         password_hash: passwordStub,
-        email_verified: true,   // Admin-invited users are pre-verified
+        email_verified: false,
         is_active: true,
       })
       .select('id')
@@ -100,7 +101,9 @@ export async function createUser(formData: {
       metadata: { email, role_id: roleId },
     });
 
-    revalidatePath('/dashboard/users');
+    const locale = await getLocale();
+
+    revalidatePath(`/${locale}/dashboard/users`);
 
     return {
       success: true,
@@ -131,7 +134,7 @@ export async function updateUser(formData: {
     const adminId = session.user.id;
 
     const validated = updateUserSchema.safeParse(formData);
-    
+
     if (!validated.success) {
       return {
         success: false,
@@ -176,7 +179,9 @@ export async function updateUser(formData: {
       metadata: cleanUpdates,
     });
 
-    revalidatePath('/dashboard/users');
+    const locale = await getLocale();
+
+    revalidatePath(`/${locale}/dashboard/users`);
 
     return {
       success: true,
@@ -227,7 +232,9 @@ export async function deleteUser(userId: string) {
       resource_id: userId,
     });
 
-    revalidatePath('/dashboard/users');
+    const locale = await getLocale();
+
+    revalidatePath(`/${locale}/dashboard/users`);
 
     return {
       success: true,
@@ -254,7 +261,7 @@ export async function assignRole(formData: {
     const adminId = session.user.id;
 
     const validated = assignRoleSchema.safeParse(formData);
-    
+
     if (!validated.success) {
       return {
         success: false,
@@ -279,7 +286,9 @@ export async function assignRole(formData: {
       metadata: { role_id: roleId },
     });
 
-    revalidatePath('/dashboard/users');
+    const locale = await getLocale();
+
+    revalidatePath(`/${locale}/dashboard/users`);
 
     return {
       success: true,
@@ -306,7 +315,7 @@ export async function removeRole(formData: {
     const adminId = session.user.id;
 
     const validated = assignRoleSchema.safeParse(formData);
-    
+
     if (!validated.success) {
       return {
         success: false,
@@ -331,7 +340,9 @@ export async function removeRole(formData: {
       metadata: { role_id: roleId },
     });
 
-    revalidatePath('/dashboard/users');
+    const locale = await getLocale();
+
+    revalidatePath(`/${locale}/dashboard/users`);
 
     return {
       success: true,

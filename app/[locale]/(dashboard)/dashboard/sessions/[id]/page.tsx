@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { MessageSquareCheck } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 
 export default async function EditSessionPage({ params }: { params: Promise<{ id: string }> }) {
   await requirePermissionPage(PERMISSIONS.SESSIONS_READ);
@@ -17,6 +17,7 @@ export default async function EditSessionPage({ params }: { params: Promise<{ id
   // Unwrap Next.js 15 async params safely!
   const { id } = await params;
   const t = await getTranslations('sessions');
+  const locale = await getLocale();
 
   const [sessionRes, clients] = await Promise.all([
     getSessionById(id),
@@ -69,7 +70,7 @@ export default async function EditSessionPage({ params }: { params: Promise<{ id
               </CardHeader>
               <CardContent>
                 <Button asChild size="sm" variant="secondary" className="border-success text-success hover:bg-success/10">
-                  <Link href={`/dashboard/feedback/${Array.isArray(session.session_feedback) ? session.session_feedback[0].id : session.session_feedback.id}`}>
+                  <Link href={`/${locale}/dashboard/feedback/${Array.isArray(session.session_feedback) ? session.session_feedback[0].id : session.session_feedback.id}`}>
                     {t('readFeedbackBtn')}
                   </Link>
                 </Button>

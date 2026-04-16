@@ -7,7 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { createSession, updateSession } from '@/app/actions/sessions';
-import { useTranslations } from 'next-intl';
+import { Plus } from 'lucide-react';
+import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface SessionFormProps {
   initialData?: any;
@@ -18,6 +20,8 @@ interface SessionFormProps {
 export function SessionForm({ initialData, clients, isEdit = false }: SessionFormProps) {
   const router = useRouter();
   const t = useTranslations('session-form');
+  const tClients = useTranslations('clients');
+  const locale = useLocale();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -38,7 +42,7 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
     setError('');
 
     const formData = new FormData(e.currentTarget);
-    
+
     // Ensure datetime is properly formatted for Postgres (add Z or convert to ISO)
     const localDateTime = formData.get('scheduledAt') as string;
     if (localDateTime) {
@@ -73,21 +77,31 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="clientId">{t('clientLabel')}</Label>
-          <select
-            id="clientId"
-            name="clientId"
-            required
-            defaultValue={initialData?.client_id || ''}
-            disabled={isEdit}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <option value="" disabled>{t('selectClient')}</option>
-            {clients.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.first_name} {c.last_name} ({c.email || t('noEmail')})
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center gap-2">
+            <select
+              id="clientId"
+              name="clientId"
+              required
+              defaultValue={initialData?.client_id || ''}
+              disabled={isEdit}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="" disabled>{t('selectClient')}</option>
+              {clients.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.first_name} {c.last_name} ({c.email || t('noEmail')})
+                </option>
+              ))}
+            </select>
+            {!isEdit && (
+              <Button asChild variant="outline" className="h-10">
+                <Link href={`/${locale}/dashboard/clients/new`}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  {tClients('addClient')}
+                </Link>
+              </Button>
+            )}
+          </div>
           {isEdit && (
             <p className="text-xs text-muted-foreground">{t('clientCannotBeChanged')}</p>
           )}
@@ -141,8 +155,9 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
 
       <div className="space-y-4 pt-4 border-t">
         <h3 className="text-sm font-semibold text-muted-foreground">{t('notesSection')}</h3>
-        
-        <div className="space-y-2">
+        <input type="hidden" name="clientNotes" defaultValue={initialData?.client_notes || ''} />
+
+        {/* <div className="space-y-2">
           <Label htmlFor="clientNotes">{t('clientNotesLabel')}</Label>
           <Textarea
             id="clientNotes"
@@ -151,7 +166,7 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
             defaultValue={initialData?.client_notes || ''}
             placeholder={t('clientNotesPlaceholder')}
           />
-        </div>
+        </div> */}
 
         <div className="space-y-2">
           <Label htmlFor="internalNotes">{t('internalNotesLabel')}</Label>
@@ -178,6 +193,6 @@ export function SessionForm({ initialData, clients, isEdit = false }: SessionFor
           {loading ? t('saving') : (isEdit ? t('updateBtn') : t('saveBtn'))}
         </Button>
       </div>
-    </form>
+    </form >
   );
 }

@@ -8,7 +8,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { LanguageSwitcher } from '@/components/dashboard/language-switcher';
-import { NotificationBell } from '@/components/layout/notification-bell';
+//import { NotificationBell } from '@/components/layout/notification-bell';
 import { useParams } from 'next/navigation';
 
 interface DashboardLayoutProps {
@@ -60,7 +60,7 @@ export function DashboardLayout({ children, isAdmin, user, breadcrumbs }: Dashbo
               </Breadcrumb>
             )}
             <div className="ml-auto flex items-center gap-2">
-              <NotificationBell locale={locale} />
+              {/*<NotificationBell locale={locale} />*/}
               <LanguageSwitcher />
               <ThemeToggle />
             </div>

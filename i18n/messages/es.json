@@ -262,6 +262,7 @@
   "feedback-form": {
     "title": "Retroalimentación de la sesión de Janzu",
     "description": "Comparte tu experiencia para ayudarnos a mejorar.",
+    "selectLanguage": "Seleccionar idioma",
     "sessionDetails": "Detalles de la sesión",
     "sessionProvidedBy": "Sesión proporcionada por",
     "practitioner": "tu practicante",
@@ -396,7 +397,9 @@
     "qFeltSupported": "¿Te sentiste acompañado/a al final de la sesión?",
     "noDetailsProvided": "No se proporcionaron detalles adicionales.",
     "qAdditionalComments": "Comentarios Adicionales",
-    "intentions": "Intenciones"
+    "intentions": "Intenciones",
+    "feedbackLink": "Enlace de Retroalimentación",
+    "feedbackLinkDescription": "Comparte este enlace único con tu cliente para que pueda proporcionar retroalimentación anónima sobre esta sesión."
   },
   "errors": {
     "generic": "Ocurrió un error",
@@ -406,6 +409,7 @@
     "failedToImport": "Falló la importación de la pista",
     "failedToSaveClient": "Falló al guardar el cliente",
     "unableToLoadFeedbackForm": "No se pudo cargar el formulario de retroalimentación",
-    "thereWasAnErrorSubmittingYourFeedback": "Hubo un error al enviar tu retroalimentación."
+    "thereWasAnErrorSubmittingYourFeedback": "Hubo un error al enviar tu retroalimentación.",
+    "failedToCopyText": "Falló al copiar el texto"
   }
 }

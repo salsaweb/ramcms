@@ -4,14 +4,18 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Copy, CheckCircle2 } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
 
 export function FeedbackLink({ sessionId }: { sessionId: string }) {
   const [copied, setCopied] = useState(false);
   const [feedbackUrl, setFeedbackUrl] = useState('');
+  const t = useTranslations('feedback');
+  const tError = useTranslations('error');
+  const locale = useLocale();
 
   useEffect(() => {
     // Generate full URL on the client to get the correct origin
-    setFeedbackUrl(`${window.location.origin}/feedback/${sessionId}`);
+    setFeedbackUrl(`${window.location.origin}/${locale}/feedback/${sessionId}`);
   }, [sessionId]);
 
   const handleCopy = async () => {
@@ -21,7 +25,7 @@ export function FeedbackLink({ sessionId }: { sessionId: string }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
+      console.error(tError('failedToCopyText'), err);
     }
   };
 
@@ -29,10 +33,10 @@ export function FeedbackLink({ sessionId }: { sessionId: string }) {
     <Card>
       <CardHeader>
         <CardTitle className="text-lg text-primary flex items-center gap-2">
-          Feedback Link
+          {t('feedbackLink')}
         </CardTitle>
         <CardDescription>
-          Share this unique link with your client so they can provide anonymous feedback on this session.
+          {t('feedbackLinkDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent>
