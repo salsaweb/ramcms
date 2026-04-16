@@ -11,17 +11,18 @@ interface Practitioner {
 interface FacilitatorFilterProps {
   practitioners: Practitioner[];
   currentValue?: string;
+  basePath?: string;
 }
 
-export function FacilitatorFilter({ practitioners, currentValue }: FacilitatorFilterProps) {
+export function FacilitatorFilter({ practitioners, currentValue, basePath = '/dashboard/feedback' }: FacilitatorFilterProps) {
   const router = useRouter();
 
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const value = e.target.value;
     if (value) {
-      router.push(`/dashboard/feedback?practitionerId=${encodeURIComponent(value)}`);
+      router.push(`${basePath}?practitionerId=${encodeURIComponent(value)}`);
     } else {
-      router.push('/dashboard/feedback');
+      router.push(basePath);
     }
   }
 

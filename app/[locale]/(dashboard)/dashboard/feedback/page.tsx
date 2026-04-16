@@ -78,7 +78,7 @@ export default async function FeedbackDashboardPage({ searchParams }: PageProps)
             {/* Admin-only: Facilitator filter */}
             {isAdmin && practitioners.length > 0 && (
               <div className="flex items-center gap-2">
-                <FacilitatorFilter practitioners={practitioners} currentValue={practitionerId} />
+                <FacilitatorFilter practitioners={practitioners} currentValue={practitionerId} basePath={`/${locale}/dashboard/feedback`} />
                 {practitionerId && (
                   <Link
                     href={`/${locale}/dashboard/feedback`}

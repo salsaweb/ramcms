@@ -46,7 +46,7 @@ async function getMyPractitionerProfile(userId: string) {
 /**
  * Get all sessions (Practitioners see their own, Admin sees all)
  */
-export async function getSessions(filters?: { status?: string, upcomingOnly?: boolean, clientId?: string }) {
+export async function getSessions(filters?: { status?: string, upcomingOnly?: boolean, clientId?: string, practitionerId?: string }) {
   try {
     const sessionUser = await requirePermission(PERMISSIONS.SESSIONS_READ);
     const userId = sessionUser.user.id;
@@ -93,12 +93,16 @@ export async function getSessions(filters?: { status?: string, upcomingOnly?: bo
     if (filters?.clientId) {
       query = query.eq('client_id', filters.clientId);
     }
+    
+    if (isAdmin && filters?.practitionerId) {
+      query = query.eq('practitioner_id', filters.practitionerId);
+    }
 
     const { data: sessions, error } = await query;
 
     if (error) throw error;
 
-    return { success: true, sessions: sessions || [] };
+    return { success: true, sessions: sessions || [], isAdmin };
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Failed to fetch sessions' };
   }

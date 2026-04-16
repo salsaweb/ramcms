@@ -9,7 +9,7 @@ import { AppSidebar } from '@/components/layout/app-sidebar';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { LanguageSwitcher } from '@/components/dashboard/language-switcher';
 //import { NotificationBell } from '@/components/layout/notification-bell';
-import { useParams } from 'next/navigation';
+//import { useParams } from 'next/navigation';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -26,8 +26,8 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children, isAdmin, user, breadcrumbs }: DashboardLayoutProps) {
-  const params = useParams();
-  const locale = (params?.locale as string) || 'en';
+  // const params = useParams();
+  // const locale = (params?.locale as string) || 'en';
 
   return (
     <TooltipProvider>
