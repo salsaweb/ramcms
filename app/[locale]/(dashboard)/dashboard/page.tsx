@@ -145,14 +145,14 @@ async function AdminDashboard() {
   const t = await getTranslations('dashboard');
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card>
+      {/* <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">{t('totalPosts')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.totalPosts}</div>
         </CardContent>
-      </Card>
+      </Card>*/}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">{t('totalUsers')}</CardTitle>
@@ -169,14 +169,14 @@ async function AdminDashboard() {
           <div className="text-2xl font-bold">{stats.totalContacts}</div>
         </CardContent>
       </Card>
-      <Card>
+      {/*<Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">{t('totalDeals')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.totalDeals}</div>
         </CardContent>
-      </Card>
+      </Card>*/}
     </div>
   );
 }
