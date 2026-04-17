@@ -15,6 +15,7 @@ export interface CreateUserFormProps {
 
 export function CreateUserForm({ roles }: CreateUserFormProps) {
   const router = useRouter();
+  const locale = useLocale();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -22,8 +23,6 @@ export function CreateUserForm({ roles }: CreateUserFormProps) {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    const locale = useLocale();
     const form = e.currentTarget;
     const name = (form.elements.namedItem('name') as HTMLInputElement).value;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;

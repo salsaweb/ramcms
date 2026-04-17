@@ -22,11 +22,13 @@ export default getRequestConfig(async () => {
   if (!locale || !isValidLocale(locale)) {
     notFound();
   }
-  
+
   const messages = (await messagesLoaders[locale]()).default;
 
   return {
-    locale, 
+    locale,
     messages,
+    timeZone: 'UTC',
+    now: new Date()
   };
 });
