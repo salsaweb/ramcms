@@ -1,8 +1,5 @@
-import { NextIntlClientProvider } from 'next-intl';
+import { Providers } from './providers';
 import { getMessages } from 'next-intl/server';
-import { SessionProvider } from '@/app/providers/session-provider';
-import './globals.css';
-import { ThemeProvider } from '@/components/providers/theme-provider';
 
 export default async function LocaleLayout({
   children,
@@ -20,15 +17,8 @@ export default async function LocaleLayout({
   }
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        <SessionProvider>{children}</SessionProvider>
-      </ThemeProvider>
-    </NextIntlClientProvider>
+    <Providers locale={locale} messages={messages}>
+      {children}
+    </Providers>
   );
 }
