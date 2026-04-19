@@ -37,6 +37,7 @@
     "db:seed:manage-roles-permission": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/003_add_manage_roles_permission.sql'",
     "db:seed:custom-rbac-permissions": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/006_custom_rbac_permissions.sql'",
     "db:seed:practitioner-permissions": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/007_practitioner_permissions.sql'",
+    "db:seed:application-permissions": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/008_application_permissions.sql'",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

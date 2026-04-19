@@ -13,10 +13,6 @@ import {
   Shell,
   Users,
   Locate,
-  Clock,
-  MessageSquare,
-  Award,
-  Calendar,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -89,6 +85,12 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
       permission: 'dashboard.access',
     },
     {
+      title: t('applications'),
+      href: `/${locale}/dashboard/applications`,
+      icon: Users,
+      permission: 'applications.read',
+    },
+    {
       title: t('crm'),
       href: `/${locale}/dashboard/crm`,
       icon: Briefcase,
@@ -153,40 +155,10 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
       permission: 'dashboard.access',
     },
     {
-      title: t('locations'),
-      href: `/${locale}/dashboard/locations`,
+      title: t('applications'),
+      href: `/${locale}/dashboard/applications`,
       icon: Locate,
-      permission: 'locations.read',
-    },
-    {
-      title: t('myClients'),
-      href: `/${locale}/dashboard/clients`,
-      icon: Users,
-      permission: 'dashboard.access',
-    },
-    {
-      title: t('certifications'),
-      href: `/${locale}/dashboard/certifications`,
-      icon: Award,
-      permission: 'certifications.read',
-    },
-    {
-      title: t('sessions'),
-      href: `/${locale}/dashboard/sessions`,
-      icon: Clock,
-      permission: 'sessions.read',
-    },
-    {
-      title: t('feedback'),
-      href: `/${locale}/dashboard/feedback`,
-      icon: MessageSquare,
-      permission: 'feedback.read',
-    },
-    {
-      title: 'Events',
-      href: `/${locale}/dashboard/events`,
-      icon: Calendar,
-      permission: 'events.read',
+      permission: 'applications.read',
     }
   ];
 
