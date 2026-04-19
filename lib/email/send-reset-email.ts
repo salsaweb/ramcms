@@ -6,7 +6,7 @@ export async function sendResetEmail(email: string, token: string) {
   const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${token}`;
 
   await resend.emails.send({
-    from: 'Your App <onboarding@resend.dev>',
+    from: 'OBRYS CRM <no-reply@updates.obrys.info>',
     to: email, // ['delivered@resend.dev']
     subject: 'Reset your password',
     html: getEmailTemplate(resetUrl),
