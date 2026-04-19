@@ -129,83 +129,6 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
       ],
     },
     {
-      title: t('media'),
-      href: `/${locale}/dashboard/media`,
-      icon: Music,
-      permission: 'media.access',
-      items: [
-        {
-          title: t('tracks'),
-          href: `/${locale}/dashboard/media/tracks`,
-          permission: 'media.access',
-        },
-        {
-          title: t('artists'),
-          href: `/${locale}/dashboard/media/artists`,
-          permission: 'media.access',
-        },
-        {
-          title: t('playlists'),
-          href: `/${locale}/dashboard/media/playlists`,
-          permission: 'playlists.read',
-        },
-      ],
-    },
-    {
-      title: t('myClients'),
-      href: `/${locale}/dashboard/clients`,
-      icon: Users,
-      permission: 'dashboard.access',
-    },
-    {
-      title: t('community'),
-      href: `/${locale}/dashboard/practitioners`,
-      icon: Shell,
-      items: [
-        {
-          title: t('practitioners'),
-          href: `/${locale}/dashboard/practitioners`,
-          permission: 'practitioners.read',
-        },
-        {
-          title: t('locations'),
-          href: `/${locale}/dashboard/locations`,
-          permission: 'locations.read',
-        },
-        {
-          title: 'Global Map',
-          href: `/${locale}/dashboard/map`,
-          icon: Globe2,
-          permission: 'locations.read',
-        },
-
-        {
-          title: t('certifications'),
-          href: `/${locale}/dashboard/certifications`,
-          icon: Award,
-          permission: 'certifications.read',
-        },
-        {
-          title: t('sessions'),
-          href: `/${locale}/dashboard/sessions`,
-          icon: Clock,
-          permission: 'sessions.read',
-        },
-        {
-          title: t('feedback'),
-          href: `/${locale}/dashboard/feedback`,
-          icon: MessageSquare,
-          permission: 'feedback.read',
-        },
-        {
-          title: 'Events',
-          href: `/${locale}/dashboard/events`,
-          icon: Calendar,
-          permission: 'events.read',
-        }
-      ],
-    },
-    {
       title: t('admin'),
       href: `/${locale}/dashboard/admin`,
       icon: Shield,
@@ -301,7 +224,7 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
                   <Shell className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Janzu CRM</span>
+                  <span className="truncate font-semibold">OBRYS CRM</span>
                 </div>
               </Link>
             </SidebarMenuButton>

@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Outfit } from 'next/font/google';
 
 export const metadata: Metadata = {
-  title: 'Janzu Portal',
-  description: 'Janzu Portal',
+  title: 'OBRYS CRM',
+  description: 'OBRYS CRM',
 };
 
 const outfit = Outfit({
