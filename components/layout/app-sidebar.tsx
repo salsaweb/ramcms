@@ -10,7 +10,6 @@ import {
   Briefcase,
   Shield,
   ChevronDown,
-  Shell,
   Users,
   Locate,
   type LucideIcon,
@@ -190,12 +189,7 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href={`/${locale}/dashboard`}>
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Shell className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">OBRYS CRM</span>
-                </div>
+                <img src="/logo.png" alt="OBRYS CRM" className="w-48" />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -9,10 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Shell, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Water } from '@paper-design/shaders-react';
-import { JanzuQuote } from '@/components/auth/janzu-quote';
 import { useLocale, useTranslations } from 'next-intl';
 
 export default function LoginPage() {
@@ -53,16 +51,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-background">
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md space-y-8">
           {/* Logo & Title */}
           <div className="flex flex-col items-center text-center space-y-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Shell className="h-6 w-6" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight">{t('appTitle')}</h1>
+            <img src="/logo.png" alt="OBRYS CRM" className="w-64" />
             <p className="text-sm text-muted-foreground">
               {t('signInToAccess')}
             </p>
@@ -191,30 +185,6 @@ export default function LoginPage() {
               {tCommon('privacyPolicy')}
             </Link>
           </p>
-        </div>
-      </div>
-
-      {/* Right Side - Branding */}
-      <div className="hidden lg:flex flex-1 items-center justify-center p-8">
-        <div className="absolute inset-0 z-[-1]">
-          <Water
-            style={{ height: "100%", width: "100%" }}
-            image="https://paper.design/flowers.webp"
-            colorBack="#8f8f8f"
-            colorHighlight="#ffffff"
-            highlights={0.07}
-            layering={0.5}
-            edges={0.8}
-            waves={0.3}
-            caustic={0.1}
-            size={0.2}
-            speed={0.25}
-            scale={1.36}
-            fit="cover"
-          />
-        </div>
-        <div className="max-w-md text-primary-foreground space-y-6">
-          <JanzuQuote />
         </div>
       </div>
     </div>

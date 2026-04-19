@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Shell, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { resetPassword } from '@/app/actions/auth';
 import { useLocale } from 'next-intl';
 
@@ -56,15 +56,11 @@ export default function AcceptInvitePage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      {/* Left Side */}
       <div className="flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md space-y-8">
-          {/* Logo */}
+          {/* Logo & Title */}
           <div className="flex flex-col items-center text-center space-y-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Shell className="h-6 w-6" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight">Janzu Portal</h1>
+            <img src="/logo.png" alt="OBRYS CRM" className="w-64" />
           </div>
 
           {/* Step 1: Set Password */}
@@ -152,7 +148,7 @@ export default function AcceptInvitePage() {
                   <CheckCircle className="h-5 w-5" />
                   <span className="text-sm font-medium">Password set successfully!</span>
                 </div>
-                <CardTitle className="text-2xl font-bold">Welcome to Janzu Portal 👋</CardTitle>
+                <CardTitle className="text-2xl font-bold">Welcome to OBRYS CRM 👋</CardTitle>
                 <CardDescription>
                   Would you like to complete your profile now? You can always do this later from your settings.
                 </CardDescription>

@@ -4,6 +4,9 @@ import { Outfit } from 'next/font/google';
 export const metadata: Metadata = {
   title: 'OBRYS CRM',
   description: 'OBRYS CRM',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 const outfit = Outfit({
