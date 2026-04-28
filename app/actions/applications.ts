@@ -3,6 +3,46 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
 // import { requirePermission } from '@/lib/rbac/guards';
 // import { PERMISSIONS } from '@/lib/rbac/permissions';
+import { revalidatePath } from 'next/cache';
+
+/**
+ * Processes an application.
+ * @param {Object} input - The input object.
+ * @param {string} input.applicationId - The ID of the application to process.
+ * @returns {Promise<Object>} - The result object.
+ */
+export async function processApplication({ applicationId, status, contactId, dealId }: { applicationId: string, status: string, contactId?: string, dealId?: string }) {
+    try {
+        // const session = await requirePermission(PERMISSIONS.DASHBOARD_ACCESS);
+        const updateData: any = {
+            status: status
+        };
+
+        if (contactId) {
+            updateData.contact_id = contactId;
+        }
+
+        if (dealId) {
+            updateData.deal_id = dealId;
+        }
+
+        const { error } = await supabaseAdmin
+            .from('pilot_applications')
+            .update(updateData)
+            .eq('id', applicationId);
+
+        if (error) {
+            console.error('Failed to process application:', error);
+            return { success: false, error: error.message };
+        }
+
+        revalidatePath(`/dashboard/applications/${applicationId}`);
+        return { success: true };
+    } catch (error) {
+        console.error('Exception processing application:', error);
+        return { success: false, error: 'An error occurred while processing the application' };
+    }
+}
 
 /**
  * Fetches all applications for the current user.

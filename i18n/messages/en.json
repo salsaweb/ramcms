@@ -215,7 +215,13 @@
     "address": "Address",
     "briefDescription": "Brief Description",
     "purposeOfTheApplication": "Purpose of the Application",
-    "intention": "Why do you want to participate in the pilot?"
+    "intention": "Why do you want to participate in the pilot?",
+    "attachments": "Attachments",
+    "noAttachments": "No attachments uploaded",
+    "processApplication": "Process Application",
+    "rejectApplication": "Reject Application",
+    "rejected": "Rejected",
+    "processed": "Processed"
   },
   "errors": {
     "generic": "An error occurred",

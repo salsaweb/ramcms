@@ -215,7 +215,13 @@
     "address": "Dirección",
     "briefDescription": "Descripción Breve",
     "purposeOfTheApplication": "Propósito de la Solicitud",
-    "intention": "¿Por qué quieres participar en el piloto?"
+    "intention": "¿Por qué quieres participar en el piloto?",
+    "attachments": "Archivos adjuntos",
+    "noAttachments": "No se han subido archivos",
+    "processApplication": "Procesar Solicitud",
+    "rejectApplication": "Rechazar Solicitud",
+    "rejected": "Rechazado",
+    "processed": "Procesado"
   },
   "errors": {
     "generic": "Ocurrió un error",
