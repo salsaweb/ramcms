@@ -1,25 +1,25 @@
-import { NextRequest } from 'next/server';
-import { getApplicationById } from '@/app/actions/applications';
+// import { NextRequest } from 'next/server';
+// import { getApplicationById } from '@/app/actions/applications';
 import puppeteer from "puppeteer";
 
-export async function GET(request: NextRequest) {
-    // const { searchParams } = new URL(request.url);
-    // const application_id = searchParams.get('application_id');
+export async function GET() { // request: NextRequest
+  // const { searchParams } = new URL(request.url);
+  // const application_id = searchParams.get('application_id');
 
-    // if (!application_id) {
-    //     return new Response('application_id is required', { status: 400 });
-    // }
+  // if (!application_id) {
+  //     return new Response('application_id is required', { status: 400 });
+  // }
 
-    // const application = await getApplicationById(application_id);
+  // const application = await getApplicationById(application_id);
 
-    // if (!application) {
-    //     return new Response('application not found', { status: 404 });
-    // }
+  // if (!application) {
+  //     return new Response('application not found', { status: 404 });
+  // }
 
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
 
-    const html = `
+  const html = `
     <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -402,19 +402,19 @@ export async function GET(request: NextRequest) {
 </html>
   `;
 
-    await page.setContent(html, { waitUntil: "networkidle0" });
+  await page.setContent(html, { waitUntil: "networkidle0" });
 
-    const pdfBuffer = await page.pdf({
-        format: "A4",
-        printBackground: true
-    });
+  const pdfBuffer = await page.pdf({
+    format: "A4",
+    printBackground: true
+  });
 
-    await browser.close();
+  await browser.close();
 
-    return new Response(pdfBuffer as any, {
-        headers: {
-            "Content-Type": "application/pdf",
-            "Content-Disposition": "attachment; filename=test.pdf",
-        },
-    });
+  return new Response(pdfBuffer as any, {
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment; filename=test.pdf",
+    },
+  });
 }
