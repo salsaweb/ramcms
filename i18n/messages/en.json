@@ -54,7 +54,8 @@
     "next": "Next",
     "submitting": "Submitting...",
     "submit": "Submit",
-    "view": "View"
+    "view": "View",
+    "actions": "Actions"
   },
   "auth": {
     "login": "Log in",
@@ -221,7 +222,9 @@
     "processApplication": "Process Application",
     "rejectApplication": "Reject Application",
     "rejected": "Rejected",
-    "processed": "Processed"
+    "processed": "Processed",
+    "newApplications": "New Applications",
+    "processedApplications": "Processed Applications"
   },
   "errors": {
     "generic": "An error occurred",

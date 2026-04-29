@@ -54,7 +54,8 @@
     "next": "Siguiente",
     "submitting": "Enviando...",
     "submit": "Enviar",
-    "view": "Ver"
+    "view": "Ver",
+    "actions": "Acciones"
   },
   "auth": {
     "login": "Iniciar Sesión",
@@ -221,7 +222,9 @@
     "processApplication": "Procesar Solicitud",
     "rejectApplication": "Rechazar Solicitud",
     "rejected": "Rechazado",
-    "processed": "Procesado"
+    "processed": "Procesado",
+    "newApplications": "Nuevas Solicitudes",
+    "processedApplications": "Solicitudes Procesadas"
   },
   "errors": {
     "generic": "Ocurrió un error",

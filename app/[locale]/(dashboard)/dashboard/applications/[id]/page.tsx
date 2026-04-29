@@ -110,16 +110,6 @@ export default async function ApplicationViewPage({ params }: ApplicationViewPag
                 </CardContent>
 
                 <CardHeader className="bg-muted/30 border-t">
-                    <CardTitle>{t('purposeOfTheApplication')}</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                    <div className="flex flex-col gap-1">
-                        <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{t('intention')}</span>
-                        <span className="text-base whitespace-pre-wrap">{application.intention}</span>
-                    </div>
-                </CardContent>
-
-                <CardHeader className="bg-muted/30 border-t">
                     <CardTitle>{t('attachments')}</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6 pb-8">
