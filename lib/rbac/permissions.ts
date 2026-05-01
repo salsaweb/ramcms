@@ -259,6 +259,19 @@ export const PERMISSIONS = {
   NOTIFICATIONS_READ: 'notifications.read',
   NOTIFICATIONS_UPDATE: 'notifications.update',
 
+  // Customers
+  CUSTOMERS_CREATE: 'customers.create',
+  CUSTOMERS_READ: 'customers.read',
+  CUSTOMERS_UPDATE: 'customers.update',
+  CUSTOMERS_DELETE: 'customers.delete',
+
+  // Orders
+  ORDERS_CREATE: 'orders.create',
+  ORDERS_READ: 'orders.read',
+  ORDERS_UPDATE: 'orders.update',
+  ORDERS_DELETE: 'orders.delete',
+  ORDERS_VIEW_OWN: 'orders.view_own',
+
   // System
   SETTINGS_VIEW: 'settings.view',
   SETTINGS_MANAGE: 'settings.manage',

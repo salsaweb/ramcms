@@ -31,6 +31,8 @@
     "db:migrate:events": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/022_events.sql'",
     "db:migrate:notifications": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/023_notifications.sql'",
     "db:migrate:password-reset": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/022_password_reset.sql'",
+    "db:migrate:customers-orders": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/migrations/024_customers_orders.sql'",
+    "db:seed:orders-permissions": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/009_orders_permissions.sql'",
     "db:grant-api-permissionsns": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f scripts/grant-api-permissions.sql'",
     "db:seed:initial-data": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/001_initial_data.sql'",
     "db:seed:crm-data": "dotenv -e .env -- sh -c 'psql \"$DATABASE_URL\" -f database/seeds/002_crm_data.sql'",

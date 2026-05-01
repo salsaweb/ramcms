@@ -12,6 +12,8 @@ import {
   ChevronDown,
   Users,
   Locate,
+  UserCheck,
+  ShoppingBag,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -128,6 +130,18 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
       ],
     },
     {
+      title: t('customers'),
+      href: `/${locale}/dashboard/customers`,
+      icon: UserCheck,
+      permission: 'customers.read',
+    },
+    {
+      title: t('orders'),
+      href: `/${locale}/dashboard/orders`,
+      icon: ShoppingBag,
+      permission: 'orders.read',
+    },
+    {
       title: t('admin'),
       href: `/${locale}/dashboard/admin`,
       icon: Shield,
@@ -152,6 +166,12 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
       href: `/${locale}/dashboard`,
       icon: LayoutDashboard,
       permission: 'dashboard.access',
+    },
+    {
+      title: t('myOrders'),
+      href: `/${locale}/dashboard/orders`,
+      icon: ShoppingBag,
+      permission: 'orders.read',
     },
     {
       title: t('applications'),
