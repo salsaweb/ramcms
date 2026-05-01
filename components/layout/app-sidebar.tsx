@@ -86,12 +86,6 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
       permission: 'dashboard.access',
     },
     {
-      title: t('applications'),
-      href: `/${locale}/dashboard/applications`,
-      icon: Users,
-      permission: 'applications.read',
-    },
-    {
       title: t('crm'),
       href: `/${locale}/dashboard/crm`,
       icon: Briefcase,
@@ -172,12 +166,6 @@ export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
       href: `/${locale}/dashboard/orders`,
       icon: ShoppingBag,
       permission: 'orders.read',
-    },
-    {
-      title: t('applications'),
-      href: `/${locale}/dashboard/applications`,
-      icon: Locate,
-      permission: 'applications.read',
     }
   ];
 
