@@ -10,8 +10,6 @@ import {
   Briefcase,
   Shield,
   ChevronDown,
-  Users,
-  Locate,
   UserCheck,
   ShoppingBag,
   type LucideIcon,

@@ -4,6 +4,7 @@ import { getOrderById } from '@/app/actions/orders';
 import { getCustomers } from '@/app/actions/customers';
 import { OrderForm } from '@/components/orders/order-form';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
+import { OrderStatusUpdateBadge } from '@/components/orders/order-status-update-badge';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +12,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   ChevronLeft,
-  AlertTriangle,
   MapPin,
   Calendar,
   Clock,
@@ -38,7 +38,6 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
   const locale = await getLocale();
   const t = await getTranslations('orders');
-  const tCommon = await getTranslations('common');
 
   const customerData = (order as any).contacts;
   const customerOptions = customers.map((c: any) => ({
@@ -66,12 +65,6 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-3xl font-bold tracking-tight capitalize">{order.type} Order</h1>
               <OrderStatusBadge status={order.status} />
-              {order.rush_flag && (
-                <span className="inline-flex items-center gap-1 text-sm text-amber-600 font-semibold">
-                  <AlertTriangle className="h-4 w-4" />
-                  Rush
-                </span>
-              )}
             </div>
             <p className="text-muted-foreground mt-1 text-sm">
               ID: <code className="font-mono text-xs">{order.id}</code>
@@ -92,7 +85,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                 </span>
               )}
             </TabsTrigger>
-            <TabsTrigger value="edit">{tCommon('edit')}</TabsTrigger>
+            {/* TabsTrigger value="edit">{tCommon('edit')}</TabsTrigger> */}
           </TabsList>
 
           {/* Details Tab */}
@@ -113,13 +106,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">{t('status')}</span>
-                    <OrderStatusBadge status={order.status} />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{t('rushOrder')}</span>
-                    <span className={order.rush_flag ? 'text-amber-600 font-semibold' : 'text-muted-foreground'}>
-                      {order.rush_flag ? 'Yes' : 'No'}
-                    </span>
+                    <OrderStatusUpdateBadge status={order.status} order={order as any} />
                   </div>
                   {order.deadline && (
                     <div className="flex items-center justify-between">

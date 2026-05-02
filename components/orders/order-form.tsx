@@ -31,12 +31,13 @@ const ORDER_TYPES: { value: OrderType; label: string }[] = [
 ];
 
 const ORDER_STATUSES: { value: OrderStatus; label: string }[] = [
-  { value: 'draft',       label: 'Draft' },
-  { value: 'submitted',   label: 'Submitted' },
+  { value: 'draft', label: 'Draft' },
+  { value: 'submitted', label: 'Submitted' },
+  { value: 'payment_request', label: 'Payment Request' },
   { value: 'in_progress', label: 'In Progress' },
-  { value: 'in_review',   label: 'In Review' },
-  { value: 'delivered',   label: 'Delivered' },
-  { value: 'cancelled',   label: 'Cancelled' },
+  { value: 'in_review', label: 'In Review' },
+  { value: 'delivered', label: 'Delivered' },
+  { value: 'cancelled', label: 'Cancelled' },
 ];
 
 export function OrderForm({

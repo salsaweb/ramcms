@@ -6,6 +6,7 @@ import { PERMISSIONS } from '@/lib/rbac/permissions';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { createCustomerFromOrder } from './customers';
+import { sendPaymentRequestEmail } from '@/lib/email/send-payment-request-email';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -16,6 +17,7 @@ export type OrderType = 'pilot' | 'method';
 export type OrderStatus =
   | 'draft'
   | 'submitted'
+  | 'payment_request'
   | 'in_progress'
   | 'in_review'
   | 'delivered'
@@ -54,7 +56,7 @@ export interface Order {
 const orderSchema = z.object({
   type: z.enum(['pilot', 'method']),
   status: z
-    .enum(['draft', 'submitted', 'in_progress', 'in_review', 'delivered', 'cancelled'])
+    .enum(['draft', 'submitted', 'payment_request', 'in_progress', 'in_review', 'delivered', 'cancelled'])
     .default('draft'),
   customer_id: z.string().uuid('Invalid customer ID').optional().or(z.literal('')),
   property_address: z.string().optional(),
@@ -251,6 +253,16 @@ export async function createOrder(formData: FormData) {
     return { success: true, orderId: order.id };
   } catch (error) {
     console.error('createOrder exception:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unexpected error' };
+  }
+}
+
+export async function sendOrderPaymentRequestEmail(order: Order) {
+  try {
+    await sendPaymentRequestEmail(order.contacts?.email || '', order.contacts?.first_name || 'Valued Customer');
+    return { success: true };
+  } catch (error) {
+    console.error('updateOrderStatus exception:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Unexpected error' };
   }
 }
