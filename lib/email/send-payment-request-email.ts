@@ -4,9 +4,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendPaymentRequestEmail(email: string, name: string) {
   await resend.emails.send({
-    from: 'OBRYS CRM <no-reply@updates.obrys.info>',
+    from: 'OBRYS <no-reply@updates.obrys.info>',
     to: email,
-    subject: "Payment request for order",
+    subject: "Su solicitud está confirmada – Complete el pago para continua",
     html: getPaymentRequestEmailTemplate(name),
   });
 }
@@ -62,8 +62,7 @@ function getPaymentRequestEmailTemplate(name: string) {
                     <div
                       style="margin:0;padding:0;display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">
                       <p style="margin:0;padding:0">
-                        Solicitud recibida — el equipo OBRYS te contactará en 48
-                        horas.
+                        Complete el pago de 100 € para asegurar su participación en el piloto.
                       </p>
                     </div>
                     <table
@@ -175,7 +174,7 @@ function getPaymentRequestEmailTemplate(name: string) {
                                       </tr>
                                     </table>
   
-                                    <p style="margin:0 0 24px 0;padding:0;font-family:Georgia, serif;font-size:17px;line-height:1.6;color:#3d4231">
+                                    <p style="margin:24px 0 24px 0;padding:0;font-family:Georgia, serif;font-size:17px;line-height:1.6;color:#3d4231">
                                       Una vez recibido el pago, nos pondremos en contacto con usted en un plazo máximo de <strong>24 horas</strong> para coordinar los siguientes pasos.
                                     </p>
                                     <p style="margin:0 0 24px 0;padding:0;font-family:Georgia, serif;font-size:17px;line-height:1.6;color:#3d4231">

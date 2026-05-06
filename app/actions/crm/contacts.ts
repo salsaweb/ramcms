@@ -400,12 +400,12 @@ export async function addContactActivity(
 export async function CheckContactExist(email: string): Promise<string | false> {
   try {
     if (!email) return false;
-    
+
     const { data } = await supabaseAdmin
       .from('contacts')
       .select('id')
       .eq('email', email)
-      .single();
+      .maybeSingle();
 
     if (data && data.id) {
       return data.id;
