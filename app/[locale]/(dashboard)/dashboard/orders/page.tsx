@@ -21,7 +21,7 @@ interface PageProps {
 }
 
 export default async function OrdersPage({ searchParams }: PageProps) {
-  await requirePermissionPage(PERMISSIONS.DASHBOARD_ACCESS);
+  await requirePermissionPage(PERMISSIONS.ORDERS_READ);
 
   const resolvedSearchParams = await searchParams;
   const currentStatus = resolvedSearchParams.status || 'submitted';
