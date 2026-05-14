@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { createCustomerFromOrder } from './customers';
 import { sendPaymentRequestEmail } from '@/lib/email/send-payment-request-email';
+import { sendReviewEmail } from '@/lib/email/send-review-email';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -38,6 +39,7 @@ export interface Order {
   property_address: string | null;
   description: string | null;
   assets: OrderAssets;
+  work_assets: OrderAssets;
   deadline: string | null;
   rush_flag: boolean;
   created_by: string | null;
@@ -231,6 +233,7 @@ export async function createOrder(formData: FormData) {
         deadline: input.deadline || null,
         rush_flag: input.rush_flag,
         assets: { keys: [], urls: [] },
+        work_assets: { keys: [], urls: [] },
         created_by: session.user.id,
       })
       .select()
@@ -262,7 +265,21 @@ export async function sendOrderPaymentRequestEmail(order: Order) {
     await sendPaymentRequestEmail(order.contacts?.email || '', order.contacts?.first_name || 'Valued Customer');
     return { success: true };
   } catch (error) {
-    console.error('updateOrderStatus exception:', error);
+    console.error('sendOrderPaymentRequestEmail exception:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unexpected error' };
+  }
+}
+
+export async function sendOrderReviewEmail(order: Order) {
+  try {
+    await sendReviewEmail(
+      order.contacts?.email || '',
+      order.contacts?.first_name || 'Valued Customer',
+      order.id
+    );
+    return { success: true };
+  } catch (error) {
+    console.error('sendOrderReviewEmail exception:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Unexpected error' };
   }
 }
@@ -341,6 +358,56 @@ export async function updateOrderAssets(
     const { error } = await supabaseAdmin
       .from('orders')
       .update({ assets })
+      .eq('id', orderId);
+
+    if (error) return { success: false, error: error.message };
+
+    revalidatePath(`/dashboard/orders/${orderId}`);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Unexpected error' };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// updateOrderWorkAssets
+// ---------------------------------------------------------------------------
+
+export async function updateOrderWorkAssets(
+  orderId: string,
+  work_assets: OrderAssets
+) {
+  try {
+    await requirePermission(PERMISSIONS.ORDERS_UPDATE);
+
+    const { error } = await supabaseAdmin
+      .from('orders')
+      .update({ work_assets })
+      .eq('id', orderId);
+
+    if (error) return { success: false, error: error.message };
+
+    revalidatePath(`/dashboard/orders/${orderId}`);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Unexpected error' };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// updateOrderDueDate
+// ---------------------------------------------------------------------------
+
+export async function updateOrderDueDate(
+  orderId: string,
+  deadline: string
+) {
+  try {
+    await requirePermission(PERMISSIONS.ORDERS_UPDATE);
+
+    const { error } = await supabaseAdmin
+      .from('orders')
+      .update({ deadline })
       .eq('id', orderId);
 
     if (error) return { success: false, error: error.message };

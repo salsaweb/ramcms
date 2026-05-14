@@ -16,8 +16,15 @@ import {
 import Link from 'next/link';
 import { getLocale, getTranslations } from 'next-intl/server';
 
-export default async function OrdersPage() {
+interface PageProps {
+  searchParams: Promise<{ status?: string }>;
+}
+
+export default async function OrdersPage({ searchParams }: PageProps) {
   await requirePermissionPage(PERMISSIONS.DASHBOARD_ACCESS);
+
+  const resolvedSearchParams = await searchParams;
+  const currentStatus = resolvedSearchParams.status || 'submitted';
 
   const locale = await getLocale();
   const t = await getTranslations('orders');
@@ -26,14 +33,21 @@ export default async function OrdersPage() {
   const { orders = [] } = await getOrders();
 
   const byStatus = (status: OrderStatus) => orders.filter((o) => o.status === status);
-  const rushOrders = orders.filter((o) => o.rush_flag);
+  //const rushOrders = orders.filter((o) => o.rush_flag);
+
+  let filteredOrders = orders;
+  filteredOrders = orders.filter(o => {
+    const orderStatus = (o.status || 'submitted').toLowerCase();
+    return orderStatus === currentStatus;
+  });
+
 
   const statusGroups: { label: string; status: OrderStatus; color: string }[] = [
-    { label: 'Draft',       status: 'draft',       color: 'text-slate-600' },
-    { label: 'Submitted',   status: 'submitted',   color: 'text-blue-600' },
+    { label: 'Submitted', status: 'submitted', color: 'text-blue-600' },
+    { label: 'Payment Request', status: 'payment_request', color: 'text-slate-600' },
     { label: 'In Progress', status: 'in_progress', color: 'text-amber-600' },
-    { label: 'In Review',   status: 'in_review',   color: 'text-purple-600' },
-    { label: 'Delivered',   status: 'delivered',   color: 'text-emerald-600' },
+    { label: 'In Review', status: 'in_review', color: 'text-purple-600' },
+    { label: 'Delivered', status: 'delivered', color: 'text-emerald-600' },
   ];
 
   return (
@@ -55,15 +69,18 @@ export default async function OrdersPage() {
       {/* Stats row */}
       <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {statusGroups.map(({ label, status, color }) => (
-          <Card key={status}>
-            <CardHeader className="pb-1 pt-4 px-4">
-              <CardTitle className="text-xs font-medium text-muted-foreground">{label}</CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className={`text-2xl font-bold ${color}`}>{byStatus(status).length}</div>
-            </CardContent>
-          </Card>
+          <Link href={`/${locale}/dashboard/orders?status=${status}`}>
+            <Card key={status} className={`${currentStatus === status ? 'border-primary' : ''}`}>
+              <CardHeader className="pb-1 pt-4 px-4">
+                <CardTitle className="text-xs font-medium text-muted-foreground">{label}</CardTitle>
+              </CardHeader>
+              <CardContent className="px-4 pb-4">
+                <div className={`text-2xl font-bold ${color}`}>{byStatus(status).length}</div>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
+        {/**   
         <Card>
           <CardHeader className="pb-1 pt-4 px-4">
             <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
@@ -75,12 +92,13 @@ export default async function OrdersPage() {
             <div className="text-2xl font-bold text-amber-600">{rushOrders.length}</div>
           </CardContent>
         </Card>
+        */}
       </div>
 
       {/* Order List */}
       <Card>
         <CardContent className="pt-6">
-          {orders.length === 0 ? (
+          {filteredOrders.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Package className="h-12 w-12 mx-auto mb-3 opacity-30" />
               <p className="text-lg font-medium">{t('noOrders')}</p>
@@ -94,7 +112,7 @@ export default async function OrdersPage() {
             </div>
           ) : (
             <div className="space-y-2">
-              {orders.map((order) => {
+              {filteredOrders.map((order) => {
                 const customer = (order as any).contacts;
                 return (
                   <div

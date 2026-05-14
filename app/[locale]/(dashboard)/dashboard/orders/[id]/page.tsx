@@ -4,7 +4,9 @@ import { getOrderById } from '@/app/actions/orders';
 import { getCustomers } from '@/app/actions/customers';
 import { OrderForm } from '@/components/orders/order-form';
 import { OrderStatusBadge } from '@/components/orders/order-status-badge';
-import { OrderStatusUpdateBadge } from '@/components/orders/order-status-update-badge';
+import { OrderFlowTab } from '@/components/orders/order-flow-tab';
+import { OrderMessages } from '@/components/orders/order-messages';
+import { getOrderMessages } from '@/app/actions/order-messages';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
@@ -27,14 +29,20 @@ interface OrderDetailPageProps {
 
 export default async function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { id } = await params;
-  await requirePermissionPage(PERMISSIONS.DASHBOARD_ACCESS);
+  const session = await requirePermissionPage(PERMISSIONS.DASHBOARD_ACCESS);
 
-  const [order, customers] = await Promise.all([
+  const [order, customers, messagesRes] = await Promise.all([
     getOrderById(id),
     getCustomers(),
+    getOrderMessages(id)
   ]);
 
   if (!order) notFound();
+
+  const userPermissions: string[] = session.user.permissions || [];
+  const isAdmin = userPermissions.includes(PERMISSIONS.ORDERS_READ);
+  const isCustomer = userPermissions.includes(PERMISSIONS.ORDERS_VIEW_OWN);
+  const initialMessages = messagesRes.success ? messagesRes.messages : [];
 
   const locale = await getLocale();
   const t = await getTranslations('orders');
@@ -49,6 +57,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
   const assetUrls: string[] = order.assets?.urls || [];
   const assetKeys: string[] = order.assets?.keys || [];
+  const workAssetUrls: string[] = order.work_assets?.urls || [];
+  const workAssetKeys: string[] = order.work_assets?.keys || [];
 
   return (
     <div className="space-y-6">
@@ -73,9 +83,10 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         </div>
       </div>
 
-      <Tabs defaultValue="details">
+      <Tabs defaultValue="flow">
         <div className="space-y-2 w-full">
           <TabsList className="inline-flex border-b pb-1">
+            <TabsTrigger value="flow">Flow & Messages</TabsTrigger>
             <TabsTrigger value="details">{t('orderDetails')}</TabsTrigger>
             <TabsTrigger value="assets">
               {t('assets')}
@@ -87,6 +98,12 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
             </TabsTrigger>
             {/* TabsTrigger value="edit">{tCommon('edit')}</TabsTrigger> */}
           </TabsList>
+
+          {/* Flow Tab */}
+          <TabsContent value="flow" className="space-y-6 pt-4">
+            <OrderFlowTab order={order as any} isAdmin={isAdmin} isCustomer={isCustomer} />
+            <OrderMessages orderId={order.id} initialMessages={initialMessages} currentUserId={session.user.id} />
+          </TabsContent>
 
           {/* Details Tab */}
           <TabsContent value="details" className="space-y-4">
@@ -106,7 +123,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">{t('status')}</span>
-                    <OrderStatusUpdateBadge status={order.status} order={order as any} />
+                    <OrderStatusBadge status={order.status} />
                   </div>
                   {order.deadline && (
                     <div className="flex items-center justify-between">
@@ -232,6 +249,34 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {workAssetUrls.length > 0 && (
+                  <div className="mt-6 pt-6 border-t">
+                    <h3 className="text-sm font-semibold mb-3">Work Deliverables</h3>
+                    <div className="space-y-2">
+                      {workAssetUrls.map((url, i) => (
+                        <div key={i} className="flex items-center gap-3 p-3 border rounded-lg text-sm bg-muted/30">
+                          <Link2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            {workAssetKeys[i] && (
+                              <p className="text-xs text-muted-foreground font-mono mb-0.5 truncate">
+                                {workAssetKeys[i]}
+                              </p>
+                            )}
+                            <a
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline truncate block font-medium"
+                            >
+                              {url}
+                            </a>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </CardContent>
