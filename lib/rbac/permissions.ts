@@ -217,6 +217,48 @@ export const PERMISSIONS = {
   PLAYLISTS_UPDATE: 'playlists.update',
   PLAYLISTS_DELETE: 'playlists.delete',
 
+  // Practitioners
+  PRACTITIONERS_CREATE: 'practitioners.create',
+  PRACTITIONERS_READ: 'practitioners.read',
+  PRACTITIONERS_UPDATE: 'practitioners.update',
+  PRACTITIONERS_DELETE: 'practitioners.delete',
+
+  // Sessions
+  SESSIONS_CREATE: 'sessions.create',
+  SESSIONS_READ: 'sessions.read',
+  SESSIONS_UPDATE: 'sessions.update',
+  SESSIONS_DELETE: 'sessions.delete',
+
+  // Feedback
+  FEEDBACK_CREATE: 'feedback.create',
+  FEEDBACK_READ: 'feedback.read',
+  FEEDBACK_UPDATE: 'feedback.update',
+  FEEDBACK_DELETE: 'feedback.delete',
+
+  // Certifications
+  CERTIFICATIONS_REQUEST: 'certifications.request',
+  CERTIFICATIONS_READ: 'certifications.read',
+  CERTIFICATIONS_MANAGE: 'certifications.manage',
+
+  // Locations
+  LOCATIONS_CREATE: 'locations.create',
+  LOCATIONS_READ: 'locations.read',
+  LOCATIONS_UPDATE: 'locations.update',
+  LOCATIONS_MANAGE: 'locations.manage',
+
+  // Events & RSVPs
+  EVENTS_CREATE: 'events.create',
+  EVENTS_READ: 'events.read',
+  EVENTS_UPDATE: 'events.update',
+  EVENTS_DELETE: 'events.delete',
+  EVENTS_MANAGE: 'events.manage',
+  RSVPS_CREATE: 'rsvps.create',
+  RSVPS_READ: 'rsvps.read',
+
+  // Notifications
+  NOTIFICATIONS_READ: 'notifications.read',
+  NOTIFICATIONS_UPDATE: 'notifications.update',
+
   // System
   SETTINGS_VIEW: 'settings.view',
   SETTINGS_MANAGE: 'settings.manage',

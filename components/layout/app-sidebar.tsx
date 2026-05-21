@@ -4,16 +4,25 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useLocale } from 'next-intl';
 import {
   LayoutDashboard,
   Briefcase,
-  BarChart3,
   Shield,
-  Settings,
   ChevronDown,
   Music,
+  Shell,
+  Users,
+  Locate,
+  Clock,
+  MessageSquare,
+  Award,
+  Globe2,
+  Calendar,
   type LucideIcon,
 } from 'lucide-react';
+
+import { SignOutButton } from '@/components/auth/sign-out-button';
 
 import {
   Sidebar,
@@ -42,6 +51,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { useTranslations } from 'next-intl';
+
 interface NavItem {
   title: string;
   href: string;
@@ -52,10 +63,12 @@ interface NavItem {
     title: string;
     href: string;
     permission?: string;
+    icon?: LucideIcon;
   }[];
 }
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  isAdmin?: boolean;
   user?: {
     name: string;
     email: string;
@@ -63,103 +76,198 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   };
 }
 
-const navItems: NavItem[] = [
-  {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard,
-    permission: 'dashboard.access',
-  },
-  {
-    title: 'CRM',
-    href: '/dashboard/crm',
-    icon: Briefcase,
-    permission: 'crm.access',
-    items: [
-      {
-        title: 'Dashboard',
-        href: '/dashboard/crm',
-        permission: 'crm.access',
-      },
-      {
-        title: 'Contacts',
-        href: '/dashboard/crm/contacts',
-        permission: 'contacts.read',
-      },
-      {
-        title: 'Companies',
-        href: '/dashboard/crm/companies',
-        permission: 'companies.read',
-      },
-      {
-        title: 'Deals',
-        href: '/dashboard/crm/deals',
-        permission: 'deals.read',
-      },
-      {
-        title: 'Tasks',
-        href: '/dashboard/crm/tasks',
-        permission: 'tasks.read',
-      },
-      {
-        title: 'Analytics',
-        href: '/dashboard/crm/analytics',
-        permission: 'crm.analytics',
-      },
-    ],
-  },
-  {
-    title: 'Media',
-    href: '/dashboard/media',
-    icon: Music,
-    permission: 'media.access',
-    items: [
-      {
-        title: 'Tracks',
-        href: '/dashboard/media/tracks',
-        permission: 'media.access',
-      },
-      {
-        title: 'Artists',
-        href: '/dashboard/media/artists',
-        permission: 'media.access',
-      },
-      {
-        title: 'Playlists',
-        href: '/dashboard/media/playlists',
-        permission: 'playlists.read',
-      },
-    ],
-  },
-  {
-    title: 'Admin',
-    href: '/dashboard/admin',
-    icon: Shield,
-    items: [
-      {
-        title: 'Users',
-        href: '/dashboard/users',
-        permission: 'users.read',
-      },
-      {
-        title: 'Roles',
-        href: '/dashboard/roles',
-        permission: 'roles.read',
-      },
-    ],
-  },
-  {
-    title: 'Settings',
-    href: '/dashboard/settings',
-    icon: Settings,
-    permission: 'settings.view',
-  },
-];
-
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
+export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
   const pathname = usePathname();
+  const locale = useLocale();
   const { data: session } = useSession();
   const userPermissions = session?.user?.permissions || [];
+  const t = useTranslations('navigation');
+
+  const navItems: NavItem[] = [
+    {
+      title: t('dashboard'),
+      href: `/${locale}/dashboard`,
+      icon: LayoutDashboard,
+      permission: 'dashboard.access',
+    },
+    {
+      title: t('crm'),
+      href: `/${locale}/dashboard/crm`,
+      icon: Briefcase,
+      permission: 'crm.access',
+      items: [
+        {
+          title: t('dashboard'),
+          href: `/${locale}/dashboard/crm`,
+          permission: 'crm.access',
+        },
+        {
+          title: t('contacts'),
+          href: `/${locale}/dashboard/crm/contacts`,
+          permission: 'contacts.read',
+        },
+        {
+          title: t('companies'),
+          href: `/${locale}/dashboard/crm/companies`,
+          permission: 'companies.read',
+        },
+        {
+          title: t('deals'),
+          href: `/${locale}/dashboard/crm/deals`,
+          permission: 'deals.read',
+        },
+        {
+          title: t('tasks'),
+          href: `/${locale}/dashboard/crm/tasks`,
+          permission: 'tasks.read',
+        },
+        {
+          title: t('analytics'),
+          href: `/${locale}/dashboard/crm/analytics`,
+          permission: 'crm.analytics',
+        },
+      ],
+    },
+    {
+      title: t('media'),
+      href: `/${locale}/dashboard/media`,
+      icon: Music,
+      permission: 'media.access',
+      items: [
+        {
+          title: t('tracks'),
+          href: `/${locale}/dashboard/media/tracks`,
+          permission: 'media.access',
+        },
+        {
+          title: t('artists'),
+          href: `/${locale}/dashboard/media/artists`,
+          permission: 'media.access',
+        },
+        {
+          title: t('playlists'),
+          href: `/${locale}/dashboard/media/playlists`,
+          permission: 'playlists.read',
+        },
+      ],
+    },
+    {
+      title: t('myClients'),
+      href: `/${locale}/dashboard/clients`,
+      icon: Users,
+      permission: 'dashboard.access',
+    },
+    {
+      title: t('community'),
+      href: `/${locale}/dashboard/practitioners`,
+      icon: Shell,
+      items: [
+        {
+          title: t('practitioners'),
+          href: `/${locale}/dashboard/practitioners`,
+          permission: 'practitioners.read',
+        },
+        {
+          title: t('locations'),
+          href: `/${locale}/dashboard/locations`,
+          permission: 'locations.read',
+        },
+        {
+          title: 'Global Map',
+          href: `/${locale}/dashboard/map`,
+          icon: Globe2,
+          permission: 'locations.read',
+        },
+
+        {
+          title: t('certifications'),
+          href: `/${locale}/dashboard/certifications`,
+          icon: Award,
+          permission: 'certifications.read',
+        },
+        {
+          title: t('sessions'),
+          href: `/${locale}/dashboard/sessions`,
+          icon: Clock,
+          permission: 'sessions.read',
+        },
+        {
+          title: t('feedback'),
+          href: `/${locale}/dashboard/feedback`,
+          icon: MessageSquare,
+          permission: 'feedback.read',
+        },
+        {
+          title: 'Events',
+          href: `/${locale}/dashboard/events`,
+          icon: Calendar,
+          permission: 'events.read',
+        }
+      ],
+    },
+    {
+      title: t('admin'),
+      href: `/${locale}/dashboard/admin`,
+      icon: Shield,
+      items: [
+        {
+          title: t('users'),
+          href: `/${locale}/dashboard/users`,
+          permission: 'users.read',
+        },
+        {
+          title: t('roles'),
+          href: `/${locale}/dashboard/roles`,
+          permission: 'roles.read',
+        },
+      ],
+    }
+  ];
+
+  const userNavItems: NavItem[] = [
+    {
+      title: t('dashboard'),
+      href: `/${locale}/dashboard`,
+      icon: LayoutDashboard,
+      permission: 'dashboard.access',
+    },
+    {
+      title: t('locations'),
+      href: `/${locale}/dashboard/locations`,
+      icon: Locate,
+      permission: 'locations.read',
+    },
+    {
+      title: t('myClients'),
+      href: `/${locale}/dashboard/clients`,
+      icon: Users,
+      permission: 'dashboard.access',
+    },
+    {
+      title: t('certifications'),
+      href: `/${locale}/dashboard/certifications`,
+      icon: Award,
+      permission: 'certifications.read',
+    },
+    {
+      title: t('sessions'),
+      href: `/${locale}/dashboard/sessions`,
+      icon: Clock,
+      permission: 'sessions.read',
+    },
+    {
+      title: t('feedback'),
+      href: `/${locale}/dashboard/feedback`,
+      icon: MessageSquare,
+      permission: 'feedback.read',
+    },
+    {
+      title: 'Events',
+      href: `/${locale}/dashboard/events`,
+      icon: Calendar,
+      permission: 'events.read',
+    }
+  ];
 
   const hasPermission = (permission?: string) => {
     if (!permission) return true;
@@ -180,7 +288,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       .filter((item): item is NavItem => item !== null);
   };
 
-  const filteredNavItems = filterNavItems(navItems);
+  const filteredNavItems = filterNavItems(isAdmin ? navItems : userNavItems);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -188,12 +296,12 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/dashboard">
+              <Link href={`/${locale}/dashboard`}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <BarChart3 className="size-4" />
+                  <Shell className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Ram CMS</span>
+                  <span className="truncate font-semibold">Janzu CRM</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -203,7 +311,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('navigation')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredNavItems.map((item) => {
@@ -323,15 +431,13 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/settings">Settings</Link>
+                  <Link href={`/${locale}/dashboard/settings`}>{t('settings')}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/settings/profile">Profile</Link>
+                  <Link href={`/${locale}/dashboard/settings/profile`}>{t('profile')}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/api/auth/signout">Log out</Link>
-                </DropdownMenuItem>
+                <SignOutButton />
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
