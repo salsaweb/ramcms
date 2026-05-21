@@ -1,12 +1,9 @@
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendEmail } from '@/lib/brevo';
 
 export async function sendResetEmail(email: string, token: string) {
   const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${token}`;
 
-  await resend.emails.send({
-    from: 'Your App <onboarding@resend.dev>',
+  await sendEmail({
     to: email, // ['delivered@resend.dev']
     subject: 'Reset your password',
     html: getEmailTemplate(resetUrl),
@@ -15,7 +12,7 @@ export async function sendResetEmail(email: string, token: string) {
 
 function getEmailTemplate(resetUrl: string) {
   return `
-    <div style="font-family: sans-serif; max-width: 480px; margin: auto;">
+    <div style="font-family: sans-serif; max-width: 480px;">
       <h2>Reset your password</h2>
 
       <p>You requested a password reset.</p>

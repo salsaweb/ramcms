@@ -1,12 +1,9 @@
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendEmail } from '@/lib/brevo';
 
 export async function sendInviteEmail(email: string, name: string, token: string) {
   const inviteUrl = `${process.env.NEXTAUTH_URL}/auth/accept-invite?token=${token}`;
 
-  await resend.emails.send({
-    from: 'Janzu Portal <onboarding@resend.dev>',
+  await sendEmail({
     to: email,
     subject: "You've been invited to Janzu Portal",
     html: getInviteEmailTemplate(name, inviteUrl),
@@ -15,7 +12,7 @@ export async function sendInviteEmail(email: string, name: string, token: string
 
 function getInviteEmailTemplate(name: string, inviteUrl: string) {
   return `
-    <div style="font-family: sans-serif; max-width: 480px; margin: auto; color: #1a1a1a;">
+    <div style="font-family: sans-serif; max-width: 480px; color: #1a1a1a;">
       <h2 style="margin-bottom: 8px;">Welcome to Janzu Portal, ${name}!</h2>
 
       <p>An administrator has created an account for you. Click the button below to set your password and get started.</p>
