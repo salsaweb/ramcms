@@ -391,3 +391,29 @@ export async function addContactActivity(
     };
   }
 }
+
+/**
+ * Check if a contact exists by email
+ * @param email The email address to check
+ * @returns The contact ID if exists, false otherwise
+ */
+export async function CheckContactExist(email: string): Promise<string | false> {
+  try {
+    if (!email) return false;
+
+    const { data } = await supabaseAdmin
+      .from('contacts')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (data && data.id) {
+      return data.id;
+    }
+
+    return false;
+  } catch (error) {
+    console.error('CheckContactExist error:', error);
+    return false;
+  }
+}

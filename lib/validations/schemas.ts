@@ -65,6 +65,20 @@ export const changePasswordSchema = z.object({
   path: ['confirmPassword'],
 });
 
+export const resetPasswordSchema = z.object({
+  newPassword: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Must contain uppercase')
+    .regex(/[a-z]/, 'Must contain lowercase')
+    .regex(/\d/, 'Must contain number')
+    .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, 'Must contain special character'),
+  confirmPassword: z.string(),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
+});
+
 // =====================================================
 // POST SCHEMAS
 // =====================================================
@@ -105,7 +119,6 @@ export const publishPostSchema = z.object({
 export const createUserSchema = z.object({
   name: z.string().min(2).max(255).trim(),
   email: z.string().email().toLowerCase().trim(),
-  password: z.string().min(8).max(100),
   roleId: z.number().int().positive(),
 });
 

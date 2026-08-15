@@ -1,0 +1,543 @@
+'use server';
+
+import { supabaseAdmin } from '@/lib/supabase/admin';
+import { requirePermission } from '@/lib/rbac/guards';
+import { PERMISSIONS, assignUserRole } from '@/lib/rbac/permissions';
+import { hashPassword } from '@/lib/auth/password';
+import { getSettingByKey } from '@/app/actions/settings';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+import { createPasswordResetToken } from '@/app/actions/auth';
+import { sendInviteEmail } from '@/lib/email/send-invite-email';
+
+const createPractitionerSchema = z.object({
+  userId: z.string().uuid('Invalid user ID').optional(),
+  newUser: z.object({
+    name: z.string().min(1, 'Name required'),
+    email: z.string().email('Invalid email'),
+  }).optional(),
+  bio: z.string().optional(),
+  website: z.string().url('Invalid URL').optional().or(z.literal('')),
+  locationName: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  phone: z.string().optional(),
+  instagram: z.string().optional(),
+  twitterHandle: z.string().optional(),
+  facebookUrl: z.string().url('Invalid Facebook URL').optional().or(z.literal('')),
+  youtube: z.string().url('Invalid YouTube URL').optional().or(z.literal('')),
+  linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
+}).refine(data => data.userId || data.newUser, {
+  message: "Must provide either existing userId or new user details"
+});
+
+const updatePractitionerSchema = z.object({
+  id: z.string().uuid('Invalid practitioner ID'),
+  bio: z.string().optional(),
+  website: z.string().url('Invalid URL').optional().or(z.literal('')),
+  locationName: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  phone: z.string().optional(),
+  instagram: z.string().optional(),
+  twitterHandle: z.string().optional(),
+  facebookUrl: z.string().url('Invalid Facebook URL').optional().or(z.literal('')),
+  youtube: z.string().url('Invalid YouTube URL').optional().or(z.literal('')),
+  linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
+  status: z.enum(['pending', 'active', 'inactive', 'suspended']).optional(),
+});
+
+/**
+ * Get all practitioners (for admin panel)
+ * 
+ * Permission: practitioners.read
+ */
+export async function getPractitioners() {
+  try {
+    await requirePermission(PERMISSIONS.PRACTITIONERS_READ);
+
+    const { data: practitioners, error } = await supabaseAdmin
+      .from('practitioners')
+      .select(`
+        *,
+        users (
+          id,
+          name,
+          email,
+          avatar_url
+        )
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return {
+        success: false,
+        error: 'Failed to fetch practitioners: ' + error.message,
+      };
+    }
+
+    return {
+      success: true,
+      practitioners: practitioners || [],
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to fetch practitioners',
+    };
+  }
+}
+
+/**
+ * Get a practitioner by ID
+ * 
+ * Permission: practitioners.read
+ */
+export async function getPractitionerById(id: string) {
+  try {
+    await requirePermission(PERMISSIONS.PRACTITIONERS_READ);
+
+    const { data: practitioner, error } = await supabaseAdmin
+      .from('practitioners')
+      .select('*, users (id, name, email, avatar_url)')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      return {
+        success: false,
+        error: 'Failed to fetch practitioner: ' + error.message,
+      };
+    }
+
+    return {
+      success: true,
+      practitioner,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to fetch practitioner',
+    };
+  }
+}
+
+/**
+ * Get a practitioner by User ID
+ * 
+ * Permission: practitioners.read
+ */
+export async function getPractitionerByUserId(userId: string) {
+  try {
+    await requirePermission(PERMISSIONS.PRACTITIONERS_READ);
+
+    const { data: practitioner, error } = await supabaseAdmin
+      .from('practitioners')
+      .select('*, users (id, name, email, avatar_url)')
+      .eq('user_id', userId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      return {
+        success: false,
+        error: 'Failed to fetch practitioner: ' + error.message,
+      };
+    }
+
+    return {
+      success: true,
+      practitioner: practitioner || null,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to fetch practitioner',
+    };
+  }
+}
+
+/**
+ * Get users without practitioner profiles
+ * 
+ * Permission: practitioners.read AND users.read
+ */
+export async function getUsersWithoutPractitionerProfile() {
+  try {
+    await requirePermission(PERMISSIONS.PRACTITIONERS_READ);
+
+    // We'll fetch active users, and fetch practitioner user_ids, then filter in memory for safety since dataset is small for this prototype.
+    const { data: allUsers } = await supabaseAdmin.from('users').select('id, name, email').eq('is_active', true);
+    const { data: pracs } = await supabaseAdmin.from('practitioners').select('user_id');
+
+    const pracUserIds = new Set(pracs?.map(p => p.user_id) || []);
+    const availableUsers = allUsers?.filter(u => !pracUserIds.has(u.id)) || [];
+
+    return {
+      success: true,
+      users: availableUsers,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to fetch users',
+    };
+  }
+}
+
+/**
+ * Create a new practitioner
+ * 
+ * Permission: practitioners.create
+ */
+export async function createPractitioner(formData: {
+  userId?: string;
+  newUser?: { name: string; email: string };
+  bio?: string;
+  website?: string;
+  locationName?: string;
+  latitude?: number;
+  longitude?: number;
+  phone?: string;
+  instagram?: string;
+  twitterHandle?: string;
+  facebookUrl?: string;
+  youtube?: string;
+  linkedinUrl?: string;
+}) {
+  try {
+    const session = await requirePermission(PERMISSIONS.PRACTITIONERS_CREATE);
+    const adminId = session.user.id;
+
+    const validated = createPractitionerSchema.safeParse(formData);
+
+    if (!validated.success) {
+      return {
+        success: false,
+        error: validated.error.errors[0].message,
+      };
+    }
+
+    const input = validated.data;
+    let finalUserId = input.userId;
+
+    // Create new user if provided
+    if (input.newUser) {
+      const { name, email } = input.newUser;
+
+      const { data: existingUser } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .single();
+
+      if (existingUser) {
+        return { success: false, error: 'Email already registered' };
+      }
+
+      // Generate random password, user will reset via invite link
+      const tempPassword = Math.random().toString(36).slice(-10) + 'A1!';
+      const passwordHash = await hashPassword(tempPassword);
+
+      const { data: newUserRecord, error: createError } = await supabaseAdmin
+        .from('users')
+        .insert({
+          name,
+          email: email.toLowerCase(),
+          password_hash: passwordHash,
+          email_verified: false,
+          is_active: true,
+        })
+        .select('id')
+        .single();
+
+      if (createError || !newUserRecord) {
+        return { success: false, error: 'Failed to create user account' };
+      }
+
+      finalUserId = newUserRecord.id;
+
+      let practitionerRoleId: number | null = null;
+      const defaultRoleIdStr = await getSettingByKey('default_practitioner_role_id');
+
+      if (defaultRoleIdStr) {
+        practitionerRoleId = parseInt(defaultRoleIdStr, 10);
+      } else {
+        // Fallback
+        const { data: role } = await supabaseAdmin.from('roles').select('id').eq('name', 'practitioner').single();
+        if (role) practitionerRoleId = role.id;
+      }
+
+      if (practitionerRoleId && finalUserId) {
+        await assignUserRole(finalUserId, practitionerRoleId, adminId);
+      }
+
+      // Generate a 72-hour invite token (reuses password_reset_tokens table)
+      const TTL_72H = 1000 * 60 * 60 * 72;
+      const inviteToken = await createPasswordResetToken(finalUserId as string, TTL_72H);
+
+      // Send invite email
+      await sendInviteEmail(email.toLowerCase(), name, inviteToken);
+    }
+
+    if (!finalUserId) {
+      return { success: false, error: 'A valid user ID is required' };
+    }
+
+    const { data: practitioner, error } = await supabaseAdmin
+      .from('practitioners')
+      .insert({
+        user_id: finalUserId as string,
+        bio: input.bio,
+        website: input.website,
+        location_name: input.locationName,
+        latitude: input.latitude,
+        longitude: input.longitude,
+        phone: input.phone,
+        social_links: {
+          instagram: input.instagram || undefined,
+          twitter_handle: input.twitterHandle || undefined,
+          facebook_url: input.facebookUrl || undefined,
+          youtube: input.youtube || undefined,
+          linkedin_url: input.linkedinUrl || undefined,
+        }
+      })
+      .select()
+      .single();
+
+    if (error) {
+      return {
+        success: false,
+        error: 'Failed to create practitioner: ' + error.message,
+      };
+    }
+
+    // Audit log
+    await supabaseAdmin.from('audit_logs').insert({
+      user_id: adminId,
+      action: 'practitioner.create',
+      resource_type: 'practitioners',
+      resource_id: practitioner.id,
+      metadata: { linked_user: finalUserId, is_new_user: !!input.newUser },
+    });
+
+    revalidatePath('/dashboard/practitioners');
+
+    return {
+      success: true,
+      practitioner,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to create practitioner',
+    };
+  }
+}
+
+/**
+ * Update a practitioner
+ * 
+ * Permission: practitioners.update
+ */
+export async function updatePractitioner(formData: {
+  id: string;
+  bio?: string;
+  website?: string;
+  locationName?: string;
+  latitude?: number;
+  longitude?: number;
+  phone?: string;
+  instagram?: string;
+  twitterHandle?: string;
+  facebookUrl?: string;
+  youtube?: string;
+  linkedinUrl?: string;
+  status?: 'pending' | 'active' | 'inactive' | 'suspended';
+}) {
+  try {
+    const session = await requirePermission(PERMISSIONS.PRACTITIONERS_UPDATE);
+    const adminId = session.user.id;
+
+    const validated = updatePractitionerSchema.safeParse(formData);
+
+    if (!validated.success) {
+      return {
+        success: false,
+        error: validated.error.errors[0].message,
+      };
+    }
+
+    const { id, ...updates } = validated.data;
+    const cleanUpdates: any = { ...updates, updated_at: new Date().toISOString() };
+
+    if (updates.locationName !== undefined) {
+      cleanUpdates.location_name = updates.locationName;
+      delete cleanUpdates.locationName;
+    }
+
+    // Build social links
+    if (
+      updates.instagram !== undefined ||
+      updates.twitterHandle !== undefined ||
+      updates.facebookUrl !== undefined ||
+      updates.youtube !== undefined ||
+      updates.linkedinUrl !== undefined
+    ) {
+      // In a real app we might want to merge with existing DB state, but for this form we can override the whole JSON object
+      cleanUpdates.social_links = {
+        instagram: updates.instagram || undefined,
+        twitter_handle: updates.twitterHandle || undefined,
+        facebook_url: updates.facebookUrl || undefined,
+        youtube: updates.youtube || undefined,
+        linkedin_url: updates.linkedinUrl || undefined,
+      };
+
+      delete cleanUpdates.instagram;
+      delete cleanUpdates.twitterHandle;
+      delete cleanUpdates.facebookUrl;
+      delete cleanUpdates.youtube;
+      delete cleanUpdates.linkedinUrl;
+    }
+
+    const { data: practitioner, error } = await supabaseAdmin
+      .from('practitioners')
+      .update(cleanUpdates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      return {
+        success: false,
+        error: 'Failed to update practitioner: ' + error.message,
+      };
+    }
+
+    // Audit log
+    await supabaseAdmin.from('audit_logs').insert({
+      user_id: adminId,
+      action: 'practitioner.update',
+      resource_type: 'practitioners',
+      resource_id: id,
+      metadata: cleanUpdates,
+    });
+
+    revalidatePath('/dashboard/practitioners');
+
+    return {
+      success: true,
+      practitioner,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to update practitioner',
+    };
+  }
+}
+
+/**
+ * Delete a practitioner
+ * 
+ * Permission: practitioners.delete
+ */
+export async function deletePractitioner(id: string) {
+  try {
+    const session = await requirePermission(PERMISSIONS.PRACTITIONERS_DELETE);
+    const adminId = session.user.id;
+
+    const { error } = await supabaseAdmin
+      .from('practitioners')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      return {
+        success: false,
+        error: 'Failed to delete practitioner: ' + error.message,
+      };
+    }
+
+    // Audit log
+    await supabaseAdmin.from('audit_logs').insert({
+      user_id: adminId,
+      action: 'practitioner.delete',
+      resource_type: 'practitioners',
+      resource_id: id,
+    });
+
+    revalidatePath('/dashboard/practitioners');
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to delete practitioner',
+    };
+  }
+}
+
+/**
+ * Resend Practitioner Invite
+ * 
+ * Permission: practitioners.update
+ */
+export async function resendPractitionerInvite(id: string) {
+  try {
+    const session = await requirePermission(PERMISSIONS.PRACTITIONERS_UPDATE);
+    const adminId = session.user.id;
+
+    const { data: practitioner, error } = await supabaseAdmin
+      .from('practitioners')
+      .select('users(email, name, id)')
+      .eq('id', id)
+      .single();
+
+    if (error || !practitioner) {
+      return { success: false, error: 'User not found' };
+    }
+
+    const userEmail = Array.isArray(practitioner.users)
+      ? practitioner.users[0]?.email
+      : (practitioner.users as any)?.email;
+
+    if (!userEmail) {
+      return { success: false, error: 'User email not found' };
+    }
+
+    const email = userEmail;
+    const name = Array.isArray(practitioner.users)
+      ? practitioner.users[0]?.name
+      : (practitioner.users as any)?.name;
+    const userId = Array.isArray(practitioner.users)
+      ? practitioner.users[0]?.id
+      : (practitioner.users as any)?.id;
+
+    // Generate a 72-hour invite token (reuses password_reset_tokens table)
+    const TTL_72H = 1000 * 60 * 60 * 72;
+    const inviteToken = await createPasswordResetToken(userId as string, TTL_72H);
+
+    // Send invite email
+    await sendInviteEmail(email.toLowerCase(), name, inviteToken);
+
+    // Audit log
+    await supabaseAdmin.from('audit_logs').insert({
+      user_id: adminId,
+      action: 'practitioner.invite_resend',
+      resource_type: 'practitioners',
+      resource_id: id,
+    });
+
+    return {
+      success: true,
+      message: `Invite sent to ${email}`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to resend invite',
+    };
+  }
+}

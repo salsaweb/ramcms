@@ -7,9 +7,13 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { LanguageSwitcher } from '@/components/dashboard/language-switcher';
+//import { NotificationBell } from '@/components/layout/notification-bell';
+//import { useParams } from 'next/navigation';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  isAdmin?: boolean;
   user?: {
     name: string;
     email: string;
@@ -21,11 +25,14 @@ interface DashboardLayoutProps {
   }[];
 }
 
-export function DashboardLayout({ children, user, breadcrumbs }: DashboardLayoutProps) {
+export function DashboardLayout({ children, isAdmin, user, breadcrumbs }: DashboardLayoutProps) {
+  // const params = useParams();
+  // const locale = (params?.locale as string) || 'en';
+
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <AppSidebar user={user} />
+        <AppSidebar user={user} isAdmin={isAdmin} />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
@@ -53,6 +60,8 @@ export function DashboardLayout({ children, user, breadcrumbs }: DashboardLayout
               </Breadcrumb>
             )}
             <div className="ml-auto flex items-center gap-2">
+              {/*<NotificationBell locale={locale} />*/}
+              <LanguageSwitcher />
               <ThemeToggle />
             </div>
           </header>

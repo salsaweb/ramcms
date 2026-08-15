@@ -4,16 +4,18 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useLocale } from 'next-intl';
 import {
   LayoutDashboard,
   Briefcase,
-  BarChart3,
   Shield,
-  Settings,
   ChevronDown,
-  Music,
+  UserCheck,
+  ShoppingBag,
   type LucideIcon,
 } from 'lucide-react';
+
+import { SignOutButton } from '@/components/auth/sign-out-button';
 
 import {
   Sidebar,
@@ -42,6 +44,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { useTranslations } from 'next-intl';
+
 interface NavItem {
   title: string;
   href: string;
@@ -52,10 +56,12 @@ interface NavItem {
     title: string;
     href: string;
     permission?: string;
+    icon?: LucideIcon;
   }[];
 }
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  isAdmin?: boolean;
   user?: {
     name: string;
     email: string;
@@ -63,103 +69,103 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   };
 }
 
-const navItems: NavItem[] = [
-  {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard,
-    permission: 'dashboard.access',
-  },
-  {
-    title: 'CRM',
-    href: '/dashboard/crm',
-    icon: Briefcase,
-    permission: 'crm.access',
-    items: [
-      {
-        title: 'Dashboard',
-        href: '/dashboard/crm',
-        permission: 'crm.access',
-      },
-      {
-        title: 'Contacts',
-        href: '/dashboard/crm/contacts',
-        permission: 'contacts.read',
-      },
-      {
-        title: 'Companies',
-        href: '/dashboard/crm/companies',
-        permission: 'companies.read',
-      },
-      {
-        title: 'Deals',
-        href: '/dashboard/crm/deals',
-        permission: 'deals.read',
-      },
-      {
-        title: 'Tasks',
-        href: '/dashboard/crm/tasks',
-        permission: 'tasks.read',
-      },
-      {
-        title: 'Analytics',
-        href: '/dashboard/crm/analytics',
-        permission: 'crm.analytics',
-      },
-    ],
-  },
-  {
-    title: 'Media',
-    href: '/dashboard/media',
-    icon: Music,
-    permission: 'media.access',
-    items: [
-      {
-        title: 'Tracks',
-        href: '/dashboard/media/tracks',
-        permission: 'media.access',
-      },
-      {
-        title: 'Artists',
-        href: '/dashboard/media/artists',
-        permission: 'media.access',
-      },
-      {
-        title: 'Playlists',
-        href: '/dashboard/media/playlists',
-        permission: 'playlists.read',
-      },
-    ],
-  },
-  {
-    title: 'Admin',
-    href: '/dashboard/admin',
-    icon: Shield,
-    items: [
-      {
-        title: 'Users',
-        href: '/dashboard/users',
-        permission: 'users.read',
-      },
-      {
-        title: 'Roles',
-        href: '/dashboard/roles',
-        permission: 'roles.read',
-      },
-    ],
-  },
-  {
-    title: 'Settings',
-    href: '/dashboard/settings',
-    icon: Settings,
-    permission: 'settings.view',
-  },
-];
-
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
+export function AppSidebar({ isAdmin, user, ...props }: AppSidebarProps) {
   const pathname = usePathname();
+  const locale = useLocale();
   const { data: session } = useSession();
   const userPermissions = session?.user?.permissions || [];
+  const t = useTranslations('navigation');
+
+  const navItems: NavItem[] = [
+    {
+      title: t('dashboard'),
+      href: `/${locale}/dashboard`,
+      icon: LayoutDashboard,
+      permission: 'dashboard.access',
+    },
+    {
+      title: t('crm'),
+      href: `/${locale}/dashboard/crm`,
+      icon: Briefcase,
+      permission: 'crm.access',
+      items: [
+        {
+          title: t('dashboard'),
+          href: `/${locale}/dashboard/crm`,
+          permission: 'crm.access',
+        },
+        {
+          title: t('contacts'),
+          href: `/${locale}/dashboard/crm/contacts`,
+          permission: 'contacts.read',
+        },
+        {
+          title: t('companies'),
+          href: `/${locale}/dashboard/crm/companies`,
+          permission: 'companies.read',
+        },
+        {
+          title: t('deals'),
+          href: `/${locale}/dashboard/crm/deals`,
+          permission: 'deals.read',
+        },
+        {
+          title: t('tasks'),
+          href: `/${locale}/dashboard/crm/tasks`,
+          permission: 'tasks.read',
+        },
+        {
+          title: t('analytics'),
+          href: `/${locale}/dashboard/crm/analytics`,
+          permission: 'crm.analytics',
+        },
+      ],
+    },
+    {
+      title: t('customers'),
+      href: `/${locale}/dashboard/customers`,
+      icon: UserCheck,
+      permission: 'customers.read',
+    },
+    {
+      title: t('orders'),
+      href: `/${locale}/dashboard/orders`,
+      icon: ShoppingBag,
+      permission: 'orders.read',
+    },
+    {
+      title: t('admin'),
+      href: `/${locale}/dashboard/admin`,
+      icon: Shield,
+      items: [
+        {
+          title: t('users'),
+          href: `/${locale}/dashboard/users`,
+          permission: 'users.read',
+        },
+        {
+          title: t('roles'),
+          href: `/${locale}/dashboard/roles`,
+          permission: 'roles.read',
+        },
+      ],
+    }
+  ];
+
+  const userNavItems: NavItem[] = [
+    {
+      title: t('dashboard'),
+      href: `/${locale}/dashboard`,
+      icon: LayoutDashboard,
+      permission: 'dashboard.access',
+    },
+    {
+      title: t('myOrders'),
+      href: `/${locale}/dashboard/orders`,
+      icon: ShoppingBag,
+      permission: 'orders.read',
+    }
+  ];
 
   const hasPermission = (permission?: string) => {
     if (!permission) return true;
@@ -180,7 +186,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       .filter((item): item is NavItem => item !== null);
   };
 
-  const filteredNavItems = filterNavItems(navItems);
+  const filteredNavItems = filterNavItems(isAdmin ? navItems : userNavItems);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -188,13 +194,8 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <BarChart3 className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Ram CMS</span>
-                </div>
+              <Link href={`/${locale}/dashboard`}>
+                <img src="/logo.png" alt="OBRYS CRM" className="w-48" />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -203,7 +204,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('navigation')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredNavItems.map((item) => {
@@ -323,15 +324,13 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/settings">Settings</Link>
+                  <Link href={`/${locale}/dashboard/settings`}>{t('settings')}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/settings/profile">Profile</Link>
+                  <Link href={`/${locale}/dashboard/settings/profile`}>{t('profile')}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/api/auth/signout">Log out</Link>
-                </DropdownMenuItem>
+                <SignOutButton />
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
